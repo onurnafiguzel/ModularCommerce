@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ModularCommerce.Notification.Domain\ModularCommerce.Notification.Domain.csproj" />
+    <ProjectReference Include="..\ModularCommerce.Notification.Contracts\ModularCommerce.Notification.Contracts.csproj" />
+  </ItemGroup>
+</Project>

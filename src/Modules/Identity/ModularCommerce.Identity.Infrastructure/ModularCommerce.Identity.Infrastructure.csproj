@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ModularCommerce.Identity.Application\ModularCommerce.Identity.Application.csproj" />
+  </ItemGroup>
+</Project>

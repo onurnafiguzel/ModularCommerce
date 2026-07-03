@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Identity\ModularCommerce.Identity.Api\ModularCommerce.Identity.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Catalog\ModularCommerce.Catalog.Api\ModularCommerce.Catalog.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Cart\ModularCommerce.Cart.Api\ModularCommerce.Cart.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventory\ModularCommerce.Inventory.Api\ModularCommerce.Inventory.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Ordering\ModularCommerce.Ordering.Api\ModularCommerce.Ordering.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Payment\ModularCommerce.Payment.Api\ModularCommerce.Payment.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Shipping\ModularCommerce.Shipping.Api\ModularCommerce.Shipping.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Notification\ModularCommerce.Notification.Api\ModularCommerce.Notification.Api.csproj" />
+  </ItemGroup>
+</Project>

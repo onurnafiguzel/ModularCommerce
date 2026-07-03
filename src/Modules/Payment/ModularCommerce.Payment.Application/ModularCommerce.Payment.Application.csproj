@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ModularCommerce.Payment.Domain\ModularCommerce.Payment.Domain.csproj" />
+    <ProjectReference Include="..\ModularCommerce.Payment.Contracts\ModularCommerce.Payment.Contracts.csproj" />
+  </ItemGroup>
+</Project>

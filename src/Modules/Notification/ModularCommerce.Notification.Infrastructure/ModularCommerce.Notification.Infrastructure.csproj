@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ModularCommerce.Notification.Application\ModularCommerce.Notification.Application.csproj" />
+  </ItemGroup>
+</Project>
