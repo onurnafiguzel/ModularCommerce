@@ -50,3 +50,23 @@ dotnet run --project src/Bootstrapper/ModularCommerce.Host
 
 Veritabanı: `catalog` şemasında `products` (15 satır) + `__EFMigrationsHistory`.
 Testler: 24 mimari + 35 unit, tümü yeşil (`dotnet test`).
+
+### GlobalExceptionHandler 500 kanıtı (4 Temmuz 2026)
+
+Geçici bir `/api/catalog/boom` endpoint'i ile yakalanmamış exception fırlatıldı
+(doğrulama sonrası endpoint silindi). Yanıt:
+
+```json
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+  "title": "Sunucu hatası",
+  "status": 500,
+  "detail": "Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+  "traceId": "0HNMPOI83FB85:00000002",
+  "exception": "System.InvalidOperationException: Kasıtlı test exception'ı ..."
+}
+```
+
+- `Content-Type: application/problem+json`; `exception` alanı yalnızca Development'ta dolu.
+- Konsol logunda handler'ın kaydı:
+  `fail: ...GlobalExceptionHandler[0] — Beklenmeyen hata: /api/catalog/boom isteği işlenirken exception oluştu`.

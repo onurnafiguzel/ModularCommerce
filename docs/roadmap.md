@@ -8,7 +8,7 @@
 | Hafta | Modül / Feature | Beraberinde gelen cross-cutting | Kanıt / Çıktı |
 |---|---|---|---|
 | 1 ✅ | İskelet, Host, `IModule` altyapısı | Central Package Management, NetArchTest mimari sınır testleri | Çalışan health endpoint'leri |
-| 2 | **Catalog**: ürün listeleme/detay, seed data | EF Core + şema/modül deseni, global exception handler + Problem Details | Postman'de gerçek ürün JSON'ı |
+| 2 ✅ | **Catalog**: ürün listeleme/detay, seed data | EF Core + şema/modül deseni, global exception handler + Problem Details | Postman'de gerçek ürün JSON'ı |
 | 3 | **Inventory**: stok + bilerek korumasız rezervasyon → K6 ile oversell kanıtı → optimistic concurrency (rowversion) | K6 yük testi altyapısı, Testcontainers ile ilk integration test | Naive vs rowversion karşılaştırma tablosu → **LinkedIn post #1** |
 | 4 | **Inventory**: Redis distributed lock + üç stratejinin karşılaştırması | Redis bağlantısı, correlation id + Serilog structured logging | Üç stratejinin K6 karşılaştırma tablosu (README'ye) → **post #2** |
 | 5 | **Identity**: signup / login / JWT + **Cart** (Redis tabanlı sepet) | JWT authentication middleware, endpoint authorization | Login olup sepete ürün ekleme akışı |
