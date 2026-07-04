@@ -56,6 +56,24 @@ public class ModuleBoundaryTests
 
     [Theory]
     [MemberData(nameof(ModuleNames))]
+    public void Application_should_not_depend_on_ef_core(string module)
+    {
+        var assembly = System.Reflection.Assembly.Load($"ModularCommerce.{module}.Application");
+
+        var result = Types.InAssembly(assembly)
+            .Should()
+            .NotHaveDependencyOnAny(
+                $"ModularCommerce.{module}.Infrastructure",
+                "Microsoft.EntityFrameworkCore")
+            .GetResult();
+
+        result.IsSuccessful.Should().BeTrue(
+            $"{module}.Application persistence-bilinçsiz kalmalı: EF Core'a ve Infrastructure'a " +
+            "bağımlılık olamaz; erişim port arayüzleri (repository/queries) üzerinden yapılır");
+    }
+
+    [Theory]
+    [MemberData(nameof(ModuleNames))]
     public void Domain_should_not_depend_on_infrastructure(string module)
     {
         var assembly = System.Reflection.Assembly.Load($"ModularCommerce.{module}.Domain");

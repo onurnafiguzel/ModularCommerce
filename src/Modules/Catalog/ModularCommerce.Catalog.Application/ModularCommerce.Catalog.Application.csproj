@@ -3,4 +3,7 @@
     <ProjectReference Include="..\ModularCommerce.Catalog.Domain\ModularCommerce.Catalog.Domain.csproj" />
     <ProjectReference Include="..\ModularCommerce.Catalog.Contracts\ModularCommerce.Catalog.Contracts.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+  </ItemGroup>
 </Project>

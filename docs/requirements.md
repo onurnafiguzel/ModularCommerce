@@ -180,3 +180,7 @@ Bu proje "çalışıyor" demekle bitmez; iddialar ölçümle kanıtlanır:
 2. **Idempotency kanıtı:** Aynı idempotency key ile 100 paralel ödeme isteği → tek charge.
 3. **Resiliency kanıtı:** PSP %50 hata oranıyla simüle edilirken circuit breaker'ın açılıp kapanması loglarla gösterilir.
 4. **Sınır kanıtı:** Mimari testler CI'da koşar; ihlal build'i kırar.
+
+---
+## Teknik yapı
+ Bu projede primary constructor kullanılacak.
