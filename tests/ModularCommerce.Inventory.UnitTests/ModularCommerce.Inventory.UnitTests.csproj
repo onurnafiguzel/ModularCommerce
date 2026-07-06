@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="NSubstitute" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Inventory\ModularCommerce.Inventory.Domain\ModularCommerce.Inventory.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Inventory\ModularCommerce.Inventory.Application\ModularCommerce.Inventory.Application.csproj" />
+  </ItemGroup>
+</Project>

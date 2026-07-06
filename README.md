@@ -29,7 +29,28 @@ dotnet run --project src/Bootstrapper/ModularCommerce.Host
 ## Kanıt yükümlülükleri
 
 Bu projede her iddia ölçümle kanıtlanır (bkz. requirements §10):
-oversell = 0, duplicate ödeme = 0, checkout p95 < 500 ms — K6 senaryoları `tests/LoadTests` altında.
+oversell = 0, duplicate ödeme = 0, checkout p95 < 500 ms.
+
+### Oversell kanıtı: Naive vs Optimistic Concurrency (Hafta 3)
+
+10 stokluk ürüne, start-gate ile **aynı anda** bırakılan 100 paralel rezervasyon isteği
+(Testcontainers + gerçek PostgreSQL; test: `ReservationConcurrencyTests`):
+
+| Strateji | Deneme | "Başarılı" | OnHand | Reserved | **Oversell** | Çakışma (retry) |
+|---|---|---|---|---|---|---|
+| Naive (korumasız check-then-act) | 100 | **100** | 10 | 100 | **90** | — |
+| Optimistic concurrency (xmin) | 100 | **10** | 10 | 10 | **0** | 207 → istemci retry'ı ile tam 10 |
+
+- Naive yol, domain'deki `Available` kontrolünü **bayat snapshot** üzerinde yapar: 100 istek
+  aynı anda `Available=10` okur, hepsi geçer, hepsi yazar. İş kuralı doğru yerde, ama eşzamanlılık
+  koruması yok — ders bu.
+- Optimistic yol aynı domain kuralını çalıştırır; farkı `UPDATE ... WHERE xmin = @token`
+  koşuludur. Kaybeden istek 409 `Inventory.ConcurrencyConflict` ("tekrar deneyin") alır —
+  sunucu retry YAPMAZ (kesin CP, NFR-3.4); istemci retry'ı ile sonuç **tam 10**.
+- Tekrarlamak için: Docker Desktop açıkken
+  `dotnet test tests/ModularCommerce.Inventory.IntegrationTests`.
+- Üçüncü strateji (Redis distributed lock) ve K6 yük senaryoları (1000 VU + p95) sonraki
+  haftalarda aynı tabloya eklenecek.
 
 ## Bilinçli ertelemeler (evolution path)
 

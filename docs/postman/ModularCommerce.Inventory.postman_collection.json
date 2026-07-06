@@ -1,0 +1,327 @@
+{
+  "info": {
+    "name": "ModularCommerce — Hafta 3 (Inventory)",
+    "description": "Hafta 3 kanıt senaryoları: TTL'li stok rezervasyonu + iki ayırt edilebilir 409 (InsufficientStock terminal, ConcurrencyConflict retryable) + Problem Details hata biçimi.\n\nÖn koşul: `docker compose up -d postgres` ve `dotnet run --project src/Bootstrapper/ModularCommerce.Host` çalışıyor olmalı.\n\nİstekleri SIRAYLA çalıştır (Run collection): ilk istek dev reset ile deterministik başlangıç kurar. Dev reset endpoint'i yalnızca Development ortamında açıktır.\n\nSabit seed ürünleri: 1111... (oversell hedefi, 10 adet), 2222... (yük hedefi, 1M), 3333... (manuel, 100).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:49822",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "11111111-1111-1111-1111-111111111111",
+      "type": "string"
+    },
+    {
+      "key": "reservationId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0 — Sağlık",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "health"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "pm.test('Inventory sağlıklı', () => pm.expect(pm.response.json().module).to.eql('Inventory'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 — Dev reset: stoğu 10'a kur (deterministik başlangıç)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"onHand\": 10\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/dev/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "dev", "stock", "{{productId}}"]
+        },
+        "description": "Yalnız Development'ta açık: ürünün rezervasyonlarını siler, stok kaydını StockItem.Create fabrikasıyla yeniden kurar."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Stok sıfırdan kuruldu', () => { pm.expect(body.onHand).to.eql(10); pm.expect(body.reserved).to.eql(0); pm.expect(body.available).to.eql(10); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 — Stok sorgusu (başlangıç durumu)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "stock", "{{productId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('onHand=10, reserved=0, available=10', () => { pm.expect(body.onHand).to.eql(10); pm.expect(body.reserved).to.eql(0); pm.expect(body.available).to.eql(10); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 — Rezervasyon oluştur (201 + Location + TTL)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 3\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/reservations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "reservations"]
+        },
+        "description": "FR-3.2: stok düşülmez, rezerve edilir; rezervasyon 5 dk TTL ile Active doğar."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('201 Created döner', () => pm.response.to.have.status(201));",
+              "pm.test('Location header var', () => pm.expect(pm.response.headers.get('Location')).to.include('/api/inventory/reservations/'));",
+              "const body = pm.response.json();",
+              "pm.test('Rezervasyon Active ve 3 adet', () => { pm.expect(body.status).to.eql('Active'); pm.expect(body.quantity).to.eql(3); });",
+              "pm.test('TTL ileri bir tarih (≈5 dk)', () => pm.expect(new Date(body.expiresAtUtc).getTime()).to.be.greaterThan(Date.now()));",
+              "// Sonraki istek için rezervasyon kimliğini sakla",
+              "pm.collectionVariables.set('reservationId', body.reservationId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 — Rezervasyonu sorgula (Location çözülüyor)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/reservations/{{reservationId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "reservations", "{{reservationId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Doğru rezervasyon', () => { pm.expect(body.reservationId).to.eql(pm.collectionVariables.get('reservationId')); pm.expect(body.quantity).to.eql(3); pm.expect(body.status).to.eql('Active'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 — Stok sorgusu (rezervasyon sonrası)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "stock", "{{productId}}"]
+        },
+        "description": "FR-3.2 kanıtı: OnHand değişmedi (düşülmedi), Reserved arttı."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('OnHand=10 sabit, reserved=3, available=7', () => { pm.expect(body.onHand).to.eql(10); pm.expect(body.reserved).to.eql(3); pm.expect(body.available).to.eql(7); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 — Yetersiz stok → 409 InsufficientStock (terminal)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 999\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/reservations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "reservations"]
+        },
+        "description": "NFR-3.4 (kesin CP): asla iyimser onay yok. Bu 409 TERMİNALDİR — retry anlamsız; retryable olan Inventory.ConcurrencyConflict koddan ayırt edilir."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('409 döner', () => pm.response.to.have.status(409));",
+              "pm.test('problem+json içerik tipi', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/problem+json'));",
+              "const body = pm.response.json();",
+              "pm.test('Terminal hata kodu taşır', () => pm.expect(body.title).to.eql('Inventory.InsufficientStock'));",
+              "pm.test('traceId var', () => pm.expect(body.traceId).to.be.a('string'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7 — Geçersiz istek (quantity=0) → 400",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 0\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/reservations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "reservations"]
+        },
+        "description": "İstek biçimi doğrulaması (FluentValidation) — iş kuralı değil, HTTP-şekli koruması."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('400 döner', () => pm.response.to.have.status(400));",
+              "pm.test('Validation hata kodu taşır', () => pm.expect(pm.response.json().title).to.eql('Inventory.Reservations.InvalidCommand'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8 — Bilinmeyen ürün → 404 StockItem.NotFound",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"00000000-0000-0000-0000-000000000009\",\n  \"quantity\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/reservations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "reservations"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('404 döner', () => pm.response.to.have.status(404));",
+              "pm.test('Domain hata kodu taşır', () => pm.expect(pm.response.json().title).to.eql('Inventory.StockItem.NotFound'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9 — Bilinmeyen rezervasyon → 404 Reservation.NotFound",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/reservations/00000000-0000-0000-0000-000000000009",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "reservations", "00000000-0000-0000-0000-000000000009"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('404 döner', () => pm.response.to.have.status(404));",
+              "pm.test('Domain hata kodu taşır', () => pm.expect(pm.response.json().title).to.eql('Inventory.Reservation.NotFound'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 — Temizlik: stoğu 10'a geri kur",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"onHand\": 10\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/inventory/dev/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "inventory", "dev", "stock", "{{productId}}"]
+        },
+        "description": "Koleksiyon tekrar çalıştırılabilir kalsın diye durumu başa döndürür."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "pm.test('Durum sıfırlandı', () => pm.expect(pm.response.json().available).to.eql(10));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
