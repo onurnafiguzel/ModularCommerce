@@ -8,6 +8,8 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.Redis" />
+    <PackageReference Include="StackExchange.Redis" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Inventory\ModularCommerce.Inventory.Infrastructure\ModularCommerce.Inventory.Infrastructure.csproj" />

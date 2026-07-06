@@ -12,6 +12,7 @@ using ModularCommerce.Inventory.Application.Reservations.ReserveStock;
 using ModularCommerce.Inventory.Application.Stock.GetStock;
 using ModularCommerce.Inventory.Application.Stock.SetStock;
 using ModularCommerce.Inventory.Domain.Stock;
+using ModularCommerce.Inventory.Infrastructure.Locking;
 using ModularCommerce.Inventory.Infrastructure.Persistence;
 using ModularCommerce.Inventory.Infrastructure.Persistence.Queries;
 using ModularCommerce.Inventory.Infrastructure.Persistence.Repositories;
@@ -45,10 +46,14 @@ public sealed class InventoryModule : IModule
             case "OptimisticConcurrency":
                 services.AddScoped<IReservationStrategy, OptimisticConcurrencyReservationStrategy>();
                 break;
+            case "RedisLock":
+                services.AddScoped<IDistributedLock, RedisDistributedLock>();
+                services.AddScoped<IReservationStrategy, RedisLockReservationStrategy>();
+                break;
             default:
                 throw new InvalidOperationException(
                     $"Bilinmeyen rezervasyon stratejisi: '{strategyName}'. " +
-                    "Geçerli değerler: Naive, OptimisticConcurrency.");
+                    "Geçerli değerler: Naive, OptimisticConcurrency, RedisLock.");
         }
 
         services.AddScoped<ReserveStockHandler>();

@@ -31,4 +31,12 @@ public static class InventoryErrors
     public static readonly Error ConcurrencyConflict = Error.Conflict(
         "Inventory.ConcurrencyConflict",
         "Stok bilgisi güncellendi, lütfen tekrar deneyin.");
+
+    public static readonly Error LockTimeout = Error.Conflict(
+        "Inventory.LockTimeout",
+        "Stok şu anda yoğun, lütfen tekrar deneyin.");
+
+    public static readonly Error LockUnavailable = Error.Failure(
+        "Inventory.LockUnavailable",
+        "Stok kilidi servisine ulaşılamıyor, işlem reddedildi.");
 }

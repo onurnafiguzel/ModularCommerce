@@ -5,6 +5,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="StackExchange.Redis" />
+    <PackageReference Include="Serilog.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ModularCommerce.Shared.Kernel\ModularCommerce.Shared.Kernel.csproj" />

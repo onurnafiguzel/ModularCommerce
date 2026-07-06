@@ -1,12 +1,24 @@
 using ModularCommerce.Shared.Infrastructure.ExceptionHandling;
 using ModularCommerce.Shared.Infrastructure.Modules;
+using ModularCommerce.Shared.Infrastructure.Observability;
+using ModularCommerce.Shared.Infrastructure.Redis;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, loggerConfiguration) =>
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration));
+
+builder.Services.AddRedis(builder.Configuration);
 
 builder.Services.AddProblemDetails(options =>
     options.CustomizeProblemDetails = context =>
     {
         context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+
+        if (context.HttpContext.Items[CorrelationIdMiddleware.ItemKey] is string correlationId)
+        {
+            context.ProblemDetails.Extensions["correlationId"] = correlationId;
+        }
 
         if (context.Exception is not null &&
             context.HttpContext.RequestServices.GetRequiredService<IHostEnvironment>().IsDevelopment())
@@ -35,6 +47,8 @@ foreach (var module in modules)
 
 var app = builder.Build();
 
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 

@@ -31,26 +31,43 @@ dotnet run --project src/Bootstrapper/ModularCommerce.Host
 Bu projede her iddia ölçümle kanıtlanır (bkz. requirements §10):
 oversell = 0, duplicate ödeme = 0, checkout p95 < 500 ms.
 
-### Oversell kanıtı: Naive vs Optimistic Concurrency (Hafta 3)
+### Oversell kanıtı: üç stratejinin karşılaştırması (Hafta 3-4)
 
-10 stokluk ürüne, start-gate ile **aynı anda** bırakılan 100 paralel rezervasyon isteği
-(Testcontainers + gerçek PostgreSQL; test: `ReservationConcurrencyTests`):
+**Katman 1 — Doğruluk (Testcontainers, `dotnet test` ile tekrarlanabilir):** 10 stokluk ürüne
+start-gate ile **aynı anda** bırakılan 100 paralel rezervasyon
+(`ReservationConcurrencyTests` + `RedisLockConcurrencyTests`):
 
-| Strateji | Deneme | "Başarılı" | OnHand | Reserved | **Oversell** | Çakışma (retry) |
+| Strateji | Deneme | "Başarılı" | Reserved/OnHand | **Oversell** | Çakışma-retry | Kilit timeout |
 |---|---|---|---|---|---|---|
-| Naive (korumasız check-then-act) | 100 | **100** | 10 | 100 | **90** | — |
-| Optimistic concurrency (xmin) | 100 | **10** | 10 | 10 | **0** | 207 → istemci retry'ı ile tam 10 |
+| Naive (korumasız check-then-act) | 100 | **100** | 100 / 10 | **90** | — | — |
+| Optimistic concurrency (xmin) | 100 | **10** | 10 / 10 | **0** | 121 | — |
+| Redis distributed lock | 100 | **10** | 10 / 10 | **0** | **0** | 4 |
 
-- Naive yol, domain'deki `Available` kontrolünü **bayat snapshot** üzerinde yapar: 100 istek
-  aynı anda `Available=10` okur, hepsi geçer, hepsi yazar. İş kuralı doğru yerde, ama eşzamanlılık
-  koruması yok — ders bu.
-- Optimistic yol aynı domain kuralını çalıştırır; farkı `UPDATE ... WHERE xmin = @token`
-  koşuludur. Kaybeden istek 409 `Inventory.ConcurrencyConflict` ("tekrar deneyin") alır —
-  sunucu retry YAPMAZ (kesin CP, NFR-3.4); istemci retry'ı ile sonuç **tam 10**.
-- Tekrarlamak için: Docker Desktop açıkken
-  `dotnet test tests/ModularCommerce.Inventory.IntegrationTests`.
-- Üçüncü strateji (Redis distributed lock) ve K6 yük senaryoları (1000 VU + p95) sonraki
-  haftalarda aynı tabloya eklenecek.
+**Katman 2 — Yük (K6, 1000 VU × 1 istek, aynı ürün; istemci 409-retryable'da tekrar dener):**
+
+| Strateji | "Başarılı" (201) | **Oversell** | Çakışma-retry | Kilit timeout | Toplam istek | p95 |
+|---|---|---|---|---|---|---|
+| Naive | **229** | **219** | — | — | 1.002 | 1,67 sn |
+| Optimistic (xmin) | **10** ✓ | **0** | 971 | — | 1.973 | 505 ms |
+| Redis lock | **10** ✓ | **0** | **0** | 2.560 | 3.525 | 6,05 sn* |
+
+**Katman 3 — Sürekli yük altında etkin yazma kapasitesi (K6 smoke: 50 VU × 30 sn, TEK sıcak ürün;
+409 tasarlanmış yanıttır):** NFR-3.2 hedefi p95 < 150 ms — kilit/çakışma beklemesi dahil.
+
+| Strateji | p95 | Başarılı yazma/sn | Retryable-409/sn | Başarı oranı |
+|---|---|---|---|---|
+| Optimistic (xmin) | **71 ms** ✓ | ≈ 90 | ≈ 1.081 | %7,7 |
+| Redis lock | **114 ms** ✓ | ≈ **155** | ≈ 355 | %30 |
+
+Okuma notları:
+- **Naive:** iş kuralı doğru yerde (domain) ama bayat snapshot'la çalışıyor — 1000 VU'da 219 oversell.
+- **Optimistic:** sıfır oversell; bedeli çakışma-retry trafiği. Tek sıcak satırda sürekli yükte
+  çakışma oranı %92'ye çıkıyor — requirements'ın "yetersiz kalırsa" senaryosu ölçümle görünür oldu.
+- **Redis lock:** çakışmayı beklemeye çevirir (çakışma=0); aynı sıcak satırda **~1,7× daha fazla
+  başarılı yazma** geçirir. (*) Burst'teki 6 sn p95, stok bittiği halde retry eden istemci
+  kuyruğunun ürünüdür; smoke ölçümü (114 ms) NFR-3.2'yi karşılar.
+- Tekrarlamak için: `dotnet test tests/ModularCommerce.Inventory.IntegrationTests` (doğruluk)
+  ve [tests/LoadTests/README.md](tests/LoadTests/README.md) (K6 koşu tarifi).
 
 ## Bilinçli ertelemeler (evolution path)
 
