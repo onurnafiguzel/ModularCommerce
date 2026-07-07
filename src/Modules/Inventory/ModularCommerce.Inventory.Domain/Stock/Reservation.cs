@@ -32,4 +32,7 @@ public sealed class Reservation : Entity
     /// <summary>Yalnızca StockItem aggregate'i çağırır; invariant'lar orada doğrulanmıştır.</summary>
     internal static Reservation CreateFor(StockItem stockItem, int quantity)
         => new(stockItem.Id, stockItem.ProductId, quantity);
+
+    /// <summary>Yalnızca StockItem.Release çağırır (CreateFor simetrisi).</summary>
+    internal void MarkReleased() => Status = ReservationStatus.Released;
 }

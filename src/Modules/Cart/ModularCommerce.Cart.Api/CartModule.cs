@@ -23,6 +23,7 @@ public sealed class CartModule : IModule
     {
         services.AddScoped<ICartRepository, RedisCartRepository>();
 
+        services.AddScoped<ModularCommerce.Cart.Contracts.ICartService, Application.Carts.Contracts.CartService>();
         services.AddScoped<GetCartHandler>();
         services.AddScoped<AddItemHandler>();
         services.AddScoped<UpdateItemQuantityHandler>();

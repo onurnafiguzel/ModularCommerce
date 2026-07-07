@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "ModularCommerce — Hafta 6 (Ordering / Checkout)",
+    "description": "Hafta 6 kanıt senaryoları: uçtan uca checkout (sepet → Catalog doğrulama → Inventory rezervasyon → StockReserved sipariş) + idempotency (aynı key ×2 → 201 sonra 200, aynı sipariş) + durum geçmişi (NFR-5.3).\n\nÖn koşul: `docker compose up -d postgres redis` ve Host Development modunda çalışıyor olmalı.\n\nİstekleri SIRAYLA çalıştır: koleksiyon kendi kullanıcısını yaratır, katalogdan ürün seçer, dev stok basar, sepeti doldurur ve checkout zincirini koşar.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:49822", "type": "string" },
+    { "key": "email", "value": "", "type": "string" },
+    { "key": "password", "value": "gizli-sifre-123", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "productId", "value": "", "type": "string" },
+    { "key": "idempotencyKey", "value": "", "type": "string" },
+    { "key": "orderId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "0 — Signup + login (kullanıcı hazırla)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/identity/signup", "host": ["{{baseUrl}}"], "path": ["api", "identity", "signup"] }
+      },
+      "event": [
+        { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["pm.collectionVariables.set('email', `postman-ordering-${Date.now()}@example.com`);"] } },
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('201 döner', () => pm.response.to.have.status(201));",
+          "pm.sendRequest({ url: pm.collectionVariables.get('baseUrl') + '/api/identity/login', method: 'POST', header: { 'Content-Type': 'application/json' }, body: { mode: 'raw', raw: JSON.stringify({ email: pm.collectionVariables.get('email'), password: pm.collectionVariables.get('password') }) } }, (err, res) => {",
+          "  pm.collectionVariables.set('accessToken', res.json().accessToken);",
+          "});"
+        ] } }
+      ]
+    },
+    {
+      "name": "1 — Katalogdan ürün seç",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/catalog/products?page=1&pageSize=1", "host": ["{{baseUrl}}"], "path": ["api", "catalog", "products"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "1" }] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('productId', pm.response.json().items[0].id);"
+        ] } }
+      ]
+    },
+    {
+      "name": "2 — Dev stok bas (Catalog/Inventory seed'leri kesişmez)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"onHand\": 100\n}" },
+        "url": { "raw": "{{baseUrl}}/api/inventory/dev/stock/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory", "dev", "stock", "{{productId}}"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 döner (dev-only endpoint)', () => pm.response.to.have.status(200));"] } }
+      ]
+    },
+    {
+      "name": "3 — Sepete ekle",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}" },
+        "url": { "raw": "{{baseUrl}}/api/cart/items", "host": ["{{baseUrl}}"], "path": ["api", "cart", "items"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 döner', () => pm.response.to.have.status(200));"] } }
+      ]
+    },
+    {
+      "name": "4 — Checkout → 201 StockReserved (roadmap kanıtı)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+          { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/api/ordering/checkout", "host": ["{{baseUrl}}"], "path": ["api", "ordering", "checkout"] }
+      },
+      "event": [
+        { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["pm.collectionVariables.set('idempotencyKey', `postman-${Date.now()}`);"] } },
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('201 döner (FR-5.1)', () => pm.response.to.have.status(201));",
+          "const gövde = pm.response.json();",
+          "pm.collectionVariables.set('orderId', gövde.id);",
+          "pm.test('durum StockReserved (zincir tamamlandı)', () => pm.expect(gövde.status).to.eql('StockReserved'));",
+          "pm.test('Location header var', () => pm.expect(pm.response.headers.get('Location')).to.include(gövde.id));"
+        ] } }
+      ]
+    },
+    {
+      "name": "5 — AYNI key ile tekrar → 200 + aynı sipariş (FR-5.4)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+          { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/api/ordering/checkout", "host": ["{{baseUrl}}"], "path": ["api", "ordering", "checkout"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner (replay, yeni sipariş YOK)', () => pm.response.to.have.status(200));",
+          "pm.test('aynı sipariş kimliği', () => pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('orderId')));"
+        ] } }
+      ]
+    },
+    {
+      "name": "6 — Sipariş detayı: satırlar + durum geçmişi (NFR-5.3)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/api/ordering/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "ordering", "orders", "{{orderId}}"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner', () => pm.response.to.have.status(200));",
+          "const gövde = pm.response.json();",
+          "pm.test('geçmişte 2 iz: ∅→Created, Created→StockReserved', () => {",
+          "  pm.expect(gövde.history).to.have.lengthOf(2);",
+          "  pm.expect(gövde.history[0].toStatus).to.eql('Created');",
+          "  pm.expect(gövde.history[1].toStatus).to.eql('StockReserved');",
+          "});",
+          "pm.test('satırlar fiyat snapshot taşıyor (FR-5.3)', () => pm.expect(gövde.lines[0].unitPrice).to.be.above(0));"
+        ] } }
+      ]
+    },
+    {
+      "name": "7 — Siparişlerim listesi",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/api/ordering/orders", "host": ["{{baseUrl}}"], "path": ["api", "ordering", "orders"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner ve sipariş listede', () => {",
+          "  pm.response.to.have.status(200);",
+          "  pm.expect(pm.response.json().some(o => o.id === pm.collectionVariables.get('orderId'))).to.be.true;",
+          "});"
+        ] } }
+      ]
+    },
+    {
+      "name": "8 — Header'sız checkout → 400 (Idempotency-Key zorunlu)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/api/ordering/checkout", "host": ["{{baseUrl}}"], "path": ["api", "ordering", "checkout"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('400 döner', () => pm.response.to.have.status(400));",
+          "pm.test('kod Ordering.Checkout.InvalidCommand', () => pm.expect(pm.response.json().title).to.eql('Ordering.Checkout.InvalidCommand'));"
+        ] } }
+      ]
+    }
+  ]
+}

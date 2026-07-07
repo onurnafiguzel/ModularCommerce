@@ -56,6 +56,30 @@ public class ModuleBoundaryTests
 
     [Theory]
     [MemberData(nameof(ModuleNames))]
+    public void Contracts_should_be_self_contained(string module)
+    {
+        var assembly = System.Reflection.Assembly.Load($"ModularCommerce.{module}.Contracts");
+
+        // Contracts hiçbir modülün (KENDİSİ dahil) iç katmanına bağımlı olamaz;
+        // yalnızca Shared.Kernel'e referans serbesttir. Bu değişmez sızarsa
+        // kural 1 tüketici modül üzerinden transitive kırılır ve hata yanıltıcı
+        // olur — bu test ihlali kendi adıyla gösterir.
+        var forbidden = Modules
+            .SelectMany(any => InternalLayers.Select(layer => $"ModularCommerce.{any}.{layer}"))
+            .ToArray();
+
+        var result = Types.InAssembly(assembly)
+            .Should()
+            .NotHaveDependencyOnAny(forbidden)
+            .GetResult();
+
+        result.IsSuccessful.Should().BeTrue(
+            $"{module}.Contracts kendi kendine yeterli kalmalı: modül iç katmanlarına " +
+            "bağımlılık, sözleşmeyi tüketen her modüle o katmanları sızdırır");
+    }
+
+    [Theory]
+    [MemberData(nameof(ModuleNames))]
     public void Application_should_not_depend_on_ef_core(string module)
     {
         var assembly = System.Reflection.Assembly.Load($"ModularCommerce.{module}.Application");

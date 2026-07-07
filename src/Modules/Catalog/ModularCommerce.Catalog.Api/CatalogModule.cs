@@ -28,6 +28,8 @@ public sealed class CatalogModule : IModule
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductQueries, ProductQueries>();
+
+        services.AddScoped<ModularCommerce.Catalog.Contracts.IProductReader, ProductReader>();
         services.AddScoped<IDataSeeder<CatalogDbContext>, CatalogDataSeeder>();
 
         services.AddScoped<GetProductsHandler>();

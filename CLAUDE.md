@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ModularCommerce is a .NET 10 modular-monolith e-commerce platform, built as a working, measurable companion to the author's Medium articles on race-condition handling, idempotency, API resiliency, and K6 load testing. The requirements, CAP positioning per operation, and "proof obligations" (definition of done) live in [docs/requirements.md](docs/requirements.md) — read it before implementing any module's behavior; it is the source of truth for functional/non-functional requirements. Documentation and code comments are written in Turkish.
 
-**Current state (Week 5 done):** Catalog (product list/detail, EF Core schema-per-module), Inventory (three reservation strategies: Naive / OptimisticConcurrency via xmin / RedisLock — switched by `Inventory:ReservationStrategy` config), Identity (custom User aggregate + JWT access/refresh with rotation; NOT full ASP.NET Identity), and Cart (Redis-only, no DbContext, TTL 7d) are implemented. JWT validation is host-wide (`AddJwtAuthentication` in Shared.Infrastructure/Auth, `Jwt` config section); cart endpoints require Bearer auth. Ordering, Payment, Shipping, Notification are still health-endpoint shells. When adding behavior to those, you are filling in the skeleton, not restructuring it.
+**Current state (Week 6 done):** Catalog (product list/detail, EF Core schema-per-module), Inventory (three reservation strategies: Naive / OptimisticConcurrency via xmin / RedisLock — switched by `Inventory:ReservationStrategy` config; reservations can be Released for compensation), Identity (custom User aggregate + JWT access/refresh with rotation; NOT full ASP.NET Identity), Cart (Redis-only, no DbContext, TTL 7d), and Ordering (checkout with mandatory `Idempotency-Key` header, order state machine with full transition matrix, `order_status_history` audit table) are implemented. The first cross-module sync calls exist: Ordering.Application references Cart/Catalog/Inventory `.Contracts` only (`ICartService`, `IProductReader`, `IStockReservationService`); each module registers its own contract adapter in its `Register`. JWT validation is host-wide (`AddJwtAuthentication` in Shared.Infrastructure/Auth, `Jwt` config section). Payment, Shipping, Notification are still health-endpoint shells; domain events are raised but NOT dispatched (outbox is Week 7). When adding behavior, you are filling in the skeleton, not restructuring it.
 
 ## Commands
 
@@ -29,7 +29,7 @@ The host listens on `https://localhost:49821` / `http://localhost:49822` (see `l
 - `Application` — use cases. References `Domain` + `Contracts`.
 - `Infrastructure` — persistence/adapters. References `Application`.
 - `Api` — the module's composition (`<Module>Module : IModule`) and endpoints. References `Infrastructure` + `Shared.Infrastructure`.
-- `Contracts` — **the only project other modules may reference.** Public interfaces, integration events, and DTOs live here. It has no project references of its own.
+- `Contracts` — **the only project other modules may reference.** Public interfaces, integration events, and DTOs live here. Its only allowed project reference is `Shared.Kernel` (for `Result`/`Error`); referencing any module's internal layers is forbidden and enforced by the `Contracts_should_be_self_contained` architecture test.
 
 Reference direction within a module: `Api → Infrastructure → Application → {Domain, Contracts}`, and `Domain → Shared.Kernel`.
 

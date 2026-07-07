@@ -1,0 +1,188 @@
+using FluentValidation;
+using Microsoft.Extensions.Logging;
+using ModularCommerce.Cart.Contracts;
+using ModularCommerce.Catalog.Contracts;
+using ModularCommerce.Inventory.Contracts;
+using ModularCommerce.Ordering.Application.Orders.Common;
+using ModularCommerce.Ordering.Domain.Orders;
+using ModularCommerce.Shared.Kernel;
+
+namespace ModularCommerce.Ordering.Application.Orders.Checkout;
+public sealed class CheckoutHandler(
+    IOrderRepository orders,
+    ICartService cartService,
+    IProductReader productReader,
+    IStockReservationService stockReservation,
+    IValidator<CheckoutCommand> validator,
+    ILogger<CheckoutHandler> logger)
+{
+    private const string Trigger = "checkout";
+
+    public async Task<Result<CheckoutResponse>> HandleAsync(
+        CheckoutCommand command,
+        CancellationToken cancellationToken)
+    {
+        var validation = await validator.ValidateAsync(command, cancellationToken);
+        if (!validation.IsValid)
+        {
+            return Result.Failure<CheckoutResponse>(Error.Validation(
+                "Ordering.Checkout.InvalidCommand",
+                string.Join(" ", validation.Errors.Select(e => e.ErrorMessage))));
+        }
+
+        // (a) Hızlı yol: aynı key daha önce işlendiyse kopyasını dön (FR-5.4).
+        var existing = await orders.GetByIdempotencyKeyAsync(
+            command.CustomerId, command.IdempotencyKey, cancellationToken);
+        if (existing is not null)
+        {
+            return Replay(existing);
+        }
+
+        // (b) Sepet checkout'un kaynağıdır (FR-4.3).
+        var cartResult = await cartService.GetItemsAsync(command.CustomerId, cancellationToken);
+        if (cartResult.IsFailure)
+        {
+            return Result.Failure<CheckoutResponse>(cartResult.Error);
+        }
+
+        var cartLines = cartResult.Value;
+        if (cartLines.Count == 0)
+        {
+            // İkincil yarış: paralel kazanan siparişi yazıp SEPETİ TEMİZLEMİŞ olabilir —
+            // key'i bir kez daha kontrol etmeden EmptyCart dönmek FR-5.4'ü yük altında kırar.
+            existing = await orders.GetByIdempotencyKeyAsync(
+                command.CustomerId, command.IdempotencyKey, cancellationToken);
+
+            return existing is not null
+                ? Replay(existing)
+                : Result.Failure<CheckoutResponse>(OrderErrors.EmptyCart);
+        }
+
+        // (c) Fiyat/ad snapshot'ı + satılabilirlik: tek batch sorgu (N+1 yok).
+        var products = (await productReader.GetByIdsAsync(
+                [.. cartLines.Select(l => l.ProductId)], cancellationToken))
+            .ToDictionary(p => p.ProductId);
+
+        foreach (var line in cartLines)
+        {
+            if (!products.TryGetValue(line.ProductId, out var product) || !product.IsActive)
+            {
+                return Result.Failure<CheckoutResponse>(OrderErrors.ProductUnavailable(line.ProductId));
+            }
+        }
+
+        // (d) Rezervasyonlar sırayla; ilk hatada öncekiler geri bırakılır (telafi).
+        var reservedIds = new List<Guid>();
+        var drafts = new List<OrderLineDraft>();
+
+        foreach (var line in cartLines)
+        {
+            var reserve = await stockReservation.ReserveAsync(
+                line.ProductId, line.Quantity, cancellationToken);
+
+            if (reserve.IsFailure)
+            {
+                await ReleaseAllAsync(reservedIds);
+                return Result.Failure<CheckoutResponse>(reserve.Error);
+            }
+
+            reservedIds.Add(reserve.Value.ReservationId);
+
+            var product = products[line.ProductId];
+            drafts.Add(new OrderLineDraft(
+                line.ProductId,
+                product.Name,
+                product.Price,
+                product.Currency,
+                line.Quantity,
+                reserve.Value.ReservationId));
+        }
+
+        // (e) Yaşam döngüsü domain'de: Created doğar, zincir tamamlandığı için
+        // StockReserved'a geçer (her iki adım da history + event bırakır).
+        var orderResult = Order.Create(command.CustomerId, command.IdempotencyKey, drafts, Trigger);
+        if (orderResult.IsFailure)
+        {
+            await ReleaseAllAsync(reservedIds);
+            return Result.Failure<CheckoutResponse>(orderResult.Error);
+        }
+
+        var order = orderResult.Value;
+
+        var markResult = order.MarkStockReserved(Trigger);
+        if (markResult.IsFailure)
+        {
+            await ReleaseAllAsync(reservedIds);
+            return Result.Failure<CheckoutResponse>(markResult.Error);
+        }
+
+        // (f) Yarışın nihai hakemi DB unique index'i.
+        Result addResult;
+        try
+        {
+            addResult = await orders.AddAsync(order, cancellationToken);
+        }
+        catch
+        {
+            // Beklenmedik persist hatası: rezervasyonlar geri bırakılır, istisna
+            // GlobalExceptionHandler'a yükselir (500).
+            await ReleaseAllAsync(reservedIds);
+            throw;
+        }
+
+        if (addResult.IsFailure)
+        {
+            await ReleaseAllAsync(reservedIds);
+
+            if (addResult.Error == OrderErrors.DuplicateIdempotencyKey)
+            {
+                // Yarışı kaybettik: kazananın siparişi döner (FR-5.4) — kendi
+                // rezervasyonlarımız yukarıda geri bırakıldı (stok sızıntısı yok).
+                var winner = await orders.GetByIdempotencyKeyAsync(
+                    command.CustomerId, command.IdempotencyKey, cancellationToken);
+
+                if (winner is not null)
+                {
+                    return Replay(winner);
+                }
+            }
+
+            return Result.Failure<CheckoutResponse>(addResult.Error);
+        }
+
+        // (g) Sepet temizliği best-effort: sipariş yazıldı, sepet AP — hata
+        // checkout'u geri döndürmez, yalnız loglanır (bayat sepet zararsızdır).
+        var clearResult = await cartService.ClearAsync(command.CustomerId, cancellationToken);
+        if (clearResult.IsFailure)
+        {
+            logger.LogWarning(
+                "Checkout sonrası sepet temizlenemedi: {CustomerId} ({ErrorCode})",
+                command.CustomerId, clearResult.Error.Code);
+        }
+
+        // (h) Yeni sipariş: endpoint 201 + Location üretir.
+        return Result.Success(new CheckoutResponse(OrderResponse.FromOrder(order), IsExisting: false));
+    }
+
+    private static Result<CheckoutResponse> Replay(Order existing)
+        => Result.Success(new CheckoutResponse(OrderResponse.FromOrder(existing), IsExisting: true));
+
+    /// <summary>
+    /// Telafi: alınmış rezervasyonları geri bırakır. İptal token'ı BİLEREK yok —
+    /// istek iptal edilse bile telafi tamamlanmalıdır. Başarısız release stok
+    /// sızıntısı bırakır; Warning izi W9 TTL süpürücüsüne kalır.
+    /// </summary>
+    private async Task ReleaseAllAsync(IReadOnlyList<Guid> reservationIds)
+    {
+        foreach (var reservationId in reservationIds)
+        {
+            var release = await stockReservation.ReleaseAsync(reservationId, CancellationToken.None);
+            if (release.IsFailure)
+            {
+                logger.LogWarning(
+                    "Telafi release başarısız: {ReservationId} ({ErrorCode})",
+                    reservationId, release.Error.Code);
+            }
+        }
+    }
+}

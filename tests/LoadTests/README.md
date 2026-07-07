@@ -56,6 +56,17 @@ k6 run tests/LoadTests/scenarios/identity-login-smoke.js
 k6 run tests/LoadTests/scenarios/cart-smoke.js
 ```
 
+## Checkout smoke koşusu (Hafta 6)
+
+İki senaryo tek script'te: gecikme (NFR-5.1 p95<500ms, yalnız checkout isteği
+tag'lenir) + idempotency burst (aynı key ile 5 paralel checkout → tam 1×201 +
+4×200, hepsi aynı sipariş — FR-5.4 yük altında). Ürün setup'ta katalogdan
+seçilir, stok dev endpoint'iyle basılır.
+
+```powershell
+k6 run tests/LoadTests/scenarios/checkout-smoke.js
+```
+
 ## Sonuç okuma
 
 - `successful_reservations` — 201 sayısı (Optimistic/RedisLock'ta tam 10 olmalı; Naive'de >>10)

@@ -1,2 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>   
+    <ProjectReference Include="..\..\..\Shared\ModularCommerce.Shared.Kernel\ModularCommerce.Shared.Kernel.csproj" />
+  </ItemGroup>
 </Project>

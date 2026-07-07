@@ -69,4 +69,35 @@ public sealed class StockItem : Entity
 
         return Result.Success(reservation);
     }
+
+    public Result Release(Reservation reservation)
+    {
+        if (reservation.StockItemId != Id)
+        {
+            return Result.Failure(InventoryErrors.ReservationMismatch);
+        }
+
+        if (reservation.Status == ReservationStatus.Released)
+        {
+            return Result.Success();
+        }
+
+        if (reservation.Status != ReservationStatus.Active)
+        {
+            return Result.Failure(InventoryErrors.ReservationNotReleasable);
+        }
+
+        if (Reserved - reservation.Quantity < 0)
+        {
+            return Result.Failure(InventoryErrors.ReleaseInvariantViolated);
+        }
+
+        Reserved -= reservation.Quantity;
+        UpdatedAtUtc = DateTime.UtcNow;
+        reservation.MarkReleased();
+
+        Raise(new StockReleased(ProductId, reservation.Id, reservation.Quantity, UpdatedAtUtc));
+
+        return Result.Success();
+    }
 }

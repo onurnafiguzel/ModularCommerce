@@ -2,5 +2,12 @@
   <ItemGroup>
     <ProjectReference Include="..\ModularCommerce.Ordering.Domain\ModularCommerce.Ordering.Domain.csproj" />
     <ProjectReference Include="..\ModularCommerce.Ordering.Contracts\ModularCommerce.Ordering.Contracts.csproj" />
+    <ProjectReference Include="..\..\Cart\ModularCommerce.Cart.Contracts\ModularCommerce.Cart.Contracts.csproj" />
+    <ProjectReference Include="..\..\Catalog\ModularCommerce.Catalog.Contracts\ModularCommerce.Catalog.Contracts.csproj" />
+    <ProjectReference Include="..\..\Inventory\ModularCommerce.Inventory.Contracts\ModularCommerce.Inventory.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 </Project>

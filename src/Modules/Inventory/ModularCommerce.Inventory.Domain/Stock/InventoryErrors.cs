@@ -39,4 +39,17 @@ public static class InventoryErrors
     public static readonly Error LockUnavailable = Error.Failure(
         "Inventory.LockUnavailable",
         "Stok kilidi servisine ulaşılamıyor, işlem reddedildi.");
+
+    public static readonly Error ReservationMismatch = Error.Validation(
+        "Inventory.Reservation.Mismatch",
+        "Rezervasyon bu stok kaydına ait değil.");
+
+    public static readonly Error ReservationNotReleasable = Error.Conflict(
+        "Inventory.Reservation.NotReleasable",
+        "Rezervasyon geri bırakılabilir durumda değil.");
+
+    /// <summary>Veri tutarlılığı ihlali: Reserved sayacı negatife düşecekti — programlama/veri hatası.</summary>
+    public static readonly Error ReleaseInvariantViolated = Error.Failure(
+        "Inventory.Reservation.ReleaseInvariantViolated",
+        "Stok sayaçları tutarsız; işlem reddedildi.");
 }

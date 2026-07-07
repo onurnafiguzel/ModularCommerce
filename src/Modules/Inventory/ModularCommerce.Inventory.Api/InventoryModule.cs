@@ -11,7 +11,9 @@ using ModularCommerce.Inventory.Application.Reservations.GetReservation;
 using ModularCommerce.Inventory.Application.Reservations.ReserveStock;
 using ModularCommerce.Inventory.Application.Stock.GetStock;
 using ModularCommerce.Inventory.Application.Stock.SetStock;
+using ModularCommerce.Inventory.Contracts;
 using ModularCommerce.Inventory.Domain.Stock;
+using ModularCommerce.Inventory.Infrastructure.ContractAdapters;
 using ModularCommerce.Inventory.Infrastructure.Locking;
 using ModularCommerce.Inventory.Infrastructure.Persistence;
 using ModularCommerce.Inventory.Infrastructure.Persistence.Queries;
@@ -33,6 +35,8 @@ public sealed class InventoryModule : IModule
 
         services.AddScoped<IStockItemRepository, StockItemRepository>();
         services.AddScoped<IInventoryQueries, InventoryQueries>();
+
+        services.AddScoped<IStockReservationService, StockReservationService>();
         services.AddScoped<IDataSeeder<InventoryDbContext>, InventoryDataSeeder>();
        
         var strategyName = configuration["Inventory:ReservationStrategy"]

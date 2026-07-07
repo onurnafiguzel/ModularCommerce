@@ -92,6 +92,30 @@ Haftanın bulgusu: varsayılan PBKDF2 iterasyonu (100k, ~150 ms/doğrulama) 200 
 doyurup p95'i 3,8 sn'ye çıkardı; `IterationCount=20k` bilinçli trade-off'uyla NFR karşılandı —
 ayrıntı ve gerekçe [docs/hafta-5-notlar.md](docs/hafta-5-notlar.md).
 
+### Checkout + idempotency akışı (Hafta 6)
+
+İlk modüller arası senkron çağrılar: checkout, Cart/Catalog/Inventory'ye YALNIZ Contracts
+arayüzleriyle gider (4. mimari test `Contracts_should_be_self_contained` bunu sabitler).
+Sipariş state machine'i domain'de (7 durum × 6 geçiş tam matris testli); her geçiş
+`order_status_history` tablosuna iz bırakır.
+
+```
+POST /api/ordering/checkout (Idempotency-Key) → 201, status=StockReserved
+POST aynı key ikinci kez                       → 200 + AYNI sipariş (FR-5.4)
+GET  /api/ordering/orders/{id}                 → history: ∅→Created, Created→StockReserved
+kısmi rezervasyon hatası                        → önceki rezervasyonlar release (sızıntı 0)
+```
+
+K6 ölçümleri (20 VU × 30 sn, tek sıcak ürün, OptimisticConcurrency):
+
+| Senaryo | Hedef | Sonuç |
+|---|---|---|
+| Checkout zinciri p95 | NFR-5.1 < 500 ms | **27 ms** ✓ (3.957 sipariş, ≈121/sn, %0 hata) |
+| Aynı key ile 5 PARALEL checkout ×50 | FR-5.4: tek sipariş | **50/50**: tam 1×201 + 4×200, hepsi aynı id ✓ |
+
+Sıcak üründe sipariş başına ~5 retryable-409 üretildi (istemci aynı key ile tekrar dener —
+idempotency'nin var olma sebebi); ayrıntı [docs/hafta-6-notlar.md](docs/hafta-6-notlar.md).
+
 ## Bilinçli ertelemeler (evolution path)
 
 - API Gateway yok: tek deployable'da middleware pipeline aynı işi görür.
