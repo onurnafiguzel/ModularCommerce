@@ -1,0 +1,452 @@
+{
+  "info": {
+    "name": "ModularCommerce — Hafta 5 (Identity + Cart)",
+    "description": "Hafta 5 kanıt senaryoları: signup/login/refresh(rotasyon)/logout + JWT korumalı Redis sepet (TTL 7 gün, FR-4.4 uyarısı).\n\nÖn koşul: `docker compose up -d postgres redis` ve `dotnet run --project src/Bootstrapper/ModularCommerce.Host` çalışıyor olmalı.\n\nİstekleri SIRAYLA çalıştır (Run collection): 2 nolu istek benzersiz e-posta üretir, login token'ları koleksiyon değişkenlerine yazılır ve sepet istekleri Bearer ile koşar. 401 kanıtları ayrı isteklerdedir.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:49822", "type": "string" },
+    { "key": "email", "value": "", "type": "string" },
+    { "key": "password", "value": "gizli-sifre-123", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" },
+    { "key": "eskiRefreshToken", "value": "", "type": "string" },
+    { "key": "productId", "value": "33333333-3333-3333-3333-333333333333", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "0 — Sağlık (Identity + Cart)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "health"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 — 401 kanıtı: token'sız sepet okunamaz",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "cart"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('401 döner (endpoint authorization)', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 — Signup (benzersiz e-posta üretir)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/signup",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "signup"]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('email', `postman-${Date.now()}@example.com`);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('201 döner', () => pm.response.to.have.status(201));",
+              "pm.test('e-posta normalize edilmiş döner', () => pm.expect(pm.response.json().email).to.eql(pm.collectionVariables.get('email').toLowerCase()));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 — Aynı e-posta ikinci kez → 409",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/signup",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "signup"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('409 döner (FR-1.5)', () => pm.response.to.have.status(409));",
+              "pm.test('kod Identity.EmailAlreadyExists', () => pm.expect(pm.response.json().title).to.eql('Identity.EmailAlreadyExists'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 — Login (token'ları değişkenlere yazar)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "login"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner (FR-1.2)', () => pm.response.to.have.status(200));",
+              "const gövde = pm.response.json();",
+              "pm.collectionVariables.set('accessToken', gövde.accessToken);",
+              "pm.collectionVariables.set('refreshToken', gövde.refreshToken);",
+              "pm.test('iki token da geldi', () => { pm.expect(gövde.accessToken).to.be.a('string'); pm.expect(gövde.refreshToken).to.be.a('string'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 — Yanlış şifre → 401 (aynı hata, bilgi sızmaz)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"yanlis-sifre\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "login"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('401 döner', () => pm.response.to.have.status(401));",
+              "pm.test('kod Identity.InvalidCredentials', () => pm.expect(pm.response.json().title).to.eql('Identity.InvalidCredentials'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 — Sepete ürün ekle (Bearer)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/cart/items",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "cart", "items"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 + güncel sepet döner (FR-4.1)', () => pm.response.to.have.status(200));",
+              "pm.test('FR-4.4 uyarısı var', () => pm.expect(pm.response.json().warning).to.include('rezervasyon değildir'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7 — Sepeti oku",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "cart"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "pm.test('sepette 1 satır var', () => pm.expect(pm.response.json().items).to.have.lengthOf(1));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8 — Adet güncelle (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"quantity\": 5\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/cart/items/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "cart", "items", "{{productId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner', () => pm.response.to.have.status(200));",
+              "pm.test('adet 5 oldu', () => pm.expect(pm.response.json().items[0].quantity).to.eql(5));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9 — Satır tavanı kanıtı: 11 adet → 400",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"quantity\": 11\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/cart/items/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "cart", "items", "{{productId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('400 döner (satır başına maks 10)', () => pm.response.to.have.status(400));",
+              "pm.test('kod Cart.QuantityLimitExceeded', () => pm.expect(pm.response.json().title).to.eql('Cart.QuantityLimitExceeded'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 — Satırı sil (son satır → sepet boşalır)",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart/items/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "cart", "items", "{{productId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 + boş sepet döner', () => pm.response.to.have.status(200));",
+              "pm.test('sepet boş', () => pm.expect(pm.response.json().items).to.have.lengthOf(0));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 — Refresh (rotasyon: eski token değişkene saklanır)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/refresh",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "refresh"]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('eskiRefreshToken', pm.collectionVariables.get('refreshToken'));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 döner (FR-1.3)', () => pm.response.to.have.status(200));",
+              "const gövde = pm.response.json();",
+              "pm.test('refresh token DEĞİŞTİ (rotasyon)', () => pm.expect(gövde.refreshToken).to.not.eql(pm.collectionVariables.get('eskiRefreshToken')));",
+              "pm.collectionVariables.set('accessToken', gövde.accessToken);",
+              "pm.collectionVariables.set('refreshToken', gövde.refreshToken);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 — ESKİ refresh token ikinci kez → 401 (rotasyon kanıtı)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{eskiRefreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/refresh",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "refresh"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('401 döner', () => pm.response.to.have.status(401));",
+              "pm.test('kod Identity.RefreshTokenInvalid', () => pm.expect(pm.response.json().title).to.eql('Identity.RefreshTokenInvalid'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 — Logout (204, refresh iptal)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "logout"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('204 döner (FR-1.3)', () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 — Logout sonrası refresh → 401",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identity/refresh",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identity", "refresh"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('401 döner (iptal edilmiş token)', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

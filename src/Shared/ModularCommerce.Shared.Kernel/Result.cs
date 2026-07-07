@@ -42,6 +42,7 @@ public enum ErrorType
     Validation = 1,
     NotFound = 2,
     Conflict = 3,
+    Unauthorized = 4,
 }
 
 public sealed record Error(string Code, string Message, ErrorType Type = ErrorType.Failure)
@@ -52,4 +53,5 @@ public sealed record Error(string Code, string Message, ErrorType Type = ErrorTy
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);
     public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);
     public static Error Conflict(string code, string message) => new(code, message, ErrorType.Conflict);
+    public static Error Unauthorized(string code, string message) => new(code, message, ErrorType.Unauthorized);
 }

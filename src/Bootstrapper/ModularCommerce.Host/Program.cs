@@ -1,3 +1,4 @@
+using ModularCommerce.Shared.Infrastructure.Auth;
 using ModularCommerce.Shared.Infrastructure.ExceptionHandling;
 using ModularCommerce.Shared.Infrastructure.Modules;
 using ModularCommerce.Shared.Infrastructure.Observability;
@@ -9,6 +10,7 @@ builder.Host.UseSerilog((context, loggerConfiguration) =>
     loggerConfiguration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddRedis(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddProblemDetails(options =>
     options.CustomizeProblemDetails = context =>
@@ -51,6 +53,8 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/", () => Results.Ok(new
 {

@@ -41,6 +41,21 @@ k6 run -e STRICT=1 tests/LoadTests/scenarios/inventory-oversell.js
 k6 run tests/LoadTests/scenarios/inventory-smoke.js
 ```
 
+## Identity + Cart smoke koşuları (Hafta 5)
+
+Strateji seçimi gerektirmez; Host default ayarlarla çalışırken koşulur.
+Seeder yoktur: script'ler setup'ta kendi kullanıcılarını signup ile yaratır.
+
+```powershell
+# Login dalgası (NFR-1.1 p95<200ms, NFR-1.4 200 RPS) — PBKDF2 doğrulaması dahil
+k6 run tests/LoadTests/scenarios/identity-login-smoke.js
+
+# Sepet okuma/yazma (NFR-4.1 p95<50ms) — JWT doğrulama + Redis dahil.
+# Her VU kendi hesabı/sepetiyle koşar (tek sepette last-write-wins yarışını
+# ölçüme karıştırmamak için — bkz. script başındaki not).
+k6 run tests/LoadTests/scenarios/cart-smoke.js
+```
+
 ## Sonuç okuma
 
 - `successful_reservations` — 201 sayısı (Optimistic/RedisLock'ta tam 10 olmalı; Naive'de >>10)

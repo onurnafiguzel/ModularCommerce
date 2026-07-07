@@ -69,6 +69,29 @@ Okuma notları:
 - Tekrarlamak için: `dotnet test tests/ModularCommerce.Inventory.IntegrationTests` (doğruluk)
   ve [tests/LoadTests/README.md](tests/LoadTests/README.md) (K6 koşu tarifi).
 
+### Kimlik + sepet akışı (Hafta 5)
+
+Login olup sepete ürün ekleme akışı canlı; endpoint authorization JWT ile:
+
+```
+GET /api/cart (tokensiz)          → 401
+POST /api/identity/signup         → 201 (aynı e-posta → 409)
+POST /api/identity/login          → 200 (access 15 dk + refresh 7 gün, rotasyonlu)
+POST /api/cart/items (Bearer)     → 200 + "sepete eklemek rezervasyon değildir" uyarısı (FR-4.4)
+redis-cli TTL cart:{userId}       → 604800 (7 gün, yazmada kayar)
+```
+
+K6 smoke ölçümleri (12 çekirdek, 30 sn koşular):
+
+| Senaryo | Hedef | Sonuç |
+|---|---|---|
+| Login dalgası (200 RPS, `constant-arrival-rate`) | NFR-1.1 p95 < 200 ms | **20,9 ms** ✓ (6.000 login, %0 hata) |
+| Sepet okuma/yazma (20 VU, JWT + Redis dahil) | NFR-4.1 p95 < 50 ms | **2,88 ms** ✓ (231k istek, %0 hata) |
+
+Haftanın bulgusu: varsayılan PBKDF2 iterasyonu (100k, ~150 ms/doğrulama) 200 RPS'te CPU'yu
+doyurup p95'i 3,8 sn'ye çıkardı; `IterationCount=20k` bilinçli trade-off'uyla NFR karşılandı —
+ayrıntı ve gerekçe [docs/hafta-5-notlar.md](docs/hafta-5-notlar.md).
+
 ## Bilinçli ertelemeler (evolution path)
 
 - API Gateway yok: tek deployable'da middleware pipeline aynı işi görür.

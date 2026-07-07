@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\ModularCommerce.Cart.Application\ModularCommerce.Cart.Application.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ModularCommerce.Shared.Infrastructure\ModularCommerce.Shared.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="StackExchange.Redis" />
   </ItemGroup>
 </Project>

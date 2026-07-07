@@ -3,4 +3,7 @@
     <ProjectReference Include="..\ModularCommerce.Cart.Domain\ModularCommerce.Cart.Domain.csproj" />
     <ProjectReference Include="..\ModularCommerce.Cart.Contracts\ModularCommerce.Cart.Contracts.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+  </ItemGroup>
 </Project>

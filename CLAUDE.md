@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ModularCommerce is a .NET 10 modular-monolith e-commerce platform, built as a working, measurable companion to the author's Medium articles on race-condition handling, idempotency, API resiliency, and K6 load testing. The requirements, CAP positioning per operation, and "proof obligations" (definition of done) live in [docs/requirements.md](docs/requirements.md) — read it before implementing any module's behavior; it is the source of truth for functional/non-functional requirements. Documentation and code comments are written in Turkish.
 
-**Current state:** the solution is scaffolded. Every module compiles and exposes only a `/api/<module>/health` endpoint; the Application/Domain/Infrastructure layers are empty shells. When adding real behavior, you are filling in this skeleton, not restructuring it.
+**Current state (Week 5 done):** Catalog (product list/detail, EF Core schema-per-module), Inventory (three reservation strategies: Naive / OptimisticConcurrency via xmin / RedisLock — switched by `Inventory:ReservationStrategy` config), Identity (custom User aggregate + JWT access/refresh with rotation; NOT full ASP.NET Identity), and Cart (Redis-only, no DbContext, TTL 7d) are implemented. JWT validation is host-wide (`AddJwtAuthentication` in Shared.Infrastructure/Auth, `Jwt` config section); cart endpoints require Bearer auth. Ordering, Payment, Shipping, Notification are still health-endpoint shells. When adding behavior to those, you are filling in the skeleton, not restructuring it.
 
 ## Commands
 

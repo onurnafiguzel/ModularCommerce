@@ -1,8 +1,16 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ModularCommerce.Cart.Api.Endpoints;
+using ModularCommerce.Cart.Application.Carts.AddItem;
+using ModularCommerce.Cart.Application.Carts.GetCart;
+using ModularCommerce.Cart.Application.Carts.RemoveItem;
+using ModularCommerce.Cart.Application.Carts.UpdateItemQuantity;
+using ModularCommerce.Cart.Domain.Carts;
+using ModularCommerce.Cart.Infrastructure.Persistence;
 using ModularCommerce.Shared.Infrastructure.Modules;
 
 namespace ModularCommerce.Cart.Api;
@@ -13,7 +21,13 @@ public sealed class CartModule : IModule
 
     public void Register(IServiceCollection services, IConfiguration configuration)
     {
-        // Modülün servisleri, DbContext'i ve pipeline kayıtları buraya gelecek.
+        services.AddScoped<ICartRepository, RedisCartRepository>();
+
+        services.AddScoped<GetCartHandler>();
+        services.AddScoped<AddItemHandler>();
+        services.AddScoped<UpdateItemQuantityHandler>();
+        services.AddScoped<RemoveItemHandler>();
+        services.AddValidatorsFromAssemblyContaining<AddItemCommandValidator>(includeInternalTypes: true);
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
@@ -21,5 +35,6 @@ public sealed class CartModule : IModule
         var group = endpoints.MapGroup("/api/cart");
 
         group.MapGet("/health", () => Results.Ok(new { module = "Cart", status = "healthy" }));
+        group.MapCartEndpoints();
     }
 }
