@@ -12,8 +12,8 @@
 | 3 ✅ (K6 hariç) | **Inventory**: stok + bilerek korumasız rezervasyon → oversell kanıtı → optimistic concurrency (xmin) | Testcontainers ile ilk integration test; K6 altyapısı bilinçli ertelendi (kanıt integration testinden) | Naive vs rowversion karşılaştırma tablosu (README) → **LinkedIn post #1** |
 | 4 ✅ | **Inventory**: Redis distributed lock + üç stratejinin karşılaştırması | Redis bağlantısı, correlation id + Serilog structured logging | Üç stratejinin K6 karşılaştırma tablosu (README'ye) → **post #2** |
 | 5 ✅ | **Identity**: signup / login / JWT + **Cart** (Redis tabanlı sepet) | JWT authentication middleware, endpoint authorization | Login olup sepete ürün ekleme akışı |
-| 6 | **Ordering**: checkout, sipariş state machine, `Inventory.Contracts` üzerinden rezervasyon | İlk modüller arası senkron çağrı, FluentValidation pipeline behavior | Uçtan uca checkout → sipariş `Created` |
-| 7 | **Outbox + event bus**: `OrderCreated` event'i, RabbitMQ entegrasyonu | Outbox dispatcher background service | Event'in RabbitMQ management UI'da görünmesi → **post #3 (outbox pattern)** |
+| 6 ✅ | **Ordering**: checkout, sipariş state machine, `Inventory.Contracts` üzerinden rezervasyon | İlk modüller arası senkron çağrı, FluentValidation pipeline behavior | Uçtan uca checkout → sipariş `Created` |
+| 7 | **Outbox + event bus**: `OrderCreated` event'i, RabbitMQ+Masstransit entegrasyonu | Outbox dispatcher background service | Event'in RabbitMQ management UI'da görünmesi → **post #3 (outbox pattern)** |
 | 8 | **Payment**: idempotency key + sahte PSP + Polly | Resiliency pipeline (retry, circuit breaker, timeout) — ilk dış çağrı burada doğuyor | 100 paralel istek → tek charge kanıtı → **post #4 (idempotency)** |
 | 9 | **Saga / compensation**: `PaymentFailed` → stok iade, rezervasyon TTL → `Expired` | Rezervasyon TTL background job | Fail senaryosunun log ve test kanıtı |
 | 10 | **Shipping + Notification**: event tüketicileri | Idempotent consumer, dead-letter queue | Tam akış: checkout → ödeme → kargo → bildirim logu |
