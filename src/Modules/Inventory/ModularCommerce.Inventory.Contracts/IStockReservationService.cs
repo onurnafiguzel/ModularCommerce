@@ -8,4 +8,5 @@ public interface IStockReservationService
         int quantity,
         CancellationToken cancellationToken);
     Task<Result> ReleaseAsync(Guid reservationId, CancellationToken cancellationToken);
+    Task<Result> CommitAsync(Guid reservationId, CancellationToken cancellationToken);
 }

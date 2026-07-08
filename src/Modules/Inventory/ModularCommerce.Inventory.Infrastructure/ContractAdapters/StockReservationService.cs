@@ -33,7 +33,25 @@ public sealed class StockReservationService(
             reservation.ExpiresAtUtc));
     }
 
-    public async Task<Result> ReleaseAsync(Guid reservationId, CancellationToken cancellationToken)
+    public Task<Result> ReleaseAsync(Guid reservationId, CancellationToken cancellationToken)
+        => ExecuteWithRetryAsync(
+            reservationId,
+            static (stockItem, reservation) => stockItem.Release(reservation),
+            "Release",
+            cancellationToken);
+
+    public Task<Result> CommitAsync(Guid reservationId, CancellationToken cancellationToken)
+        => ExecuteWithRetryAsync(
+            reservationId,
+            static (stockItem, reservation) => stockItem.Commit(reservation),
+            "Commit",
+            cancellationToken);
+
+    private async Task<Result> ExecuteWithRetryAsync(
+        Guid reservationId,
+        Func<StockItem, Reservation, Result> operation,
+        string operationName,
+        CancellationToken cancellationToken)
     {
         for (var attempt = 1; attempt <= MaxReleaseAttempts; attempt++)
         {
@@ -59,10 +77,10 @@ public sealed class StockReservationService(
                 return Result.Failure(InventoryErrors.StockItemNotFound(reservation.ProductId));
             }
 
-            var release = stockItem.Release(reservation);
-            if (release.IsFailure)
+            var result = operation(stockItem, reservation);
+            if (result.IsFailure)
             {
-                return release;
+                return result;
             }
 
             try
@@ -73,15 +91,15 @@ public sealed class StockReservationService(
             catch (DbUpdateConcurrencyException)
             {
                 logger.LogWarning(
-                    "Release xmin çakışması, yeniden denenecek: {ReservationId} (deneme {Attempt}/{Max})",
-                    reservationId, attempt, MaxReleaseAttempts);
+                    "{Operation} xmin çakışması, yeniden denenecek: {ReservationId} (deneme {Attempt}/{Max})",
+                    operationName, reservationId, attempt, MaxReleaseAttempts);
 
                 // Thundering-herd kırıcı jitter (RedisDistributedLock ile aynı ders).
                 await Task.Delay(Random.Shared.Next(5, 16), cancellationToken);
             }
         }
 
-        // Sıcak satırda 3 deneme de kaybedildi: çağıran Warning loglar, iz W9
+        // Sıcak satırda tüm denemeler kaybedildi: çağıran Warning loglar, iz W9
         // TTL süpürücüsüne kalır (rezervasyon Active kaldı, kaybolmadı).
         return Result.Failure(InventoryErrors.ConcurrencyConflict);
     }

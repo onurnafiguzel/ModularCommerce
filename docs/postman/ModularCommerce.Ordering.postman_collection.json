@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "ModularCommerce — Hafta 6 (Ordering / Checkout)",
-    "description": "Hafta 6 kanıt senaryoları: uçtan uca checkout (sepet → Catalog doğrulama → Inventory rezervasyon → StockReserved sipariş) + idempotency (aynı key ×2 → 201 sonra 200, aynı sipariş) + durum geçmişi (NFR-5.3).\n\nÖn koşul: `docker compose up -d postgres redis` ve Host Development modunda çalışıyor olmalı.\n\nİstekleri SIRAYLA çalıştır: koleksiyon kendi kullanıcısını yaratır, katalogdan ürün seçer, dev stok basar, sepeti doldurur ve checkout zincirini koşar.",
+    "name": "ModularCommerce — Hafta 6-7 (Ordering / Checkout + Senkron Ödeme)",
+    "description": "Kanıt senaryoları: uçtan uca checkout (sepet → Catalog doğrulama → Inventory rezervasyon → SENKRON ödeme → Paid sipariş → stok commit) + idempotency (aynı key ×2 → 201 sonra 200, aynı sipariş) + durum geçmişi (NFR-5.3, 4 satır).\n\nÖn koşul: `docker compose up -d postgres redis` ve Host Development modunda çalışıyor olmalı (Payment:Psp oranları default 0 → ödeme hep başarılı).\n\nİstekleri SIRAYLA çalıştır: koleksiyon kendi kullanıcısını yaratır, katalogdan ürün seçer, dev stok basar, sepeti doldurur ve checkout zincirini koşar.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -73,7 +73,7 @@
       ]
     },
     {
-      "name": "4 — Checkout → 201 StockReserved (roadmap kanıtı)",
+      "name": "4 — Checkout → 201 Paid (ödeme senkron zincirde, roadmap kanıtı)",
       "request": {
         "method": "POST",
         "header": [
@@ -88,7 +88,7 @@
           "pm.test('201 döner (FR-5.1)', () => pm.response.to.have.status(201));",
           "const gövde = pm.response.json();",
           "pm.collectionVariables.set('orderId', gövde.id);",
-          "pm.test('durum StockReserved (zincir tamamlandı)', () => pm.expect(gövde.status).to.eql('StockReserved'));",
+          "pm.test('durum Paid (ödeme + commit zinciri tamamlandı)', () => pm.expect(gövde.status).to.eql('Paid'));",
           "pm.test('Location header var', () => pm.expect(pm.response.headers.get('Location')).to.include(gövde.id));"
         ] } }
       ]
@@ -121,10 +121,12 @@
         { "listen": "test", "script": { "type": "text/javascript", "exec": [
           "pm.test('200 döner', () => pm.response.to.have.status(200));",
           "const gövde = pm.response.json();",
-          "pm.test('geçmişte 2 iz: ∅→Created, Created→StockReserved', () => {",
-          "  pm.expect(gövde.history).to.have.lengthOf(2);",
+          "pm.test('geçmişte 4 iz: ∅→Created→StockReserved→PaymentPending→Paid', () => {",
+          "  pm.expect(gövde.history).to.have.lengthOf(4);",
           "  pm.expect(gövde.history[0].toStatus).to.eql('Created');",
           "  pm.expect(gövde.history[1].toStatus).to.eql('StockReserved');",
+          "  pm.expect(gövde.history[2].toStatus).to.eql('PaymentPending');",
+          "  pm.expect(gövde.history[3].toStatus).to.eql('Paid');",
           "});",
           "pm.test('satırlar fiyat snapshot taşıyor (FR-5.3)', () => pm.expect(gövde.lines[0].unitPrice).to.be.above(0));"
         ] } }

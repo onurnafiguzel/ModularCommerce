@@ -56,16 +56,49 @@ k6 run tests/LoadTests/scenarios/identity-login-smoke.js
 k6 run tests/LoadTests/scenarios/cart-smoke.js
 ```
 
-## Checkout smoke koşusu (Hafta 6)
+## Checkout smoke koşusu (Hafta 6, Hafta 7'de ödeme zinciriyle güncellendi)
 
-İki senaryo tek script'te: gecikme (NFR-5.1 p95<500ms, yalnız checkout isteği
-tag'lenir) + idempotency burst (aynı key ile 5 paralel checkout → tam 1×201 +
-4×200, hepsi aynı sipariş — FR-5.4 yük altında). Ürün setup'ta katalogdan
-seçilir, stok dev endpoint'iyle basılır.
+Üç senaryo tek script'te: gecikme (NFR-5.1 p95<500ms — artık ödeme + stok commit
+dahil) + idempotency burst (5 paralel aynı key → tam 1×201 + 4×200) +
+payment_idempotency_100 (kanıt §10.2: 100 paralel aynı key → tek sipariş + Payment
+dev endpoint'inde TEK Completed charge). Ürün setup'ta katalogdan seçilir, stok
+dev endpoint'iyle basılır.
+
+NFR-6.2 notu: PSP simülasyon gecikmesi p95 ölçümüne dahil edilmez — Host'u
+`Payment__Psp__LatencyMs=0` ile başlatın.
 
 ```powershell
+$env:Payment__Psp__LatencyMs = '0'
+dotnet run --project src/Bootstrapper/ModularCommerce.Host   # ayrı terminalde
 k6 run tests/LoadTests/scenarios/checkout-smoke.js
 ```
+
+## Payment resiliency koşuları (Hafta 7)
+
+Host'un PSP env ayarına göre iki AYRI koşu (Host restart gerekir — strateji
+karşılaştırma reçetesiyle aynı disiplin):
+
+```powershell
+# 1) Circuit breaker kanıtı (§10.3): %50 transient hata altında breaker'ın
+#    açılıp kapandığı Host'un Serilog çıktısında görülür:
+#    "Resilience event occurred. EventName: 'OnCircuitOpened' ..." / 'OnCircuitClosed'
+$env:Payment__Psp__FailureRate = '0.5'
+dotnet run --project src/Bootstrapper/ModularCommerce.Host   # ayrı terminalde
+k6 run -e MODE=breaker tests/LoadTests/scenarios/payment-resiliency.js
+# k6 tarafında psp_unavailable_409 sayacı = breaker açıkken PSP'ye GİTMEDEN
+# hızlı reddedilen istekler.
+
+# 2) "Ödeme reddi → sızıntı yok" kanıtı: her checkout'un terminali 409
+#    Payment.Declined, sipariş yazılmaz, koşu sonunda reserved=0 (teardown check'i).
+$env:Payment__Psp__FailureRate = '0'
+$env:Payment__Psp__DeclineRate = '1'                          # Host'u yeniden başlat
+k6 run -e MODE=declined tests/LoadTests/scenarios/payment-resiliency.js
+```
+
+Retryable/terminal 409 sözleşmesi: `Inventory.ConcurrencyConflict`,
+`Inventory.LockTimeout`, `Payment.InFlight`, `Payment.PspUnavailable` → AYNI
+Idempotency-Key ile tekrar dene; `Payment.Declined`, `Payment.Timeout` →
+TERMİNAL, aynı key kopyayı döner (FR-6.2), yeni deneme yeni key ister.
 
 ## Sonuç okuma
 

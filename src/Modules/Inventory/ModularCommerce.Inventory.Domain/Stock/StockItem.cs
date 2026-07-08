@@ -100,4 +100,36 @@ public sealed class StockItem : Entity
 
         return Result.Success();
     }
+
+    public Result Commit(Reservation reservation)
+    {
+        if (reservation.StockItemId != Id)
+        {
+            return Result.Failure(InventoryErrors.ReservationMismatch);
+        }
+
+        if (reservation.Status == ReservationStatus.Committed)
+        {
+            return Result.Success();
+        }
+
+        if (reservation.Status != ReservationStatus.Active)
+        {
+            return Result.Failure(InventoryErrors.ReservationNotCommittable);
+        }
+
+        if (Reserved - reservation.Quantity < 0 || OnHand - reservation.Quantity < 0)
+        {
+            return Result.Failure(InventoryErrors.CommitInvariantViolated);
+        }
+
+        OnHand -= reservation.Quantity;
+        Reserved -= reservation.Quantity;
+        UpdatedAtUtc = DateTime.UtcNow;
+        reservation.MarkCommitted();
+
+        Raise(new StockCommitted(ProductId, reservation.Id, reservation.Quantity, UpdatedAtUtc));
+
+        return Result.Success();
+    }
 }

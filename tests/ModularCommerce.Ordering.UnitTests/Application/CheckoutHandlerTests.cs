@@ -5,6 +5,7 @@ using ModularCommerce.Catalog.Contracts;
 using ModularCommerce.Inventory.Contracts;
 using ModularCommerce.Ordering.Application.Orders.Checkout;
 using ModularCommerce.Ordering.Domain.Orders;
+using ModularCommerce.Payment.Contracts;
 using ModularCommerce.Shared.Kernel;
 using NSubstitute;
 using Xunit;
@@ -12,9 +13,10 @@ using Xunit;
 namespace ModularCommerce.Ordering.UnitTests.Application;
 
 /// <summary>
-/// Checkout akışının (D10) tüm dallanmaları: replay, boş sepet + ikincil yarış,
-/// pasif ürün, kısmi rezervasyon telafisi, duplicate-persist telafisi,
-/// persist-exception telafisi, best-effort sepet temizliği.
+/// Checkout akışının tüm dallanmaları: replay, boş sepet + ikincil yarış, pasif ürün,
+/// kısmi rezervasyon telafisi, SENKRON ödeme (başarı → Paid + commit; ret → release,
+/// sipariş persist edilmez), duplicate-persist telafisi, persist-exception telafisi,
+/// best-effort sepet temizliği ve commit.
 /// </summary>
 public class CheckoutHandlerTests
 {
@@ -22,6 +24,7 @@ public class CheckoutHandlerTests
     private readonly ICartService _cartService = Substitute.For<ICartService>();
     private readonly IProductReader _productReader = Substitute.For<IProductReader>();
     private readonly IStockReservationService _stockReservation = Substitute.For<IStockReservationService>();
+    private readonly IPaymentService _paymentService = Substitute.For<IPaymentService>();
     private readonly CheckoutHandler _handler;
 
     private readonly Guid _customerId = Guid.NewGuid();
@@ -38,9 +41,18 @@ public class CheckoutHandlerTests
             .Returns(Result.Success());
         _stockReservation.ReleaseAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(Result.Success());
+        _stockReservation.CommitAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Success());
+        _paymentService.ChargeAsync(Arg.Any<ChargeRequest>(), Arg.Any<CancellationToken>())
+            .Returns(call =>
+            {
+                var request = call.Arg<ChargeRequest>();
+                return Result.Success(new PaymentResultDto(
+                    Guid.NewGuid(), request.Amount, request.Currency, "psp-tx", DateTime.UtcNow));
+            });
 
         _handler = new CheckoutHandler(
-            _orders, _cartService, _productReader, _stockReservation,
+            _orders, _cartService, _productReader, _stockReservation, _paymentService,
             new CheckoutCommandValidator(), NullLogger<CheckoutHandler>.Instance);
     }
 
@@ -71,27 +83,35 @@ public class CheckoutHandlerTests
             [new OrderLineDraft(Guid.NewGuid(), "Mevcut", 10m, "TRY", 1, Guid.NewGuid())],
             "checkout").Value;
         order.MarkStockReserved("checkout");
+        order.MarkPaymentPending("checkout");
+        order.MarkPaid("checkout");
         return order;
     }
 
-    [Fact(DisplayName = "Mutlu yol: rezervasyon + StockReserved sipariş + sepet temizliği (FR-5.1, FR-4.3)")]
-    public async Task Handle_HappyPath_CreatesStockReservedOrder()
+    [Fact(DisplayName = "Mutlu yol: rezervasyon + ödeme + Paid sipariş + satır başına commit + sepet temizliği")]
+    public async Task Handle_HappyPath_CreatesPaidOrderAndCommitsStock()
     {
         SetupCart((_productA, 2), (_productB, 1));
         SetupProducts(
             new ProductSnapshotDto(_productA, "Ürün A", 100m, "TRY", true),
             new ProductSnapshotDto(_productB, "Ürün B", 50m, "TRY", true));
-        SetupReservation(_productA, 2);
-        SetupReservation(_productB, 1);
+        var reservationA = SetupReservation(_productA, 2);
+        var reservationB = SetupReservation(_productB, 1);
 
         var result = await _handler.HandleAsync(Command(), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         result.Value.IsExisting.Should().BeFalse();
-        result.Value.Order.Status.Should().Be(nameof(OrderStatus.StockReserved));
+        result.Value.Order.Status.Should().Be(nameof(OrderStatus.Paid));
         result.Value.Order.TotalAmount.Should().Be(250m);
         result.Value.Order.Lines.Should().HaveCount(2);
-        result.Value.Order.History.Should().HaveCount(2, "∅→Created ve Created→StockReserved");
+        result.Value.Order.History.Should().HaveCount(4,
+            "∅→Created, Created→StockReserved, StockReserved→PaymentPending, PaymentPending→Paid");
+        await _paymentService.Received(1).ChargeAsync(
+            Arg.Is<ChargeRequest>(r => r.Amount == 250m && r.Currency == "TRY"),
+            Arg.Any<CancellationToken>());
+        await _stockReservation.Received(1).CommitAsync(reservationA, Arg.Any<CancellationToken>());
+        await _stockReservation.Received(1).CommitAsync(reservationB, Arg.Any<CancellationToken>());
         await _cartService.Received(1).ClearAsync(_customerId, Arg.Any<CancellationToken>());
         await _stockReservation.DidNotReceive().ReleaseAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
@@ -192,6 +212,8 @@ public class CheckoutHandlerTests
         result.Value.Order.Id.Should().Be(winner.Id);
         await _stockReservation.Received(1)
             .ReleaseAsync(myReservationId, Arg.Any<CancellationToken>());
+        await _stockReservation.DidNotReceive()
+            .CommitAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
 
     [Fact(DisplayName = "Persist beklenmedik exception fırlatırsa rezervasyonlar release edilir ve exception yükselir (500)")]
@@ -208,6 +230,69 @@ public class CheckoutHandlerTests
         await act.Should().ThrowAsync<InvalidOperationException>();
         await _stockReservation.Received(1)
             .ReleaseAsync(myReservationId, Arg.Any<CancellationToken>());
+        await _stockReservation.DidNotReceive()
+            .CommitAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+    }
+
+    [Theory(DisplayName = "Ödeme başarısız (declined/timeout/breaker): rezervasyonlar release, sipariş HİÇ persist edilmez, commit yok")]
+    [InlineData("Payment.Declined")]
+    [InlineData("Payment.Timeout")]
+    [InlineData("Payment.PspUnavailable")]
+    [InlineData("Payment.InFlight")]
+    public async Task Handle_WhenChargeFails_ReleasesAndNeverPersists(string errorCode)
+    {
+        SetupCart((_productA, 2));
+        SetupProducts(new ProductSnapshotDto(_productA, "Ürün A", 100m, "TRY", true));
+        var myReservationId = SetupReservation(_productA, 2);
+        var paymentError = Error.Conflict(errorCode, "Ödeme başarısız.");
+        _paymentService.ChargeAsync(Arg.Any<ChargeRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Failure<PaymentResultDto>(paymentError));
+
+        var result = await _handler.HandleAsync(Command(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(paymentError, "Payment hatası sarmalanmadan iletilir");
+        await _stockReservation.Received(1)
+            .ReleaseAsync(myReservationId, Arg.Any<CancellationToken>());
+        await _orders.DidNotReceive().AddAsync(Arg.Any<Order>(), Arg.Any<CancellationToken>());
+        await _stockReservation.DidNotReceive()
+            .CommitAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+        await _cartService.DidNotReceive().ClearAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact(DisplayName = "Ödeme, siparişin toplam tutarı ve checkout key'i ile istenir (FR-6.2 kapsam köprüsü)")]
+    public async Task Handle_PassesOrderTotalsAndKeyToPayment()
+    {
+        SetupCart((_productA, 3));
+        SetupProducts(new ProductSnapshotDto(_productA, "Ürün A", 40m, "TRY", true));
+        SetupReservation(_productA, 3);
+
+        await _handler.HandleAsync(Command(key: "kanit-77"), CancellationToken.None);
+
+        await _paymentService.Received(1).ChargeAsync(
+            Arg.Is<ChargeRequest>(r =>
+                r.CustomerId == _customerId
+                && r.IdempotencyKey == "kanit-77"
+                && r.Amount == 120m
+                && r.Currency == "TRY"),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact(DisplayName = "Commit başarısız olsa da checkout başarılıdır (para alındı; Warning izi W9 süpürücüsüne)")]
+    public async Task Handle_WhenCommitFails_StillSucceeds()
+    {
+        SetupCart((_productA, 1));
+        SetupProducts(new ProductSnapshotDto(_productA, "Ürün A", 100m, "TRY", true));
+        SetupReservation(_productA, 1);
+        _stockReservation.CommitAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Failure(Error.Conflict("Inventory.ConcurrencyConflict", "çakışma")));
+
+        var result = await _handler.HandleAsync(Command(), CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Order.Status.Should().Be(nameof(OrderStatus.Paid));
+        await _stockReservation.DidNotReceive()
+            .ReleaseAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
 
     [Fact(DisplayName = "Sepet temizliği başarısız olsa da checkout başarılıdır (sepet AP, best-effort)")]

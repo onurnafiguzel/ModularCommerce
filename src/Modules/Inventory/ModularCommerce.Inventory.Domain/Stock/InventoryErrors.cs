@@ -52,4 +52,12 @@ public static class InventoryErrors
     public static readonly Error ReleaseInvariantViolated = Error.Failure(
         "Inventory.Reservation.ReleaseInvariantViolated",
         "Stok sayaçları tutarsız; işlem reddedildi.");
+
+    public static readonly Error ReservationNotCommittable = Error.Conflict(
+        "Inventory.Reservation.NotCommittable",
+        "Rezervasyon kalıcı düşüşe çevrilebilir durumda değil."); 
+        
+    public static readonly Error CommitInvariantViolated = Error.Failure(
+        "Inventory.Reservation.CommitInvariantViolated",
+        "Stok sayaçları tutarsız; işlem reddedildi.");
 }

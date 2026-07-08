@@ -5,6 +5,7 @@
     <ProjectReference Include="..\..\Cart\ModularCommerce.Cart.Contracts\ModularCommerce.Cart.Contracts.csproj" />
     <ProjectReference Include="..\..\Catalog\ModularCommerce.Catalog.Contracts\ModularCommerce.Catalog.Contracts.csproj" />
     <ProjectReference Include="..\..\Inventory\ModularCommerce.Inventory.Contracts\ModularCommerce.Inventory.Contracts.csproj" />
+    <ProjectReference Include="..\..\Payment\ModularCommerce.Payment.Contracts\ModularCommerce.Payment.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />

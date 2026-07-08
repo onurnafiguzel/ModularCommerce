@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\ModularCommerce.Payment.Application\ModularCommerce.Payment.Application.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ModularCommerce.Shared.Infrastructure\ModularCommerce.Shared.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Microsoft.Extensions.Resilience" />
   </ItemGroup>
 </Project>

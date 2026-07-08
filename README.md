@@ -116,6 +116,34 @@ K6 ölçümleri (20 VU × 30 sn, tek sıcak ürün, OptimisticConcurrency):
 Sıcak üründe sipariş başına ~5 retryable-409 üretildi (istemci aynı key ile tekrar dener —
 idempotency'nin var olma sebebi); ayrıntı [docs/hafta-6-notlar.md](docs/hafta-6-notlar.md).
 
+### Senkron ödeme + tek charge + circuit breaker (Hafta 7)
+
+Ödeme, checkout isteğinin İÇİNDE senkron alınır (tek istek, iki adım yok): başarılı ödeme
+siparişi `Paid` yapar ve stoğu KALICI düşürür (`Commit`: OnHand ve Reserved birlikte azalır —
+Available değişmez, commit oversell üretemez); başarısız ödeme rezervasyonları release eder,
+sipariş hiç yazılmaz. Sahte PSP, Polly pipeline'ı (timeout 3sn → retry+jitter → circuit
+breaker → bulkhead → deneme-başı timeout 1sn) arkasında.
+
+```
+POST /api/ordering/checkout  → 201 status=Paid, history 4 satır (…→PaymentPending→Paid)
+GET  /api/inventory/stock    → onHand 10→8, reserved=0 (kalıcı düşüş)
+ödeme reddi (DeclineRate=1)  → 409 Payment.Declined; sipariş YOK, reserved=0 (sızıntı yok);
+                               aynı key yine 409 — PSP'ye gitmeden kopya döner (FR-6.2)
+```
+
+Kanıt ölçümleri (requirements §10.2 ve §10.3):
+
+| Kanıt | Sonuç |
+|---|---|
+| Aynı key ile **100 paralel** checkout (K6 + Testcontainers) | tam 1×201 + 99×200, hepsi aynı sipariş; payments tablosunda **TEK Completed**, PSP sayacı **1** ✓ |
+| Checkout zinciri p95 (ödeme + commit dahil, NFR-5.1 < 500 ms) | **245 ms** ✓ (2.184 sipariş, %0 hata) |
+| PSP %50 hata + 60 sn yük → breaker döngüsü (Serilog) | `OnCircuitOpened` ×11, `OnCircuitClosed` ×5; breaker açıkken 4.452 hızlı-ret, buna rağmen 251 sipariş ✓ |
+| Ödeme reddi → stok sızıntısı | 40/40 checkout 409 `Payment.Declined`, sonunda **reserved=0** ✓ |
+
+Breaker log örneği: `Resilience event occurred. EventName: 'OnCircuitOpened', Source:
+'payment-psp/…/CircuitBreaker', Result: 'psp_5xx'` — ayrıntı ve karar gerekçeleri
+[docs/hafta-7-notlar.md](docs/hafta-7-notlar.md).
+
 ## Bilinçli ertelemeler (evolution path)
 
 - API Gateway yok: tek deployable'da middleware pipeline aynı işi görür.

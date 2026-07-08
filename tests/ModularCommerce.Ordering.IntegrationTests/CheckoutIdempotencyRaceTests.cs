@@ -10,6 +10,7 @@ using ModularCommerce.Ordering.Domain.Orders;
 using ModularCommerce.Ordering.Infrastructure.Persistence;
 using ModularCommerce.Ordering.Infrastructure.Persistence.Repositories;
 using ModularCommerce.Ordering.IntegrationTests.Fixtures;
+using ModularCommerce.Payment.Contracts;
 using ModularCommerce.Shared.Kernel;
 using NSubstitute;
 using Xunit;
@@ -20,7 +21,9 @@ namespace ModularCommerce.Ordering.IntegrationTests;
 /// FR-5.4'ün gerçek hakemi DB unique index'idir — bu testte GERÇEK olan tek parça
 /// OrderRepository + Postgres'tir (sözleşmeler NSubstitute; full-stack fixture
 /// bilinçli kurulmadı — bkz. hafta-6-notlar D19). Kanıt: iki paralel aynı-key
-/// checkout → tek sipariş satırı + kaybedenin rezervasyonları release edilmiş.
+/// checkout → tek sipariş satırı (DB'de Paid) + kaybedenin rezervasyonları release
+/// edilmiş + commit YALNIZ kazananın satırları için çağrılmış. Ödemenin kendi
+/// yarış hakemi Payment.IntegrationTests'te ayrıca kanıtlanır.
 /// </summary>
 [Collection("OrderingPostgres")]
 public sealed class CheckoutIdempotencyRaceTests(PostgresContainerFixture fixture)
@@ -30,7 +33,8 @@ public sealed class CheckoutIdempotencyRaceTests(PostgresContainerFixture fixtur
     private CheckoutHandler CreateHandler(
         OrderingDbContext context,
         ConcurrentBag<Guid> reservedIds,
-        ConcurrentBag<Guid> releasedIds)
+        ConcurrentBag<Guid> releasedIds,
+        ConcurrentBag<Guid> committedIds)
     {
         var cartService = Substitute.For<ICartService>();
         cartService.GetItemsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
@@ -56,23 +60,43 @@ public sealed class CheckoutIdempotencyRaceTests(PostgresContainerFixture fixtur
                 releasedIds.Add(call.Arg<Guid>());
                 return Result.Success();
             });
+        stockReservation.CommitAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(call =>
+            {
+                committedIds.Add(call.Arg<Guid>());
+                return Result.Success();
+            });
+
+        // Ödeme sözleşme davranışı: her iki paralel istek de başarı görebilir (gerçekte
+        // biri charge, diğeri replay olurdu — FR-6.2); sipariş tekilliğinin hakemi
+        // yine Ordering index'idir.
+        var paymentService = Substitute.For<IPaymentService>();
+        paymentService.ChargeAsync(Arg.Any<ChargeRequest>(), Arg.Any<CancellationToken>())
+            .Returns(call =>
+            {
+                var request = call.Arg<ChargeRequest>();
+                return Result.Success(new PaymentResultDto(
+                    Guid.NewGuid(), request.Amount, request.Currency, "psp-tx", DateTime.UtcNow));
+            });
 
         return new CheckoutHandler(
             new OrderRepository(context),
             cartService,
             productReader,
             stockReservation,
+            paymentService,
             new CheckoutCommandValidator(),
             NullLogger<CheckoutHandler>.Instance);
     }
 
-    [Fact(DisplayName = "İki paralel aynı-key checkout: DB'de TEK sipariş, iki yanıt aynı id, kaybedenin rezervasyonu release edilmiş (FR-5.4)")]
+    [Fact(DisplayName = "İki paralel aynı-key checkout: DB'de TEK Paid sipariş, kaybeden release etmiş, commit YALNIZ kazananda (FR-5.4)")]
     public async Task ParallelSameKeyCheckouts_ProduceSingleOrder_AndLoserReleases()
     {
         var customerId = Guid.NewGuid();
         var key = $"yaris-{Guid.NewGuid():N}";
         var reservedIds = new ConcurrentBag<Guid>();
         var releasedIds = new ConcurrentBag<Guid>();
+        var committedIds = new ConcurrentBag<Guid>();
 
         // İki ayrı DbContext = iki ayrı "istek" scope'u; start-gate ile aynı anda bırakılır.
         var gate = new TaskCompletionSource();
@@ -80,7 +104,7 @@ public sealed class CheckoutIdempotencyRaceTests(PostgresContainerFixture fixtur
         async Task<Result<CheckoutResponse>> RunCheckout()
         {
             await using var context = fixture.CreateContext();
-            var handler = CreateHandler(context, reservedIds, releasedIds);
+            var handler = CreateHandler(context, reservedIds, releasedIds, committedIds);
             await gate.Task;
             return await handler.HandleAsync(new CheckoutCommand(customerId, key), CancellationToken.None);
         }
@@ -95,14 +119,18 @@ public sealed class CheckoutIdempotencyRaceTests(PostgresContainerFixture fixtur
         results.Select(r => r.Value.Order.Id).Distinct().Should().HaveCount(1);
         results.Count(r => !r.Value.IsExisting).Should().Be(1, "yalnız kazanan 201 anlamı taşır");
 
-        // DB'de tek satır (unique index hakemliği).
+        // DB'de tek satır (unique index hakemliği) ve sipariş Paid persist edilmiş.
         await using (var verify = fixture.CreateContext())
         {
-            (await verify.Orders.CountAsync(
-                o => o.CustomerId == customerId && o.IdempotencyKey == key)).Should().Be(1);
+            var stored = await verify.Orders.SingleAsync(
+                o => o.CustomerId == customerId && o.IdempotencyKey == key);
+            stored.Status.Should().Be(OrderStatus.Paid);
+            stored.StatusHistory.Should().HaveCount(4,
+                "∅→Created→StockReserved→PaymentPending→Paid izleri");
         }
 
-        // Stok sızıntısı yok: kazananın rezervasyonları siparişte, kaybedeninkiler release edilmiş.
+        // Stok sızıntısı ve çift düşüş yok: kazananın rezervasyonları COMMIT edilmiş,
+        // kaybedeninkiler RELEASE edilmiş — iki küme ayrık ve tam.
         var winnerId = results.First().Value.Order.Id;
         await using (var verify = fixture.CreateContext())
         {
@@ -113,6 +141,9 @@ public sealed class CheckoutIdempotencyRaceTests(PostgresContainerFixture fixtur
             releasedIds.Should().BeEquivalentTo(
                 loserReservations,
                 "kaybedenin TÜM rezervasyonları (ve yalnız onlar) geri bırakılmalı");
+            committedIds.Should().BeEquivalentTo(
+                winnerReservations,
+                "kalıcı düşüş yalnız kazananın satırları için yapılmalı");
         }
     }
 

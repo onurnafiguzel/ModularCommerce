@@ -35,4 +35,5 @@ public sealed class Reservation : Entity
 
     /// <summary>Yalnızca StockItem.Release çağırır (CreateFor simetrisi).</summary>
     internal void MarkReleased() => Status = ReservationStatus.Released;
+    internal void MarkCommitted() => Status = ReservationStatus.Committed;
 }

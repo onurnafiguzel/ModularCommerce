@@ -1,0 +1,152 @@
+{
+  "info": {
+    "name": "ModularCommerce — Hafta 7 (Payment / Stok Kanıtları)",
+    "description": "Hafta 7 kanıt senaryoları: checkout sonrası stok KALICI düşüşü (Commit: onHand ve reserved birlikte azalır) + payment audit satırı (dev endpoint) + header'sız negatif.\n\nÖn koşul: `docker compose up -d postgres redis` ve Host Development modunda çalışıyor olmalı (Payment:Psp oranları default 0 → ödeme hep başarılı). Ödeme reddi senaryosu için Host'u `Payment__Psp__DeclineRate=1` ile yeniden başlatın — bkz. tests/LoadTests/README.md.\n\nİstekleri SIRAYLA çalıştır.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:49822", "type": "string" },
+    { "key": "email", "value": "", "type": "string" },
+    { "key": "password", "value": "gizli-sifre-123", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "customerId", "value": "", "type": "string" },
+    { "key": "productId", "value": "", "type": "string" },
+    { "key": "idempotencyKey", "value": "", "type": "string" },
+    { "key": "onHandOnceki", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "0 — Payment health",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/payment/health", "host": ["{{baseUrl}}"], "path": ["api", "payment", "health"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 healthy', () => pm.response.to.have.status(200));"] } }
+      ]
+    },
+    {
+      "name": "1 — Signup + login (kullanıcı hazırla)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/identity/signup", "host": ["{{baseUrl}}"], "path": ["api", "identity", "signup"] }
+      },
+      "event": [
+        { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["pm.collectionVariables.set('email', `postman-payment-${Date.now()}@example.com`);"] } },
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('201 döner', () => pm.response.to.have.status(201));",
+          "pm.sendRequest({ url: pm.collectionVariables.get('baseUrl') + '/api/identity/login', method: 'POST', header: { 'Content-Type': 'application/json' }, body: { mode: 'raw', raw: JSON.stringify({ email: pm.collectionVariables.get('email'), password: pm.collectionVariables.get('password') }) } }, (err, res) => {",
+          "  const token = res.json().accessToken;",
+          "  pm.collectionVariables.set('accessToken', token);",
+          "  const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));",
+          "  pm.collectionVariables.set('customerId', payload.sub);",
+          "});"
+        ] } }
+      ]
+    },
+    {
+      "name": "2 — Ürün seç + dev stok bas (onHand=10)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/catalog/products?page=1&pageSize=1", "host": ["{{baseUrl}}"], "path": ["api", "catalog", "products"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "1" }] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('productId', pm.response.json().items[0].id);",
+          "pm.sendRequest({ url: pm.collectionVariables.get('baseUrl') + '/api/inventory/dev/stock/' + pm.collectionVariables.get('productId'), method: 'PUT', header: { 'Content-Type': 'application/json' }, body: { mode: 'raw', raw: JSON.stringify({ onHand: 10 }) } }, (err, res) => {",
+          "  pm.collectionVariables.set('onHandOnceki', '10');",
+          "});"
+        ] } }
+      ]
+    },
+    {
+      "name": "3 — Sepete ekle (adet 2)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}" },
+        "url": { "raw": "{{baseUrl}}/api/cart/items", "host": ["{{baseUrl}}"], "path": ["api", "cart", "items"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 döner', () => pm.response.to.have.status(200));"] } }
+      ]
+    },
+    {
+      "name": "4 — Checkout → 201 Paid (senkron ödeme)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+          { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/api/ordering/checkout", "host": ["{{baseUrl}}"], "path": ["api", "ordering", "checkout"] }
+      },
+      "event": [
+        { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["pm.collectionVariables.set('idempotencyKey', `postman-pay-${Date.now()}`);"] } },
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('201 döner', () => pm.response.to.have.status(201));",
+          "pm.test('durum Paid', () => pm.expect(pm.response.json().status).to.eql('Paid'));"
+        ] } }
+      ]
+    },
+    {
+      "name": "5 — Stok KALICI düştü: onHand 10→8, reserved=0 (FR-3.3 Commit)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/inventory/stock/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory", "stock", "{{productId}}"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner', () => pm.response.to.have.status(200));",
+          "const gövde = pm.response.json();",
+          "pm.test('onHand 8 (kalıcı düşüş)', () => pm.expect(gövde.onHand).to.eql(8));",
+          "pm.test('reserved 0 (rezervasyon commit edildi, askıda değil)', () => pm.expect(gövde.reserved).to.eql(0));"
+        ] } }
+      ]
+    },
+    {
+      "name": "6 — Payment audit satırı: TEK Completed + attempt sayısı (NFR-6.4, dev-only)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/payment/dev/payments?customerId={{customerId}}&key={{idempotencyKey}}", "host": ["{{baseUrl}}"], "path": ["api", "payment", "dev", "payments"], "query": [{ "key": "customerId", "value": "{{customerId}}" }, { "key": "key", "value": "{{idempotencyKey}}" }] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner', () => pm.response.to.have.status(200));",
+          "const gövde = pm.response.json();",
+          "pm.test('TEK ödeme satırı', () => pm.expect(gövde.count).to.eql(1));",
+          "pm.test('durum Completed + PSP transaction id dolu', () => {",
+          "  pm.expect(gövde.payments[0].status).to.eql('Completed');",
+          "  pm.expect(gövde.payments[0].pspTransactionId).to.not.be.null;",
+          "});",
+          "pm.test('en az 1 attempt kaydı (append-only audit)', () => pm.expect(gövde.payments[0].attemptCount).to.be.at.least(1));"
+        ] } }
+      ]
+    },
+    {
+      "name": "7 — AYNI key ile tekrar → 200 + stok DEĞİŞMEZ (çift charge/çift düşüş yok)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+          { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/api/ordering/checkout", "host": ["{{baseUrl}}"], "path": ["api", "ordering", "checkout"] }
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 döner (replay)', () => pm.response.to.have.status(200));",
+          "pm.sendRequest(pm.collectionVariables.get('baseUrl') + '/api/inventory/stock/' + pm.collectionVariables.get('productId'), (err, res) => {",
+          "  pm.test('onHand hâlâ 8 (ikinci düşüş YOK)', () => pm.expect(res.json().onHand).to.eql(8));",
+          "});"
+        ] } }
+      ]
+    }
+  ]
+}
