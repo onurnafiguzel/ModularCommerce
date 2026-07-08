@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ModularCommerce.Ordering.Infrastructure.Outbox;
 using ModularCommerce.Ordering.Infrastructure.Persistence;
 using Testcontainers.PostgreSql;
 using Xunit;
@@ -35,6 +36,21 @@ public sealed class PostgresContainerFixture : IAsyncLifetime
 
     /// <summary>Her çağrıda taze context — paralel checkout denemeleri ayrık scope'larda koşar.</summary>
     public OrderingDbContext CreateContext() => new(_options);
+
+    /// <summary>
+    /// Outbox interceptor'ı bağlı context — üretimdeki OrderingModule kaydını taklit eder.
+    /// SaveChanges anında domain event'ler outbox satırına çevrilir (atomiklik testleri için).
+    /// </summary>
+    public OrderingDbContext CreateContextWithOutbox()
+    {
+        var options = new DbContextOptionsBuilder<OrderingDbContext>()
+            .UseNpgsql(
+                _container.GetConnectionString(),
+                npgsql => npgsql.MigrationsHistoryTable("__EFMigrationsHistory", OrderingDbContext.Schema))
+            .AddInterceptors(new DomainEventToOutboxInterceptor(new OrderingIntegrationEventRegistry()))
+            .Options;
+        return new OrderingDbContext(options);
+    }
 }
 
 [CollectionDefinition("OrderingPostgres")]

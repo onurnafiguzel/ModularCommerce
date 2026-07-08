@@ -144,6 +144,34 @@ Breaker log örneği: `Resilience event occurred. EventName: 'OnCircuitOpened', 
 'payment-psp/…/CircuitBreaker', Result: 'psp_5xx'` — ayrıntı ve karar gerekçeleri
 [docs/hafta-7-notlar.md](docs/hafta-7-notlar.md).
 
+### El yapımı Transactional Outbox (Hafta 8)
+
+Sipariş `Paid` olduğunda `OrderPaid` olayı dış dünyaya duyurulur — ama **atomik** olarak
+(NFR-5.2). El yapımı outbox: `OrderPaid` domain event'i, bir `SaveChangesInterceptor` ile
+sipariş satırıyla **aynı transaction'da** `ordering.outbox_messages` tablosuna yazılır; ayrı bir
+`BackgroundService` (dispatcher) bekleyenleri poll edip MassTransit ile RabbitMQ'ya publish eder
+ve işaretler. Dual-write problemi (DB commit + broker publish ayrı ayrı → biri patlarsa
+tutarsızlık) böyle çözülür.
+
+```
+POST /api/ordering/checkout → 201 Paid
+  → ordering.outbox_messages: OrderPaid satırı (Order ile atomik)
+  → dispatcher publish → RabbitMQ fanout exchange "…IntegrationEvents:OrderPaid"
+  → OrderPaidLoggingConsumer: "[W8 log-only] OrderPaid alındı: OrderId=… Tutar=…"
+  → outbox satırı: ProcessedOnUtc dolu (ISLENDI)
+```
+
+Kanıtlar:
+
+| Kanıt | Sonuç |
+|---|---|
+| **Atomiklik** — SaveChanges patlarsa (23505) NE sipariş NE outbox yazılır | Testcontainers ✓ (geri sarım) |
+| Yalnız `OrderPaid` terfi eder (OrderCreated/OrderStatusChanged outbox'a girmez) | interceptor testi ✓ |
+| Publish→consume akışı | MassTransit `ITestHarness`: `Published`+`Consumed` ✓ |
+| Uçtan uca | RabbitMQ UI'da `OrderPaid` fanout exchange + consumer kuyruğu + Host logu + outbox ISLENDI ✓ |
+
+Ayrıntı, SOLID/pattern haritası ve karar gerekçeleri [docs/hafta-8-notlar.md](docs/hafta-8-notlar.md).
+
 ## Bilinçli ertelemeler (evolution path)
 
 - API Gateway yok: tek deployable'da middleware pipeline aynı işi görür.

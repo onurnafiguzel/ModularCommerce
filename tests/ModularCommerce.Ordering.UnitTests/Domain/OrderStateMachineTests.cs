@@ -134,4 +134,34 @@ public class OrderStateMachineTests
             second => second.Should().BeOfType<OrderStatusChanged>()
                 .Which.ToStatus.Should().Be(OrderStatus.StockReserved));
     }
+
+    [Fact(DisplayName = "MarkPaid genel OrderStatusChanged'e EK OLARAK niyetli OrderPaid event'i raise eder (W8 outbox işareti)")]
+    public void MarkPaid_RaisesOrderPaid_InAdditionToStatusChanged()
+    {
+        var order = OrderInStatus(OrderStatus.PaymentPending);
+
+        order.MarkPaid("checkout").IsSuccess.Should().BeTrue();
+
+        // Son iki event: PaymentPending→Paid geçişi (history/iz) + niyetli OrderPaid (dışa duyuru).
+        order.DomainEvents.Should().ContainSingle(e => e is OrderPaid)
+            .Which.As<OrderPaid>().Should().Match<OrderPaid>(e =>
+                e.OrderId == order.Id
+                && e.CustomerId == order.CustomerId
+                && e.TotalAmount == order.TotalAmount
+                && e.Currency == order.Currency);
+
+        order.DomainEvents.OfType<OrderStatusChanged>()
+            .Should().Contain(e => e.ToStatus == OrderStatus.Paid,
+                "geçiş izi (history) korunur, OrderPaid onun yerine geçmez");
+    }
+
+    [Fact(DisplayName = "Başarısız MarkPaid OrderPaid raise ETMEZ (yanlış duyuru olmaz)")]
+    public void MarkPaid_WhenInvalid_DoesNotRaiseOrderPaid()
+    {
+        var order = OrderInStatus(OrderStatus.StockReserved); // PaymentPending değil → Paid geçişi geçersiz
+
+        order.MarkPaid("checkout").IsFailure.Should().BeTrue();
+
+        order.DomainEvents.Should().NotContain(e => e is OrderPaid);
+    }
 }

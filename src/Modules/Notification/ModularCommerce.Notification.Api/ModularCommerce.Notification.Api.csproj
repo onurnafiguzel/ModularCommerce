@@ -5,5 +5,9 @@
   <ItemGroup>
     <ProjectReference Include="..\ModularCommerce.Notification.Infrastructure\ModularCommerce.Notification.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Shared\ModularCommerce.Shared.Infrastructure\ModularCommerce.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Ordering\ModularCommerce.Ordering.Contracts\ModularCommerce.Ordering.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" />
   </ItemGroup>
 </Project>

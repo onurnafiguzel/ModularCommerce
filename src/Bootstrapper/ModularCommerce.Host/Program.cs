@@ -1,5 +1,7 @@
+using ModularCommerce.Notification.Api.Consumers;
 using ModularCommerce.Shared.Infrastructure.Auth;
 using ModularCommerce.Shared.Infrastructure.ExceptionHandling;
+using ModularCommerce.Shared.Infrastructure.Messaging;
 using ModularCommerce.Shared.Infrastructure.Modules;
 using ModularCommerce.Shared.Infrastructure.Observability;
 using ModularCommerce.Shared.Infrastructure.Redis;
@@ -46,6 +48,9 @@ foreach (var module in modules)
 {
     module.Register(builder.Services, builder.Configuration);
 }
+
+builder.Services.AddEventBus(builder.Configuration, consumers =>
+    consumers.AddConsumer<OrderPaidLoggingConsumer>());
 
 var app = builder.Build();
 

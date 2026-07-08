@@ -12,5 +12,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Ordering\ModularCommerce.Ordering.Domain\ModularCommerce.Ordering.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Ordering\ModularCommerce.Ordering.Application\ModularCommerce.Ordering.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Ordering\ModularCommerce.Ordering.Infrastructure\ModularCommerce.Ordering.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

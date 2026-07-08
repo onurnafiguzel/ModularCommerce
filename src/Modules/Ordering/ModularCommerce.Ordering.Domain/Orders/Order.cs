@@ -111,7 +111,19 @@ public sealed class Order : Entity
 
     public Result MarkStockReserved(string triggeredBy) => TransitionTo(OrderStatus.StockReserved, triggeredBy);
     public Result MarkPaymentPending(string triggeredBy) => TransitionTo(OrderStatus.PaymentPending, triggeredBy);
-    public Result MarkPaid(string triggeredBy) => TransitionTo(OrderStatus.Paid, triggeredBy);
+
+    public Result MarkPaid(string triggeredBy)
+    {
+        var result = TransitionTo(OrderStatus.Paid, triggeredBy);
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        Raise(new OrderPaid(Id, CustomerId, TotalAmount, Currency, UpdatedAtUtc));
+        return Result.Success();
+    }
+
     public Result MarkShipped(string triggeredBy) => TransitionTo(OrderStatus.Shipped, triggeredBy);
     public Result Cancel(string triggeredBy) => TransitionTo(OrderStatus.Cancelled, triggeredBy);
     public Result Expire(string triggeredBy) => TransitionTo(OrderStatus.Expired, triggeredBy);
