@@ -21,7 +21,8 @@ public sealed class Order : Entity
         [OrderStatus.Created] = [OrderStatus.StockReserved, OrderStatus.Cancelled],
         [OrderStatus.StockReserved] = [OrderStatus.PaymentPending, OrderStatus.Cancelled, OrderStatus.Expired],
         [OrderStatus.PaymentPending] = [OrderStatus.Paid, OrderStatus.Cancelled, OrderStatus.Expired],
-        [OrderStatus.Paid] = [OrderStatus.Shipped],
+        // Paid → Cancelled: kapsamlı iptal (W9) — refund + stok iade handler'da yürütülür.
+        [OrderStatus.Paid] = [OrderStatus.Shipped, OrderStatus.Cancelled],
         [OrderStatus.Shipped] = [],
         [OrderStatus.Cancelled] = [],
         [OrderStatus.Expired] = [],
@@ -125,7 +126,21 @@ public sealed class Order : Entity
     }
 
     public Result MarkShipped(string triggeredBy) => TransitionTo(OrderStatus.Shipped, triggeredBy);
-    public Result Cancel(string triggeredBy) => TransitionTo(OrderStatus.Cancelled, triggeredBy);
+
+    public Result Cancel(string triggeredBy)
+    {
+        var result = TransitionTo(OrderStatus.Cancelled, triggeredBy);
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        // Niyetli dışa-duyuru olayı (OrderPaid kalıbı, OCP): W10 tüketicileri (Shipping/Notification)
+        // iptali dinler. Genel OrderStatusChanged history izi olarak zaten üretildi.
+        Raise(new OrderCancelled(Id, CustomerId, UpdatedAtUtc));
+        return Result.Success();
+    }
+
     public Result Expire(string triggeredBy) => TransitionTo(OrderStatus.Expired, triggeredBy);
 
     private Result TransitionTo(OrderStatus next, string triggeredBy)

@@ -41,4 +41,8 @@ public static class PaymentErrors
     public static readonly Error AlreadyFinalized = Error.Conflict(
         "Payment.AlreadyFinalized",
         "Ödeme zaten sonuçlanmış; terminal durum değiştirilemez.");
+
+    public static readonly Error NotRefundable = Error.Conflict(
+        "Payment.NotRefundable",
+        "Ödeme iade edilebilir (tamamlanmış) durumda değil.");
 }

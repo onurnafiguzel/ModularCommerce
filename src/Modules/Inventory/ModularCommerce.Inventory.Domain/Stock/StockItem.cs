@@ -132,4 +132,61 @@ public sealed class StockItem : Entity
 
         return Result.Success();
     }
+
+    public Result Expire(Reservation reservation)
+    {
+        if (reservation.StockItemId != Id)
+        {
+            return Result.Failure(InventoryErrors.ReservationMismatch);
+        }
+
+        if (reservation.Status == ReservationStatus.Expired)
+        {
+            return Result.Success();
+        }
+
+        if (reservation.Status != ReservationStatus.Active)
+        {
+            return Result.Failure(InventoryErrors.ReservationNotExpirable);
+        }
+
+        if (Reserved - reservation.Quantity < 0)
+        {
+            return Result.Failure(InventoryErrors.ExpireInvariantViolated);
+        }
+
+        Reserved -= reservation.Quantity;
+        UpdatedAtUtc = DateTime.UtcNow;
+        reservation.MarkExpired();
+
+        Raise(new StockExpired(ProductId, reservation.Id, reservation.Quantity, UpdatedAtUtc));
+
+        return Result.Success();
+    }
+
+    public Result Return(Reservation reservation)
+    {
+        if (reservation.StockItemId != Id)
+        {
+            return Result.Failure(InventoryErrors.ReservationMismatch);
+        }
+
+        if (reservation.Status == ReservationStatus.Returned)
+        {
+            return Result.Success();
+        }
+
+        if (reservation.Status != ReservationStatus.Committed)
+        {
+            return Result.Failure(InventoryErrors.ReservationNotReturnable);
+        }
+
+        OnHand += reservation.Quantity;
+        UpdatedAtUtc = DateTime.UtcNow;
+        reservation.MarkReturned();
+
+        Raise(new StockReturned(ProductId, reservation.Id, reservation.Quantity, UpdatedAtUtc));
+
+        return Result.Success();
+    }
 }

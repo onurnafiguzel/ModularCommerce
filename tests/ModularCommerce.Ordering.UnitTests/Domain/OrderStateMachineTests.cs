@@ -72,6 +72,7 @@ public class OrderStateMachineTests
         (OrderStatus.PaymentPending, OrderStatus.Cancelled),
         (OrderStatus.PaymentPending, OrderStatus.Expired),
         (OrderStatus.Paid, OrderStatus.Shipped),
+        (OrderStatus.Paid, OrderStatus.Cancelled), // W9 kapsamlı iptal (refund + stok iade)
     ];
 
     public static TheoryData<OrderStatus, OrderStatus> AllCells()
@@ -163,5 +164,29 @@ public class OrderStateMachineTests
         order.MarkPaid("checkout").IsFailure.Should().BeTrue();
 
         order.DomainEvents.Should().NotContain(e => e is OrderPaid);
+    }
+
+    [Fact(DisplayName = "Paid siparişte Cancel niyetli OrderCancelled event'i raise eder (W9 kapsamlı iptal)")]
+    public void Cancel_FromPaid_RaisesOrderCancelled()
+    {
+        var order = OrderInStatus(OrderStatus.Paid);
+
+        order.Cancel("cancel").IsSuccess.Should().BeTrue();
+
+        order.Status.Should().Be(OrderStatus.Cancelled);
+        order.DomainEvents.Should().ContainSingle(e => e is OrderCancelled)
+            .Which.As<OrderCancelled>().Should().Match<OrderCancelled>(e =>
+                e.OrderId == order.Id && e.CustomerId == order.CustomerId);
+    }
+
+    [Fact(DisplayName = "Başarısız Cancel (Shipped) OrderCancelled raise ETMEZ")]
+    public void Cancel_FromShipped_DoesNotRaiseOrderCancelled()
+    {
+        var order = OrderInStatus(OrderStatus.Shipped);
+
+        order.Cancel("cancel").IsFailure.Should().BeTrue();
+
+        order.Status.Should().Be(OrderStatus.Shipped);
+        order.DomainEvents.Should().NotContain(e => e is OrderCancelled);
     }
 }

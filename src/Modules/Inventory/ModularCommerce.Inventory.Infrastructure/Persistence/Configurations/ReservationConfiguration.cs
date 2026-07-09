@@ -12,8 +12,14 @@ public sealed class ReservationConfiguration : IEntityTypeConfiguration<Reservat
 
         builder.HasKey(r => r.Id);
 
-        // Hafta 9'daki TTL süpürme job'ı için: ürün + durum bazlı tarama.
+        // Ürün + durum bazlı tarama (genel).
         builder.HasIndex(r => new { r.ProductId, r.Status });
+
+        // TTL süpürücüsünün hot-key sorgusu (Active + süresi geçmiş): kısmi index yalnız
+        // Active satırları kapsar → süpürme taraması, dev/committed satırlar büyüse de ucuz kalır.
+        builder.HasIndex(r => r.ExpiresAtUtc)
+            .HasDatabaseName("ix_reservations_active_expiry")
+            .HasFilter("\"Status\" = 'Active'");
 
         builder.Property(r => r.Status).HasConversion<string>().HasMaxLength(20);
 

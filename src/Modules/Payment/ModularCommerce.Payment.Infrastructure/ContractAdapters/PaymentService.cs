@@ -205,6 +205,39 @@ public sealed class PaymentService(
         return await ExecuteChargeAsync(existing, strategy, request, cancellationToken);
     }
 
+    public async Task<Result<RefundResultDto>> RefundAsync(
+        RefundRequest request,
+        CancellationToken cancellationToken)
+    {
+        // İade edilecek ödeme (customer, key) ile bulunur — checkout key'i sipariş iptalinde taşınır.
+        var payment = await context.Payments.FirstOrDefaultAsync(
+            p => p.CustomerId == request.CustomerId && p.IdempotencyKey == request.IdempotencyKey,
+            cancellationToken);
+
+        if (payment is null)
+        {
+            return Result.Failure<RefundResultDto>(PaymentErrors.NotRefundable);
+        }
+
+        // İdempotent: zaten iade edilmişse (aynı sipariş iki kez iptal) kopya döner, PSP'ye gitmez.
+        if (payment.Status == PaymentStatus.Refunded)
+        {
+            return Result.Success(ToRefundDto(payment));
+        }
+
+        // FakePsp deterministik iade işlem kimliği (gerçek PSP refund çağrısı W12+).
+        var refund = payment.Refund($"refund-{Guid.NewGuid():N}");
+        if (refund.IsFailure)
+        {
+            return Result.Failure<RefundResultDto>(refund.Error);
+        }
+
+        // xmin, aynı satıra eşzamanlı iki iade denemesinin hakemidir.
+        await context.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(ToRefundDto(payment));
+    }
+
     private static PaymentResultDto ToDto(PaymentAggregate payment)
         => new(
             payment.Id,
@@ -212,4 +245,7 @@ public sealed class PaymentService(
             payment.Currency,
             payment.PspTransactionId,
             payment.CompletedAtUtc);
+
+    private static RefundResultDto ToRefundDto(PaymentAggregate payment)
+        => new(payment.Id, payment.RefundTransactionId, payment.RefundedAtUtc);
 }

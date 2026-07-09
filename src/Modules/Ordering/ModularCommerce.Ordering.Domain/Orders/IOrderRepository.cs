@@ -10,4 +10,5 @@ public interface IOrderRepository
         string idempotencyKey,
         CancellationToken cancellationToken);
     Task<Result> AddAsync(Order order, CancellationToken cancellationToken);
+    Task<Result> SaveChangesAsync(CancellationToken cancellationToken);
 }

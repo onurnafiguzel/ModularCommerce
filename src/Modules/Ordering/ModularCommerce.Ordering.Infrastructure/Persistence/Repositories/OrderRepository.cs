@@ -42,4 +42,11 @@ public sealed class OrderRepository(OrderingDbContext context) : IOrderRepositor
             return Result.Failure(OrderErrors.DuplicateIdempotencyKey);
         }
     }
+
+    public async Task<Result> SaveChangesAsync(CancellationToken cancellationToken)
+    {        
+        // interceptor OrderCancelled'ı aynı transaction'da outbox'a yazar (atomik).
+        await context.SaveChangesAsync(cancellationToken);
+        return Result.Success();
+    }
 }

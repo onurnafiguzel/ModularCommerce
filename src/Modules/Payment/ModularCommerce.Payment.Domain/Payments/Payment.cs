@@ -23,8 +23,10 @@ public sealed class Payment : Entity
     public PaymentStatus Status { get; private set; }
     public string? PspTransactionId { get; private set; }
     public string? FailureCode { get; private set; }
+    public string? RefundTransactionId { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime? CompletedAtUtc { get; private set; }
+    public DateTime? RefundedAtUtc { get; private set; }
 
     /// <summary>Bayat-Pending devralmasının (takeover) zaman damgası; tazelik ölçümü bunu da sayar.</summary>
     public DateTime? ClaimedAtUtc { get; private set; }
@@ -145,6 +147,37 @@ public sealed class Payment : Entity
         CompletedAtUtc = DateTime.UtcNow;
 
         Raise(new PaymentFailed(Id, OrderId, CustomerId, failureCode, CompletedAtUtc.Value));
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Tamamlanmış ödemeyi iade eder (W9 kapsamlı Cancel). İdempotenttir: zaten iade edilmişse
+    /// no-op başarı (aynı sipariş iki kez iptal edilirse çift iade olmaz). İade denemesi de
+    /// değiştirilemez audit satırı bırakır (NFR-6.4). Yalnız Completed → Refunded (terminal
+    /// immutability'yi bozmadan tek yönlü geçiş).
+    /// </summary>
+    public Result Refund(string refundTransactionId)
+    {
+        if (Status == PaymentStatus.Refunded)
+        {
+            return Result.Success();
+        }
+
+        if (Status != PaymentStatus.Completed)
+        {
+            return Result.Failure(PaymentErrors.NotRefundable);
+        }
+
+        Status = PaymentStatus.Refunded;
+        RefundTransactionId = refundTransactionId;
+        RefundedAtUtc = DateTime.UtcNow;
+
+        // İade audit'i (RecordAttempt yalnız Pending'de eklerdi; iade Completed'dan yapılır).
+        _attempts.Add(new PaymentAttempt(
+            _attempts.Count + 1, PaymentAttemptOutcome.Success, refundTransactionId, "refund", 0));
+
+        Raise(new PaymentRefunded(Id, OrderId, CustomerId, Amount, RefundedAtUtc.Value));
 
         return Result.Success();
     }

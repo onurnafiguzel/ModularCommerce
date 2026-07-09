@@ -13,6 +13,7 @@ using ModularCommerce.Inventory.Application.Stock.GetStock;
 using ModularCommerce.Inventory.Application.Stock.SetStock;
 using ModularCommerce.Inventory.Contracts;
 using ModularCommerce.Inventory.Domain.Stock;
+using ModularCommerce.Inventory.Infrastructure.BackgroundJobs;
 using ModularCommerce.Inventory.Infrastructure.ContractAdapters;
 using ModularCommerce.Inventory.Infrastructure.Locking;
 using ModularCommerce.Inventory.Infrastructure.Persistence;
@@ -65,6 +66,10 @@ public sealed class InventoryModule : IModule
         services.AddScoped<GetStockHandler>();
         services.AddScoped<SetStockHandler>();
         services.AddValidatorsFromAssemblyContaining<ReserveStockCommandValidator>(includeInternalTypes: true);
+
+        // Rezervasyon TTL süpürücüsü (W9): süresi dolmuş sahipsiz rezervasyonları iade eder,
+        // Paid siparişe bağlı olanları Ordering'e sorarak Commit'e çevirir (P2 reconcile).
+        services.AddHostedService<ReservationTtlSweeper>();
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)

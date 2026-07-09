@@ -7,10 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ModularCommerce.Ordering.Api.Endpoints;
 using ModularCommerce.Ordering.Application.Abstractions;
+using ModularCommerce.Ordering.Application.Orders.Cancel;
 using ModularCommerce.Ordering.Application.Orders.Checkout;
 using ModularCommerce.Ordering.Application.Orders.GetMyOrders;
 using ModularCommerce.Ordering.Application.Orders.GetOrder;
+using ModularCommerce.Ordering.Contracts;
 using ModularCommerce.Ordering.Domain.Orders;
+using ModularCommerce.Ordering.Infrastructure.ContractAdapters;
 using ModularCommerce.Ordering.Infrastructure.Outbox;
 using ModularCommerce.Ordering.Infrastructure.Persistence;
 using ModularCommerce.Ordering.Infrastructure.Persistence.Queries;
@@ -41,7 +44,11 @@ public sealed class OrderingModule : IModule
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IOrderQueries, OrderQueries>();
 
+        // TTL süpürücüsünün P2 reconcile sorgusu için (Inventory bu Contracts'ı çağırır).
+        services.AddScoped<IOrderReservationReconciler, OrderReservationReconciler>();
+
         services.AddScoped<CheckoutHandler>();
+        services.AddScoped<CancelOrderHandler>();
         services.AddScoped<GetOrderHandler>();
         services.AddScoped<GetMyOrdersHandler>();
         services.AddValidatorsFromAssemblyContaining<CheckoutCommandValidator>(includeInternalTypes: true);

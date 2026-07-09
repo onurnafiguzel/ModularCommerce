@@ -47,6 +47,20 @@ public sealed class StockReservationService(
             "Commit",
             cancellationToken);
 
+    public Task<Result> ExpireAsync(Guid reservationId, CancellationToken cancellationToken)
+        => ExecuteWithRetryAsync(
+            reservationId,
+            static (stockItem, reservation) => stockItem.Expire(reservation),
+            "Expire",
+            cancellationToken);
+
+    public Task<Result> ReturnAsync(Guid reservationId, CancellationToken cancellationToken)
+        => ExecuteWithRetryAsync(
+            reservationId,
+            static (stockItem, reservation) => stockItem.Return(reservation),
+            "Return",
+            cancellationToken);
+
     private async Task<Result> ExecuteWithRetryAsync(
         Guid reservationId,
         Func<StockItem, Reservation, Result> operation,

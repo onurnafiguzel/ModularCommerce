@@ -38,6 +38,7 @@ public sealed class PaymentConfiguration : IEntityTypeConfiguration<PaymentAggre
 
         builder.Property(p => p.PspTransactionId).HasMaxLength(100);
         builder.Property(p => p.FailureCode).HasMaxLength(100);
+        builder.Property(p => p.RefundTransactionId).HasMaxLength(100);
 
         // Denemeler owned + append-only: aggregate dışında yaşamları yok, aynı
         // SaveChanges'te atomik yazılır ve asla güncellenmez (NFR-6.4).

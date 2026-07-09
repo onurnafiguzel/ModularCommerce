@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using ModularCommerce.Ordering.Application.Orders.Cancel;
 using ModularCommerce.Ordering.Application.Orders.Checkout;
 using ModularCommerce.Ordering.Application.Orders.GetMyOrders;
 using ModularCommerce.Ordering.Application.Orders.GetOrder;
@@ -55,6 +56,16 @@ public static class OrderEndpoints
         {
             var result = await handler.HandleAsync(user.GetUserId(), cancellationToken);
             return result.ToHttpResult();
+        });
+
+        secured.MapPost("/orders/{id:guid}/cancel", async (
+            Guid id,
+            ClaimsPrincipal user,
+            CancelOrderHandler handler,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await handler.HandleAsync(id, user.GetUserId(), cancellationToken);
+            return result.IsSuccess ? Results.NoContent() : result.ToHttpResult();
         });
     }
 }

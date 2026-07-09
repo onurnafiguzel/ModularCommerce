@@ -172,6 +172,35 @@ Kanıtlar:
 
 Ayrıntı, SOLID/pattern haritası ve karar gerekçeleri [docs/hafta-8-notlar.md](docs/hafta-8-notlar.md).
 
+### Rezervasyon TTL süpürücü + kapsamlı Cancel (Hafta 9)
+
+Reserve-sonrası crash penceresinde askıda kalan rezervasyonları bir `BackgroundService`
+(`ReservationTtlSweeper`, 30sn poll) temizler — ama **oversell=0 kesinliğini bozmadan**: süresi
+geçmiş her Active rezervasyonu Ordering'e sorar (`IOrderReservationReconciler`), Paid siparişe
+bağlı olanı **Commit'e** çevirir (satılmış stok — Available değişmez), yetim olanı **Expire** eder
+(stok iade). Ayrıca kullanıcı siparişini iptal edebilir (`POST /orders/{id}/cancel`): Payment
+**refund** + Inventory **return** (commit edilmiş stok OnHand'e geri) + sipariş `Cancelled`.
+
+```
+KAPSAMLI CANCEL:
+  checkout → 201 Paid, onHand 100→97 (commit)
+  POST /orders/{id}/cancel → 204; Cancelled; onHand 97→100 (iade) + refund
+
+TTL SÜPÜRÜCÜ (canlı log): "TTL sweep: 100 aday, 0 reconcile-commit, 100 expire" (her 30sn)
+```
+
+| Kanıt | Sonuç |
+|---|---|
+| **P2 oversell=0** — süpürücü Paid-bağlı rezervasyonu Commit'e çevirir, Available ARTMAZ | Testcontainers ✓ |
+| Yetim rezervasyon → Expire + Reserved iade | Testcontainers ✓ + canlı log (Expired 0→500) |
+| Sınıflandırma hatası → batch'e dokunulmaz (şüphede expire yok) | seam testi ✓ |
+| Kapsamlı Cancel → Refunded + OnHand geri + Cancelled + OrderCancelled outbox | canlı E2E ✓ |
+| Refund idempotent (çift iptal → tek para iadesi) | Testcontainers ✓ |
+
+Kritik bulgu: checkout senkron olduğundan sipariş doğrudan `Paid` yazılır — hiçbir sipariş
+`PaymentPending` kalmaz, dolayısıyla FR-5.5'in "PaymentPending order TTL"i pratikte boştur; W9'un
+işi Inventory rezervasyon TTL'i + P2 reconcile'dir. Ayrıntı [docs/hafta-9-notlar.md](docs/hafta-9-notlar.md).
+
 ## Bilinçli ertelemeler (evolution path)
 
 - API Gateway yok: tek deployable'da middleware pipeline aynı işi görür.

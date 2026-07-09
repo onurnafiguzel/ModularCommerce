@@ -36,4 +36,10 @@ public sealed class Reservation : Entity
     /// <summary>Yalnızca StockItem.Release çağırır (CreateFor simetrisi).</summary>
     internal void MarkReleased() => Status = ReservationStatus.Released;
     internal void MarkCommitted() => Status = ReservationStatus.Committed;
+
+    /// <summary>Yalnızca StockItem.Expire çağırır (TTL süpürücüsü sahipsiz rezervasyonda).</summary>
+    internal void MarkExpired() => Status = ReservationStatus.Expired;
+
+    /// <summary>Yalnızca StockItem.Return çağırır (sipariş iptalinde commit edilmiş stok iadesi).</summary>
+    internal void MarkReturned() => Status = ReservationStatus.Returned;
 }
