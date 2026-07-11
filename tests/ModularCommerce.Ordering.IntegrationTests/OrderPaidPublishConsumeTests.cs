@@ -15,7 +15,7 @@ namespace ModularCommerce.Ordering.IntegrationTests;
 /// </summary>
 public sealed class OrderPaidPublishConsumeTests
 {
-    /// <summary>Yerel test tüketicisi — üretimdeki OrderPaidLoggingConsumer ile aynı şekilde OrderPaid dinler.</summary>
+    /// <summary>Yerel test tüketicisi — üretimdeki OrderPaidNotificationConsumer ile aynı şekilde OrderPaid dinler.</summary>
     private sealed class RecordingConsumer : IConsumer<OrderPaid>
     {
         public Task Consume(ConsumeContext<OrderPaid> context) => Task.CompletedTask;

@@ -1,3 +1,4 @@
+using MassTransit;
 using ModularCommerce.Notification.Api.Consumers;
 using ModularCommerce.Shared.Infrastructure.Auth;
 using ModularCommerce.Shared.Infrastructure.ExceptionHandling;
@@ -50,7 +51,7 @@ foreach (var module in modules)
 }
 
 builder.Services.AddEventBus(builder.Configuration, consumers =>
-    consumers.AddConsumer<OrderPaidLoggingConsumer>());
+    consumers.AddConsumer<OrderPaidNotificationConsumer, OrderPaidNotificationConsumerDefinition>());
 
 var app = builder.Build();
 
