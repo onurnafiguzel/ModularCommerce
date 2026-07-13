@@ -28,13 +28,16 @@ public static class InventoryErrors
         "Inventory.InsufficientStock",
         "Yeterli stok yok.");
 
+    // Geçici çakışma: aynı key ile tekrar denenmeli (retryable-409 sözleşmesi).
     public static readonly Error ConcurrencyConflict = Error.Conflict(
         "Inventory.ConcurrencyConflict",
-        "Stok bilgisi güncellendi, lütfen tekrar deneyin.");
+        "Stok bilgisi güncellendi, lütfen tekrar deneyin.",
+        retryable: true);
 
     public static readonly Error LockTimeout = Error.Conflict(
         "Inventory.LockTimeout",
-        "Stok şu anda yoğun, lütfen tekrar deneyin.");
+        "Stok şu anda yoğun, lütfen tekrar deneyin.",
+        retryable: true);
 
     public static readonly Error LockUnavailable = Error.Failure(
         "Inventory.LockUnavailable",

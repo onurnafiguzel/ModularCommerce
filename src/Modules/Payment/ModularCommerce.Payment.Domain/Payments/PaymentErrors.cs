@@ -12,12 +12,14 @@ public static class PaymentErrors
     /// <summary>Retryable: aynı key ile devam eden bir ödeme var — istemci aynı key ile tekrar dener.</summary>
     public static readonly Error InFlight = Error.Conflict(
         "Payment.InFlight",
-        "Bu istek için ödeme zaten işleniyor, lütfen tekrar deneyin.");
+        "Bu istek için ödeme zaten işleniyor, lütfen tekrar deneyin.",
+        retryable: true);
 
     /// <summary>Retryable: circuit breaker açık — PSP korumaya alındı.</summary>
     public static readonly Error PspUnavailable = Error.Conflict(
         "Payment.PspUnavailable",
-        "Ödeme sağlayıcısına şu anda ulaşılamıyor, lütfen tekrar deneyin.");
+        "Ödeme sağlayıcısına şu anda ulaşılamıyor, lütfen tekrar deneyin.",
+        retryable: true);
 
     /// <summary>Terminal: pipeline (retry'lar dahil) zaman bütçesini tüketti.</summary>
     public static readonly Error Timeout = Error.Conflict(

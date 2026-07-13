@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ModularCommerce.Shared.Infrastructure.Observability;
+using ModularCommerce.Shared.Infrastructure.Endpoints;
 
 namespace ModularCommerce.Shared.Infrastructure.RateLimiting;
 public static class RateLimitingExtensions
@@ -85,21 +85,24 @@ public static class RateLimitingExtensions
         http.Response.Headers.RetryAfter =
             retryAfterSeconds.ToString(CultureInfo.InvariantCulture);
 
+        // Endpoint hata yoluyla AYNI kabuk: IProblemDetailsService (traceId + correlationId
+        // CustomizeProblemDetails'ten) + code + retryable. 429 doğası gereği retryable'dır
+        // (Retry-After kadar bekle, sonra tekrar) — sözleşme yapısal olarak yazılır.
         var problem = new ProblemDetails
         {
-            Type = "RateLimited",
             Title = "RateLimited",
             Status = StatusCodes.Status429TooManyRequests,
             Detail = "İstek hız sınırı aşıldı; Retry-After başlığı kadar bekleyip aynı istekle tekrar deneyin.",
         };
+        problem.Extensions[ProblemMapping.CodeExtension] = "RateLimited";
+        problem.Extensions[ProblemMapping.RetryableExtension] = true;
 
-        if (http.Items.TryGetValue(CorrelationIdMiddleware.ItemKey, out var value)
-            && value is string correlationId)
+        var problemDetailsService = http.RequestServices.GetRequiredService<IProblemDetailsService>();
+        await problemDetailsService.WriteAsync(new ProblemDetailsContext
         {
-            problem.Extensions["correlationId"] = correlationId;
-        }
-
-        await http.Response.WriteAsJsonAsync(problem, cancellationToken);
+            HttpContext = http,
+            ProblemDetails = problem,
+        });
     }
 
     // Partition anahtarları: 'sub' claim'i (MapInboundClaims=false) varsa kullanıcı, yoksa IP.

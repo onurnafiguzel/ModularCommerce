@@ -45,13 +45,23 @@ public enum ErrorType
     Unauthorized = 4,
 }
 
-public sealed record Error(string Code, string Message, ErrorType Type = ErrorType.Failure)
+/// <param name="Retryable">
+/// Geçici (transient) çakışma mı? true ise istemci AYNI Idempotency-Key ile tekrar denemelidir
+/// (retryable-409 sözleşmesi); false terminal hatadır. HTTP katmanı bunu yanıt gövdesine
+/// yapısal olarak yansıtır — istemci kod string'i eşleştirmek zorunda kalmaz.
+/// </param>
+public sealed record Error(
+    string Code,
+    string Message,
+    ErrorType Type = ErrorType.Failure,
+    bool Retryable = false)
 {
     public static readonly Error None = new(string.Empty, string.Empty);
 
     public static Error Failure(string code, string message) => new(code, message, ErrorType.Failure);
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);
     public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);
-    public static Error Conflict(string code, string message) => new(code, message, ErrorType.Conflict);
+    public static Error Conflict(string code, string message, bool retryable = false)
+        => new(code, message, ErrorType.Conflict, retryable);
     public static Error Unauthorized(string code, string message) => new(code, message, ErrorType.Unauthorized);
 }
