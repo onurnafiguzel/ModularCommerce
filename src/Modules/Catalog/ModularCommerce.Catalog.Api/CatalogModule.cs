@@ -9,10 +9,13 @@ using ModularCommerce.Catalog.Application.Abstractions;
 using ModularCommerce.Catalog.Application.Products.GetProductById;
 using ModularCommerce.Catalog.Application.Products.GetProducts;
 using ModularCommerce.Catalog.Domain.Products;
+using ModularCommerce.Catalog.Contracts;
+using ModularCommerce.Catalog.Infrastructure.Caching;
 using ModularCommerce.Catalog.Infrastructure.Persistence;
 using ModularCommerce.Catalog.Infrastructure.Persistence.Queries;
 using ModularCommerce.Catalog.Infrastructure.Persistence.Repositories;
 using ModularCommerce.Catalog.Infrastructure.Persistence.Seed;
+using ModularCommerce.Shared.Infrastructure.Configuration;
 using ModularCommerce.Shared.Infrastructure.Modules;
 using ModularCommerce.Shared.Infrastructure.Persistence;
 
@@ -27,9 +30,27 @@ public sealed class CatalogModule : IModule
         services.AddModuleDbContext<CatalogDbContext>(configuration, CatalogDbContext.Schema);
 
         services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<IProductQueries, ProductQueries>();
 
-        services.AddScoped<ModularCommerce.Catalog.Contracts.IProductReader, ProductReader>();
+        // Okuma yolları read-through cache ile KOŞULSUZ decorate edilir (Decorator, OCP). Cache bir
+        // optimizasyondur: RedisProductCache graceful degrade eder (Redis düşerse DB'ye düşülür) ve
+        // Catalog:Cache:Enabled=false iken saf passthrough olur → modül dallanmasız kalır.
+        services.AddValidatedOptions<CatalogCacheOptions>(configuration, CatalogCacheOptions.SectionName);
+        services.AddSingleton<IProductCache, RedisProductCache>();
+
+        services.AddScoped<ProductQueries>();
+        services.AddScoped<IProductQueries>(
+            sp => new CachingProductQueries(
+            sp.GetRequiredService<ProductQueries>(), 
+            sp.GetRequiredService<IProductCache>()
+            ));
+
+        services.AddScoped<ProductReader>();
+        services.AddScoped<IProductReader>(
+            sp => new CachingProductReader(
+            sp.GetRequiredService<ProductReader>(),
+            sp.GetRequiredService<IProductCache>()
+            ));
+
         services.AddScoped<IDataSeeder<CatalogDbContext>, CatalogDataSeeder>();
 
         services.AddScoped<GetProductsHandler>();

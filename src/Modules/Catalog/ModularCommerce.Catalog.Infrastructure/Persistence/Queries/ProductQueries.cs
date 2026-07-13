@@ -48,4 +48,20 @@ public sealed class ProductQueries(CatalogDbContext context) : IProductQueries
 
         return new PagedResponse<ProductSummaryResponse>(items, query.Page, query.PageSize, totalCount);
     }
+
+    public Task<ProductDetailResponse?> GetProductByIdAsync(Guid id, CancellationToken cancellationToken)
+        => context.Products
+            .AsNoTracking()
+            .Where(p => p.Id == id)
+            .Select(p => new ProductDetailResponse(
+                p.Id,
+                p.Name,
+                p.Description,
+                p.Sku,
+                p.Price.Amount,
+                p.Price.Currency,
+                p.StockQuantity,
+                p.IsActive,
+                p.CreatedAtUtc))
+            .FirstOrDefaultAsync(cancellationToken);
 }

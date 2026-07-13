@@ -9,4 +9,9 @@ public interface IProductQueries
     Task<PagedResponse<ProductSummaryResponse>> GetProductsAsync(
         GetProductsQuery query,
         CancellationToken cancellationToken);
+
+    /// <summary>Tek ürün detayını okuma-modeli projeksiyonu olarak döner; yoksa null.</summary>
+    Task<ProductDetailResponse?> GetProductByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
 }
