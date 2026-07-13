@@ -37,7 +37,8 @@ public sealed class MigrationTests(PostgresContainerFixture fixture)
 
             loaded.Status.Should().Be(OrderStatus.StockReserved);
             loaded.Lines.Should().ContainSingle(l => l.ProductName == "Ürün" && l.Quantity == 2);
-            loaded.TotalAmount.Should().Be(199.80m);
+            loaded.TotalAmount.Amount.Should().Be(199.80m);
+            loaded.TotalAmount.Currency.Should().Be("TRY");
             loaded.StatusHistory.Should().HaveCount(2, "∅→Created ve Created→StockReserved izleri");
         }
     }

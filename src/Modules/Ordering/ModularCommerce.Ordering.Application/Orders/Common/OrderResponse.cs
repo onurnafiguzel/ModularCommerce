@@ -15,11 +15,11 @@ public sealed record OrderResponse(
         => new(
             order.Id,
             order.Status.ToString(),
-            order.TotalAmount,
+            order.TotalAmount.Amount,
             order.Currency,
             order.CreatedAtUtc,
             [.. order.Lines.Select(l => new OrderLineResponse(
-                l.ProductId, l.ProductName, l.UnitPrice, l.Currency, l.Quantity))],
+                l.ProductId, l.ProductName, l.UnitPrice.Amount, l.UnitPrice.Currency, l.Quantity))],
             [.. order.StatusHistory.Select(h => new OrderStatusChangeResponse(
                 h.FromStatus?.ToString(), h.ToStatus.ToString(), h.OccurredAtUtc, h.TriggeredBy))]);
 }

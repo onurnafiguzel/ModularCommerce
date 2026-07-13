@@ -26,7 +26,7 @@ public class PaymentTests
         payment.FailureCode.Should().BeNull();
         payment.CompletedAtUtc.Should().BeNull();
         payment.Attempts.Should().BeEmpty();
-        payment.Currency.Should().Be("TRY");
+        payment.Amount.Currency.Should().Be("TRY");
     }
 
     [Theory(DisplayName = "Create: geçersiz istek reddedilir")]

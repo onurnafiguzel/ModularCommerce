@@ -1,7 +1,7 @@
 using FluentAssertions;
 using ModularCommerce.Catalog.Application.Products.GetProductById;
 using ModularCommerce.Catalog.Domain.Products;
-using ModularCommerce.Catalog.Domain.ValueObjects;
+using ModularCommerce.Shared.Kernel;
 using NSubstitute;
 using Xunit;
 

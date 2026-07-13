@@ -34,8 +34,19 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             lines.HasKey("id");
 
             lines.Property(l => l.ProductName).HasMaxLength(200).IsRequired();
-            lines.Property(l => l.UnitPrice).HasColumnType("numeric(18,2)");
-            lines.Property(l => l.Currency).HasMaxLength(3).IsRequired();
+
+            // Money value object → aynı iki kolon (UnitPrice/Currency): kolon adı/türü
+            // korunduğu için migration üretmez. Owned koleksiyon içinde ComplexProperty
+            // desteklenmediğinden Money iç owned tip (OwnsOne) olarak aynı tabloya eşlenir.
+            lines.OwnsOne(l => l.UnitPrice, money =>
+            {
+                money.Property(m => m.Amount).HasColumnName("UnitPrice").HasColumnType("numeric(18,2)");
+                money.Property(m => m.Currency).HasColumnName("Currency").HasMaxLength(3).IsRequired();
+            });
+            lines.Navigation(l => l.UnitPrice).IsRequired();
+
+            // Türetilmiş satır toplamı kolon olarak tutulmaz.
+            lines.Ignore(l => l.LineTotal);
         });
 
         builder.OwnsMany(o => o.StatusHistory, history =>

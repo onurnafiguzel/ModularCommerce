@@ -38,7 +38,8 @@ public sealed class MigrationTests(PostgresContainerFixture fixture)
 
             loaded.Status.Should().Be(PaymentStatus.Completed);
             loaded.PspTransactionId.Should().Be("psp-tx-1");
-            loaded.Amount.Should().Be(149.90m);
+            loaded.Amount.Amount.Should().Be(149.90m);
+            loaded.Amount.Currency.Should().Be("TRY");
             loaded.Attempts.Should().HaveCount(2, "retry hikayesi satır satır saklanır (NFR-6.4)");
             loaded.Attempts.Select(a => a.AttemptNumber).Should().BeEquivalentTo([1, 2]);
         }

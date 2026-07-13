@@ -145,6 +145,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModularCommerce.Notificatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModularCommerce.Shared.IntegrationTests", "tests\ModularCommerce.Shared.IntegrationTests\ModularCommerce.Shared.IntegrationTests.csproj", "{9999B71E-9843-42E1-9D91-F11623C963A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModularCommerce.TestKit", "tests\ModularCommerce.TestKit\ModularCommerce.TestKit.csproj", "{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -851,6 +853,18 @@ Global
 		{9999B71E-9843-42E1-9D91-F11623C963A5}.Release|x64.Build.0 = Release|Any CPU
 		{9999B71E-9843-42E1-9D91-F11623C963A5}.Release|x86.ActiveCfg = Release|Any CPU
 		{9999B71E-9843-42E1-9D91-F11623C963A5}.Release|x86.Build.0 = Release|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Debug|x64.Build.0 = Debug|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Debug|x86.Build.0 = Debug|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Release|x64.ActiveCfg = Release|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Release|x64.Build.0 = Release|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Release|x86.ActiveCfg = Release|Any CPU
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -925,5 +939,6 @@ Global
 		{58D3C498-87F7-4EF0-A49D-E87BF9E8DA9A} = {BE556373-3BA4-45C4-882D-57A457CAF350}
 		{5410CC75-E067-40AF-8B44-82CA3412C956} = {BE556373-3BA4-45C4-882D-57A457CAF350}
 		{9999B71E-9843-42E1-9D91-F11623C963A5} = {BE556373-3BA4-45C4-882D-57A457CAF350}
+		{D7A24F8C-E809-4BBD-B7B0-A30C4BAA5F37} = {BE556373-3BA4-45C4-882D-57A457CAF350}
 	EndGlobalSection
 EndGlobal

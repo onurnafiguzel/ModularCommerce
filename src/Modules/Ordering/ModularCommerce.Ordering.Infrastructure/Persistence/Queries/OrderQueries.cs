@@ -24,7 +24,7 @@ public sealed class OrderQueries(OrderingDbContext context) : IOrderQueries
         return [.. orders.Select(o => new OrderSummaryResponse(
             o.Id,
             o.Status.ToString(),
-            o.TotalAmount,
+            o.TotalAmount.Amount,
             o.Currency,
             o.Lines.Count,
             o.CreatedAtUtc))];

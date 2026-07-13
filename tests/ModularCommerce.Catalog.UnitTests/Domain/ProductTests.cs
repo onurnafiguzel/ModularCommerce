@@ -1,6 +1,6 @@
 using FluentAssertions;
 using ModularCommerce.Catalog.Domain.Products;
-using ModularCommerce.Catalog.Domain.ValueObjects;
+using ModularCommerce.Shared.Kernel;
 using Xunit;
 
 namespace ModularCommerce.Catalog.UnitTests.Domain;

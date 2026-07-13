@@ -57,7 +57,7 @@ public sealed class CancelOrderHandler(
         // (2) Refund — KRİTİK: para iadesi başarısızsa iptal geri sarılır (order mutasyonu
         // persist edilmez, sipariş Paid kalır). Idempotent: aynı sipariş iki kez iptalde kopya.
         var refund = await paymentService.RefundAsync(
-            new RefundRequest(order.CustomerId, order.Id, order.IdempotencyKey, order.TotalAmount),
+            new RefundRequest(order.CustomerId, order.Id, order.IdempotencyKey, order.TotalAmount.Amount),
             cancellationToken);
         if (refund.IsFailure)
         {

@@ -20,7 +20,7 @@ public class OrderCreateTests
         var order = result.Value;
         order.Status.Should().Be(OrderStatus.Created);
         order.CustomerId.Should().Be(customerId);
-        order.TotalAmount.Should().Be(300m, "2×100 + 2×50");
+        order.TotalAmount.Amount.Should().Be(300m, "2×100 + 2×50");
         order.Currency.Should().Be("TRY");
         order.StatusHistory.Should().ContainSingle(h => h.FromStatus == null && h.ToStatus == OrderStatus.Created);
         order.DomainEvents.Should().ContainSingle(e => e is OrderCreated);

@@ -40,11 +40,12 @@ public sealed class Order : Entity
     public IReadOnlyList<OrderLine> Lines => _lines;
     public IReadOnlyList<OrderStatusChange> StatusHistory => _statusHistory;
 
-    /// <summary>Türetilmiş — kolon olarak tutulmaz (snapshot satırlardan hesaplanır).</summary>
-    public decimal TotalAmount => _lines.Sum(l => l.UnitPrice * l.Quantity);
+    public Money TotalAmount => _lines
+        .Select(line => line.LineTotal)
+        .Aggregate((running, next) => running.Add(next));
 
     /// <summary>Create tek para birimini garanti eder (CurrencyMismatch).</summary>
-    public string Currency => _lines[0].Currency;
+    public string Currency => _lines[0].UnitPrice.Currency;
     private Order()
     {
     }
@@ -90,18 +91,29 @@ public sealed class Order : Entity
             l.ProductId == Guid.Empty
             || string.IsNullOrWhiteSpace(l.ProductName)
             || l.Quantity < 1
-            || l.UnitPrice < 0
             || l.ReservationId == Guid.Empty))
         {
             return Result.Failure<Order>(OrderErrors.InvalidLine);
+        }                     
+        var orderLines = new List<OrderLine>(lines.Count);
+        foreach (var line in lines)
+        {
+            var unitPrice = Money.Create(line.UnitPrice, line.Currency);
+            if (unitPrice.IsFailure)
+            {
+                return Result.Failure<Order>(OrderErrors.InvalidLine);
+            }
+
+            orderLines.Add(new OrderLine(
+                line.ProductId, line.ProductName, unitPrice.Value, line.Quantity, line.ReservationId));
         }
 
-        if (lines.Select(l => l.Currency).Distinct().Count() > 1)
+        if (orderLines.Select(l => l.UnitPrice.Currency).Distinct().Count() > 1)
         {
             return Result.Failure<Order>(OrderErrors.CurrencyMismatch);
         }
 
-        var order = new Order(customerId, idempotencyKey, lines.Select(l => new OrderLine(l)));
+        var order = new Order(customerId, idempotencyKey, orderLines);
 
         // Doğuş da izlenebilir bir geçiştir: ∅ → Created (NFR-5.3).
         order._statusHistory.Add(new OrderStatusChange(null, OrderStatus.Created, triggeredBy));
@@ -121,7 +133,7 @@ public sealed class Order : Entity
             return result;
         }
 
-        Raise(new OrderPaid(Id, CustomerId, TotalAmount, Currency, UpdatedAtUtc));
+        Raise(new OrderPaid(Id, CustomerId, TotalAmount.Amount, TotalAmount.Currency, UpdatedAtUtc));
         return Result.Success();
     }
 

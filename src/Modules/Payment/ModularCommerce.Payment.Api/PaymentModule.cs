@@ -10,6 +10,7 @@ using ModularCommerce.Payment.Contracts;
 using ModularCommerce.Payment.Infrastructure.ContractAdapters;
 using ModularCommerce.Payment.Infrastructure.Persistence;
 using ModularCommerce.Payment.Infrastructure.Psp;
+using ModularCommerce.Shared.Infrastructure.Configuration;
 using ModularCommerce.Shared.Infrastructure.Modules;
 using ModularCommerce.Shared.Infrastructure.Persistence;
 using Polly;
@@ -27,10 +28,7 @@ public sealed class PaymentModule : IModule
     {
         services.AddModuleDbContext<PaymentDbContext>(configuration, PaymentDbContext.Schema);
 
-        var pspOptions = configuration.GetSection(PspOptions.SectionName).Get<PspOptions>()
-            ?? new PspOptions();
-        ValidateOptions(pspOptions);
-        services.AddSingleton(pspOptions);
+        services.AddValidatedOptions<PspOptions>(configuration, PspOptions.SectionName);
 
         services.AddSingleton<IPspClient, FakePspClient>();
         services.AddSingleton<IPaymentMethodStrategy, CardPaymentStrategy>();
@@ -82,22 +80,5 @@ public sealed class PaymentModule : IModule
             .IsDevelopment();
 
         group.MapPaymentDevEndpoints(isDevelopment);
-    }
-
-    private static void ValidateOptions(PspOptions options)
-    {
-        if (options.DeclineRate is < 0 or > 1
-            || options.FailureRate is < 0 or > 1
-            || options.TimeoutRate is < 0 or > 1)
-        {
-            throw new InvalidOperationException(
-                "Payment:Psp oranları (DeclineRate/FailureRate/TimeoutRate) 0 ile 1 arasında olmalıdır.");
-        }
-
-        if (options.LatencyMs < 0 || options.StalePendingSeconds <= 0)
-        {
-            throw new InvalidOperationException(
-                "Payment:Psp:LatencyMs negatif olamaz; StalePendingSeconds pozitif olmalıdır.");
-        }
     }
 }

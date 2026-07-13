@@ -148,7 +148,7 @@ public class OrderStateMachineTests
             .Which.As<OrderPaid>().Should().Match<OrderPaid>(e =>
                 e.OrderId == order.Id
                 && e.CustomerId == order.CustomerId
-                && e.TotalAmount == order.TotalAmount
+                && e.TotalAmount == order.TotalAmount.Amount
                 && e.Currency == order.Currency);
 
         order.DomainEvents.OfType<OrderStatusChanged>()

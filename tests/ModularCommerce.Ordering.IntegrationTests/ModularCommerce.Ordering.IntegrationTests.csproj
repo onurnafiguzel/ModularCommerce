@@ -12,5 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Ordering\ModularCommerce.Ordering.Infrastructure\ModularCommerce.Ordering.Infrastructure.csproj" />
+    <ProjectReference Include="..\ModularCommerce.TestKit\ModularCommerce.TestKit.csproj" />
   </ItemGroup>
 </Project>

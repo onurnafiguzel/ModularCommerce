@@ -12,5 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Cart\ModularCommerce.Cart.Infrastructure\ModularCommerce.Cart.Infrastructure.csproj" />
+    <ProjectReference Include="..\ModularCommerce.TestKit\ModularCommerce.TestKit.csproj" />
   </ItemGroup>
 </Project>

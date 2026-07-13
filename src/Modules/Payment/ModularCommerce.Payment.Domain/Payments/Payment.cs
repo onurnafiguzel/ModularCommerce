@@ -16,8 +16,7 @@ public sealed class Payment : Entity
 
     public Guid OrderId { get; private set; }
     public Guid CustomerId { get; private set; }
-    public decimal Amount { get; private set; }
-    public string Currency { get; private set; } = string.Empty;
+    public Money Amount { get; private set; } = null!;
     public string IdempotencyKey { get; private set; } = string.Empty;
     public PaymentMethod Method { get; private set; }
     public PaymentStatus Status { get; private set; }
@@ -41,15 +40,13 @@ public sealed class Payment : Entity
     private Payment(
         Guid orderId,
         Guid customerId,
-        decimal amount,
-        string currency,
+        Money amount,
         string idempotencyKey,
         PaymentMethod method)
     {
         OrderId = orderId;
         CustomerId = customerId;
         Amount = amount;
-        Currency = currency;
         IdempotencyKey = idempotencyKey;
         Method = method;
         Status = PaymentStatus.Pending;
@@ -64,10 +61,7 @@ public sealed class Payment : Entity
         string idempotencyKey,
         PaymentMethod method)
     {
-        if (orderId == Guid.Empty
-            || customerId == Guid.Empty
-            || amount <= 0
-            || currency.Length != 3)
+        if (orderId == Guid.Empty || customerId == Guid.Empty || amount <= 0)
         {
             return Result.Failure<Payment>(PaymentErrors.InvalidRequest);
         }
@@ -78,8 +72,14 @@ public sealed class Payment : Entity
             return Result.Failure<Payment>(PaymentErrors.InvalidRequest);
         }
 
+        var money = Money.Create(amount, currency.ToUpperInvariant());
+        if (money.IsFailure)
+        {
+            return Result.Failure<Payment>(PaymentErrors.InvalidRequest);
+        }
+
         return Result.Success(new Payment(
-            orderId, customerId, amount, currency.ToUpperInvariant(), idempotencyKey, method));
+            orderId, customerId, money.Value, idempotencyKey, method));
     }
 
     /// <summary>Pending'in son etkinlik anı: takeover yapılmadıysa doğum anıdır.</summary>
@@ -130,7 +130,7 @@ public sealed class Payment : Entity
         PspTransactionId = pspTransactionId;
         CompletedAtUtc = DateTime.UtcNow;
 
-        Raise(new PaymentCompleted(Id, OrderId, CustomerId, Amount, Currency, CompletedAtUtc.Value));
+        Raise(new PaymentCompleted(Id, OrderId, CustomerId, Amount.Amount, Amount.Currency, CompletedAtUtc.Value));
 
         return Result.Success();
     }
@@ -177,7 +177,7 @@ public sealed class Payment : Entity
         _attempts.Add(new PaymentAttempt(
             _attempts.Count + 1, PaymentAttemptOutcome.Success, refundTransactionId, "refund", 0));
 
-        Raise(new PaymentRefunded(Id, OrderId, CustomerId, Amount, RefundedAtUtc.Value));
+        Raise(new PaymentRefunded(Id, OrderId, CustomerId, Amount.Amount, RefundedAtUtc.Value));
 
         return Result.Success();
     }

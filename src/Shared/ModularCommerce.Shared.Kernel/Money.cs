@@ -1,6 +1,4 @@
-using ModularCommerce.Shared.Kernel;
-
-namespace ModularCommerce.Catalog.Domain.ValueObjects;
+namespace ModularCommerce.Shared.Kernel;
 
 public sealed record Money
 {
@@ -29,16 +27,37 @@ public sealed record Money
 
         return Result.Success(new Money(amount, currency));
     }
+
+    public Money Add(Money other)
+    {
+        if (other.Currency != Currency)
+        {
+            throw new InvalidOperationException(
+                $"Farklı para birimleri toplanamaz: {Currency} + {other.Currency}.");
+        }
+
+        return new Money(Amount + other.Amount, Currency);
+    }
+
+    public Money Multiply(int quantity)
+    {
+        if (quantity < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(quantity), quantity, "Adet negatif olamaz.");
+        }
+
+        return new Money(Amount * quantity, Currency);
+    }
 }
 
-/// <summary>Money value object'inin hata katalogu.</summary>
 public static class MoneyErrors
 {
     public static readonly Error NegativeAmount = Error.Validation(
-        "Catalog.Money.NegativeAmount",
+        "Money.NegativeAmount",
         "Tutar negatif olamaz.");
 
     public static readonly Error InvalidCurrency = Error.Validation(
-        "Catalog.Money.InvalidCurrency",
+        "Money.InvalidCurrency",
         "Para birimi 3 harfli ISO kodu olmalıdır (örn. TRY).");
 }

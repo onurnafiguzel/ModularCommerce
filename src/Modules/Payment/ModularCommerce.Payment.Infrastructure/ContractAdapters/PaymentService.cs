@@ -77,7 +77,7 @@ public sealed class PaymentService(
         CancellationToken cancellationToken)
     {
         var outcome = await strategy.ExecuteAsync(
-            new PspChargeRequest(payment.Id, payment.Amount, payment.Currency, payment.IdempotencyKey),
+            new PspChargeRequest(payment.Id, payment.Amount.Amount, payment.Amount.Currency, payment.IdempotencyKey),
             cancellationToken);
 
         if (outcome.Error is not null && outcome.Error == PaymentErrors.PspUnavailable)
@@ -145,7 +145,7 @@ public sealed class PaymentService(
         {
             case PaymentStatus.Completed:
                 // Replay güvenliği: aynı key farklı tutara yapıştırılamaz (sepet değişmiş olabilir).
-                if (existing.Amount != request.Amount || existing.Currency != request.Currency)
+                if (existing.Amount.Amount != request.Amount || existing.Amount.Currency != request.Currency)
                 {
                     return Result.Failure<PaymentResultDto>(PaymentErrors.AmountMismatch);
                 }
@@ -241,8 +241,8 @@ public sealed class PaymentService(
     private static PaymentResultDto ToDto(PaymentAggregate payment)
         => new(
             payment.Id,
-            payment.Amount,
-            payment.Currency,
+            payment.Amount.Amount,
+            payment.Amount.Currency,
             payment.PspTransactionId,
             payment.CompletedAtUtc);
 

@@ -135,7 +135,7 @@ public sealed class CheckoutHandler(
                 command.CustomerId,
                 order.Id,
                 command.IdempotencyKey,
-                order.TotalAmount,
+                order.TotalAmount.Amount,
                 order.Currency),
             cancellationToken);
 

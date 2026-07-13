@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using ModularCommerce.Catalog.Domain.ValueObjects;
 using ModularCommerce.Shared.Kernel;
 
 namespace ModularCommerce.Catalog.Domain.Products;

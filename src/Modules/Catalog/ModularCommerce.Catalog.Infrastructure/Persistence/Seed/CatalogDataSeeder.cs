@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ModularCommerce.Catalog.Domain.Products;
-using ModularCommerce.Catalog.Domain.ValueObjects;
 using ModularCommerce.Shared.Infrastructure.Persistence;
+using ModularCommerce.Shared.Kernel;
 
 namespace ModularCommerce.Catalog.Infrastructure.Persistence.Seed;
 

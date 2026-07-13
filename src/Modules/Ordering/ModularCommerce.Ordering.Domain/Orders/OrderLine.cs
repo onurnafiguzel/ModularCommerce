@@ -1,27 +1,32 @@
+using ModularCommerce.Shared.Kernel;
+
 namespace ModularCommerce.Ordering.Domain.Orders;
 public sealed class OrderLine
 {
     public Guid ProductId { get; private set; }
     public string ProductName { get; private set; } = null!;
-    public decimal UnitPrice { get; private set; }
-    public string Currency { get; private set; } = null!;
+    public Money UnitPrice { get; private set; } = null!;
     public int Quantity { get; private set; }
 
-    /// <summary>Satırı karşılayan Inventory rezervasyonu (telafi/commit izi).</summary>
     public Guid ReservationId { get; private set; }
+    public Money LineTotal => UnitPrice.Multiply(Quantity);
 
     private OrderLine()
     {
     }
 
-    internal OrderLine(OrderLineDraft draft)
+    internal OrderLine(
+        Guid productId,
+        string productName,
+        Money unitPrice,
+        int quantity,
+        Guid reservationId)
     {
-        ProductId = draft.ProductId;
-        ProductName = draft.ProductName;
-        UnitPrice = draft.UnitPrice;
-        Currency = draft.Currency;
-        Quantity = draft.Quantity;
-        ReservationId = draft.ReservationId;
+        ProductId = productId;
+        ProductName = productName;
+        UnitPrice = unitPrice;
+        Quantity = quantity;
+        ReservationId = reservationId;
     }
 }
 

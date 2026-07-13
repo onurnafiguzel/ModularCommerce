@@ -33,8 +33,8 @@ public static class PaymentDevEndpoints
                 {
                     p.Id,
                     Status = p.Status.ToString(),
-                    p.Amount,
-                    p.Currency,
+                    Amount = p.Amount.Amount,
+                    Currency = p.Amount.Currency,
                     p.PspTransactionId,
                     p.FailureCode,
                     AttemptCount = p.Attempts.Count,

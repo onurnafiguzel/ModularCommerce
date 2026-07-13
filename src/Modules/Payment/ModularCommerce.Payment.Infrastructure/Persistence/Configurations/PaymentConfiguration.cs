@@ -29,8 +29,17 @@ public sealed class PaymentConfiguration : IEntityTypeConfiguration<PaymentAggre
         // Bayat-Pending takeover yarışının hakemi (Inventory'nin xmin deseni).
         builder.Property<uint>("xmin").IsRowVersion();
 
-        builder.Property(p => p.Amount).HasColumnType("numeric(18,2)");
-        builder.Property(p => p.Currency).HasMaxLength(3).IsRequired();
+        builder.ComplexProperty(p => p.Amount, money =>
+        {
+            money.Property(m => m.Amount)
+                .HasColumnName("Amount")
+                .HasColumnType("numeric(18,2)");
+
+            money.Property(m => m.Currency)
+                .HasColumnName("Currency")
+                .HasMaxLength(3)
+                .IsRequired();
+        });
 
         // Enum'lar string: audit tablosu insan gözüyle okunur olmalı (NFR-6.4).
         builder.Property(p => p.Method).HasConversion<string>().HasMaxLength(20);
