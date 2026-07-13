@@ -79,7 +79,6 @@ public sealed class InventoryModule : IModule
             .GetRequiredService<IHostEnvironment>()
             .IsDevelopment();
 
-        group.MapGet("/health", () => Results.Ok(new { module = "Inventory", status = "healthy" }));
         group.MapReservationEndpoints();
         group.MapStockEndpoints(isDevelopment);
     }

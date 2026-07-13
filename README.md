@@ -234,6 +234,44 @@ DLQ DEMO (Notification__Delivery__FailureRate=1.0):
 Kapsam notu: Shipping bu hafta descope edildi (yalnız Notification). Ayrıntı, SOLID/pattern haritası
 ve "MessageId neden yetmez" gerekçesi [docs/hafta-10-notlar.md](docs/hafta-10-notlar.md).
 
+### Uçtan uca sertleştirme: rate limiting + health + flash-sale (Hafta 11)
+
+Kampanya yükü altında sistem hem **doğru** (oversell=0) hem **korunaklı** (rate limiting) hem
+**gözlemlenebilir** (health checks) kalır. **Sıfır yeni NuGet paketi** — rate limiting framework
+yerleşiği, health check'ler el yapımı (Postgres+Redis custom probe + MassTransit yerleşiği).
+
+**Katmanlı rate limiting** (kullanıcı/IP partition): global catch-all + `auth` (login/signup, IP
+bazlı sıkı — brute-force koruması) + `checkout` (kullanıcı bazlı, burst-absorbing). Reddedilen istek
+`429 + Retry-After + ProblemDetails(RateLimited)` döner — istemci kontratına yeni terminal-olmayan
+sinyal: `Retry-After` kadar bekle, tekrar dene (retryable-409'un "hemen aynı key"inden farklı).
+
+**Liveness/Readiness ayrımı** (Container Apps/K8s deseni): `/health/live` probsuz (süreç ayakta mı —
+geçici bağımlılık düşüşü container'ı öldürmesin), `/health/ready` Postgres+Redis+RabbitMQ probları
+(biri düşerse 503 → LB routing keser).
+
+```
+GET /health/live  → 200 {"status":"Healthy","checks":[]}
+GET /health/ready → 200 postgres:Healthy + redis:Healthy + masstransit-bus:Healthy
+POST /api/identity/login ×12 (aynı IP) → #1..10: 401, #11..12: 429 Retry-After: 10
+  429 gövdesi: {"type":"RateLimited","status":429,"correlationId":"..."}
+
+flash-sale.js (rampalı yük, düşük stoklu sıcak ürün):
+  → teardown "FLASH SALE SONUÇ: başlangıç=50 onHand=0 SATILAN=50 OVERSELL=0"
+```
+
+| Kanıt | Sonuç |
+|---|---|
+| `/health/ready` gerçek prob çalıştırır (Postgres+Redis+RabbitMQ) | canlı E2E ✓ + Testcontainers ✓ |
+| Bağımlılık düşünce readiness Unhealthy (503), liveness etkilenmez | Testcontainers ✓ |
+| Auth limiti aşımı → 429 + Retry-After + ProblemDetails | canlı E2E ✓ |
+| Checkout policy 100-paralel burst'ü kabul (§10.2 kırılmaz) | rate-limiter sizing testi ✓ |
+| Flash-sale ramp altında **oversell=0** | K6 teardown ✓ (manuel) |
+
+Kritik tasarım: sıkı per-user checkout limiti §10.2'nin 100-paralel idempotency kanıtını kırardı →
+checkout policy **burst-absorbing** (permit+queue ≥ 100, validate ile zorlanır); gösterilebilir 429
+**login/signup**'ta (IP bazlı). OpenTelemetry bu hafta kapsam dışı (ertelendi). Ayrıntı
+[docs/hafta-11-notlar.md](docs/hafta-11-notlar.md).
+
 ## Bilinçli ertelemeler (evolution path)
 
 - API Gateway yok: tek deployable'da middleware pipeline aynı işi görür.

@@ -81,7 +81,6 @@ public sealed class PaymentModule : IModule
             .GetRequiredService<IHostEnvironment>()
             .IsDevelopment();
 
-        group.MapGet("/health", () => Results.Ok(new { module = "Payment", status = "healthy" }));
         group.MapPaymentDevEndpoints(isDevelopment);
     }
 

@@ -58,7 +58,6 @@ public sealed class OrderingModule : IModule
     {
         var group = endpoints.MapGroup("/api/ordering");
 
-        group.MapGet("/health", () => Results.Ok(new { module = "Ordering", status = "healthy" }));
         group.MapOrderEndpoints();
     }
 }

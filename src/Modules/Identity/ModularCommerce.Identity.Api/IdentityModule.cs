@@ -44,7 +44,6 @@ public sealed class IdentityModule : IModule
     {
         var group = endpoints.MapGroup("/api/identity");
 
-        group.MapGet("/health", () => Results.Ok(new { module = "Identity", status = "healthy" }));
         group.MapAuthEndpoints();
     }
 }

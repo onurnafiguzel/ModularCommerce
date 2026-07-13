@@ -18,8 +18,7 @@ public sealed class ShippingModule : IModule
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup("/api/shipping");
-
-        group.MapGet("/health", () => Results.Ok(new { module = "Shipping", status = "healthy" }));
+        // Shipping ertelenmiş kabuk (Hafta 11'de descope). Sağlık durumu artık merkezi
+        // /health/live + /health/ready üzerinden raporlanır; modül-lokal /health kaldırıldı.
     }
 }

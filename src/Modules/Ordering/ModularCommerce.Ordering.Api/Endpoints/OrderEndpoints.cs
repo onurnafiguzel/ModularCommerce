@@ -37,7 +37,7 @@ public static class OrderEndpoints
             return result.Value.IsExisting
                 ? Results.Ok(result.Value.Order)
                 : Results.Created($"/api/ordering/orders/{result.Value.Order.Id}", result.Value.Order);
-        });
+        }).RequireRateLimiting("checkout");
 
         secured.MapGet("/orders/{id:guid}", async (
             Guid id,

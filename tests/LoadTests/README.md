@@ -100,6 +100,30 @@ Retryable/terminal 409 sözleşmesi: `Inventory.ConcurrencyConflict`,
 Idempotency-Key ile tekrar dene; `Payment.Declined`, `Payment.Timeout` →
 TERMİNAL, aynı key kopyayı döner (FR-6.2), yeni deneme yeni key ister.
 
+## Flash-sale koşusu (Hafta 11 — sertleştirme kanıtı)
+
+Düşük stoklu **sıcak** ürüne rampalı (ramping-arrival-rate) checkout yükü; asıl kanıt **oversell=0**
+(commit edilen adet başlangıç stoğunu aşmaz → `onHand` negatife düşmez). Yanıt karışımı: 201 satış +
+409 `InsufficientStock` (stok bitti, doğru) + 429 (rate limit) + retryable-409.
+
+**ÖN KOŞUL:** yük üreteci tek IP'den yüzlerce signup yaptığından `auth` rate limiti (IP bazlı 10/60s)
+senaryonun kendi kullanıcı üretimini boğar. Bu senaryo checkout **oversell**'ini ölçer, auth
+throttle'ını değil — Host'u auth limiti **gevşetilmiş** başlatın (auth throttle'ı README kök kanıt
+bölümündeki login demo'su ayrıca gösterir):
+
+```powershell
+$env:RateLimiting__Auth__PermitLimit = '100000'
+$env:RateLimiting__Auth__WindowSeconds = '1'
+$env:Payment__Psp__LatencyMs = '0'
+dotnet run --project src/Bootstrapper/ModularCommerce.Host   # ayrı terminalde
+k6 run tests/LoadTests/scenarios/flash-sale.js
+# İsteğe bağlı: -e HOT_STOCK=50 -e MAX_VUS=600
+```
+
+Beklenen teardown: `FLASH SALE SONUÇ: başlangıç=50 onHand=0 ... SATILAN=50 OVERSELL=0`.
+Threshold `http_req_duration{endpoint:checkout} p(95)<500` (NFR-5.1) geçmeli; oversell tespit edilirse
+teardown testi abort eder.
+
 ## Sonuç okuma
 
 - `successful_reservations` — 201 sayısı (Optimistic/RedisLock'ta tam 10 olmalı; Naive'de >>10)

@@ -55,7 +55,6 @@ public sealed class NotificationModule : IModule
             .GetRequiredService<IHostEnvironment>()
             .IsDevelopment();
 
-        group.MapGet("/health", () => Results.Ok(new { module = "Notification", status = "healthy" }));
         group.MapNotificationDevEndpoints(isDevelopment);
     }
 

@@ -28,7 +28,7 @@ public static class AuthEndpoints
             return result.IsSuccess
                 ? Results.Created((string?)null, result.Value)
                 : result.ToHttpResult();
-        });
+        }).RequireRateLimiting("auth");
 
         group.MapPost("/login", async (
             LoginCommand command,
@@ -37,7 +37,7 @@ public static class AuthEndpoints
         {
             var result = await handler.HandleAsync(command, cancellationToken);
             return result.ToHttpResult();
-        });
+        }).RequireRateLimiting("auth");
 
         group.MapPost("/refresh", async (
             RefreshCommand command,

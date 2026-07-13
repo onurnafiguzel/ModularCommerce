@@ -41,7 +41,6 @@ public sealed class CatalogModule : IModule
     {
         var group = endpoints.MapGroup("/api/catalog");
 
-        group.MapGet("/health", () => Results.Ok(new { module = "Catalog", status = "healthy" }));
         group.MapProductEndpoints();
     }
 }

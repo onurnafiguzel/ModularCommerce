@@ -17,7 +17,7 @@
 | 8 ✅ | **Outbox + event bus**: `OrderPaid` event'i, RabbitMQ+MassTransit entegrasyonu | Outbox dispatcher background service | Event'in RabbitMQ management UI'da görünmesi → **post #4 (outbox pattern)** |
 | 9 ✅ | **Compensation + TTL**: reserve-sonrası crash penceresi için rezervasyon TTL → `Expired` süpürücü; sipariş iptali (`Cancel`) + stok iade | Rezervasyon TTL background job | Crash/iptal senaryosunun log ve test kanıtı |
 | 10 ✅ | **Notification**: event tüketicileri (`OrderPaid` dinler) | Idempotent consumer (el yapımı inbox), dead-letter queue | Tam akış: checkout+ödeme (tek istek) → OrderPaid → bildirim logu (e-posta/webhook SİM); çift teslim → tek bildirim; DLQ demo. **Not: Shipping W11'e ertelendi (kapsam kararı)** |
-| 11 | Uçtan uca sertleştirme | Rate limiting, health checks, OpenTelemetry, K6 full checkout senaryosu | Kampanya (flash sale) simülasyon raporu → **post #5** |
+| 11 ✅ | Uçtan uca sertleştirme | Rate limiting (katmanlı, 429+Retry-After), health checks (liveness/readiness, el yapımı), K6 flash-sale senaryosu. **Not: OpenTelemetry ertelendi (kullanıcı kararı, W12+)** | Kampanya (flash sale) simülasyon raporu (oversell=0) → **post #5** |
 | 12 | **Azure**: Container Apps + managed Postgres/Redis/Service Bus + CI/CD | GitHub Actions (mimari testler pipeline'da koşar) | Canlı URL — CV'ye giren link |
 
 ## Okuma notları

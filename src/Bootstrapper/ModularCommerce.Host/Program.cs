@@ -5,6 +5,7 @@ using ModularCommerce.Shared.Infrastructure.ExceptionHandling;
 using ModularCommerce.Shared.Infrastructure.Messaging;
 using ModularCommerce.Shared.Infrastructure.Modules;
 using ModularCommerce.Shared.Infrastructure.Observability;
+using ModularCommerce.Shared.Infrastructure.RateLimiting;
 using ModularCommerce.Shared.Infrastructure.Redis;
 using Serilog;
 
@@ -32,6 +33,8 @@ builder.Services.AddProblemDetails(options =>
         }
     });
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddRateLimiting(builder.Configuration);
+builder.Services.AddDependencyHealthChecks();
 
 IModule[] modules =
 [
@@ -61,12 +64,14 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
+app.MapHealthEndpoints();
 
 app.MapGet("/", () => Results.Ok(new
 {
     application = "ModularCommerce",
     modules = modules.Select(m => m.Name),
-}));
+})).DisableRateLimiting();
 
 foreach (var module in modules)
 {
