@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ModularCommerce.Discovery.Infrastructure\ModularCommerce.Discovery.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ModularCommerce.Shared.Infrastructure\ModularCommerce.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Catalog\ModularCommerce.Catalog.Contracts\ModularCommerce.Catalog.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" />
+  </ItemGroup>
+</Project>

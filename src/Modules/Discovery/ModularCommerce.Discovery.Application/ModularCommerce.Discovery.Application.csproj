@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ModularCommerce.Discovery.Domain\ModularCommerce.Discovery.Domain.csproj" />
+    <ProjectReference Include="..\ModularCommerce.Discovery.Contracts\ModularCommerce.Discovery.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+  </ItemGroup>
+</Project>

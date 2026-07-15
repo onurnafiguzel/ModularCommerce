@@ -14,7 +14,7 @@ public class ModuleBoundaryTests
     private static readonly string[] Modules =
     [
         "Identity", "Catalog", "Cart", "Inventory",
-        "Ordering", "Payment", "Shipping", "Notification",
+        "Ordering", "Payment", "Shipping", "Notification", "Discovery",
     ];
 
     private static readonly string[] InternalLayers =

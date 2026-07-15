@@ -15,5 +15,6 @@
     <ProjectReference Include="..\..\Modules\Payment\ModularCommerce.Payment.Api\ModularCommerce.Payment.Api.csproj" />
     <ProjectReference Include="..\..\Modules\Shipping\ModularCommerce.Shipping.Api\ModularCommerce.Shipping.Api.csproj" />
     <ProjectReference Include="..\..\Modules\Notification\ModularCommerce.Notification.Api\ModularCommerce.Notification.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Discovery\ModularCommerce.Discovery.Api\ModularCommerce.Discovery.Api.csproj" />
   </ItemGroup>
 </Project>

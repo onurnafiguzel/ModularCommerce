@@ -3,6 +3,12 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    <!-- pgvector: Npgsql provider (10.0.2) transitive olarak Npgsql 10.0.3 çeker; NpgsqlDataSourceBuilder.UseVector()
+         için explicit pin (NU1605 önlemi, transitive sürümle birebir). Pgvector yalnız ADO seviyesinde (Vector tipi
+         + UseVector); Pgvector.EntityFrameworkCore KULLANILMIYOR (o paket net8.0/EF9'a bağlı, EF10 ile uyumsuz) —
+         vektör upsert/similarity raw SQL ile yapılır. -->
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
+    <PackageVersion Include="Pgvector" Version="0.3.2" />
   </ItemGroup>
   <ItemGroup Label="Caching-Locking">
     <PackageVersion Include="StackExchange.Redis" Version="2.8.16" />

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="NSubstitute" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Discovery\ModularCommerce.Discovery.Domain\ModularCommerce.Discovery.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Discovery\ModularCommerce.Discovery.Application\ModularCommerce.Discovery.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Discovery\ModularCommerce.Discovery.Infrastructure\ModularCommerce.Discovery.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

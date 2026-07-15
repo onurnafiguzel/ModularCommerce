@@ -63,9 +63,32 @@ public sealed partial class Product : Entity
         }
 
         var product = new Product(name.Trim(), NormalizeDescription(description), sku, price, stockQuantity);
-        product.Raise(new ProductCreated(product.Id, product.CreatedAtUtc));
+        product.Raise(new ProductCreated(
+            product.Id, product.Name, product.Description, product.Sku, product.IsActive, product.CreatedAtUtc));
 
         return Result.Success(product);
+    }
+
+    /// <summary>
+    /// Aranabilir alanları (ad/açıklama/fiyat/aktiflik) günceller ve ProductUpdated yayınlar. SKU kimlik
+    /// niteliğinde olduğundan değişmez. Stok Inventory'nin işidir; burada güncellenmez.
+    /// </summary>
+    public Result Update(string name, string? description, Money price, bool isActive)
+    {
+        if (string.IsNullOrWhiteSpace(name) || name.Length > NameMaxLength)
+        {
+            return Result.Failure(ProductErrors.InvalidName);
+        }
+
+        Name = name.Trim();
+        Description = NormalizeDescription(description);
+        Price = price;
+        IsActive = isActive;
+        UpdatedAtUtc = DateTime.UtcNow;
+
+        Raise(new ProductUpdated(Id, Name, Description, Sku, IsActive, UpdatedAtUtc));
+
+        return Result.Success();
     }
 
     private static string? NormalizeDescription(string? description)

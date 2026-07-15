@@ -1,4 +1,5 @@
 using MassTransit;
+using ModularCommerce.Discovery.Api.Consumers;
 using ModularCommerce.Notification.Api.Consumers;
 using ModularCommerce.Shared.Infrastructure.Auth;
 using ModularCommerce.Shared.Infrastructure.ExceptionHandling;
@@ -46,15 +47,23 @@ IModule[] modules =
     new ModularCommerce.Payment.Api.PaymentModule(),
     new ModularCommerce.Shipping.Api.ShippingModule(),
     new ModularCommerce.Notification.Api.NotificationModule(),
+    new ModularCommerce.Discovery.Api.DiscoveryModule(),
 ];
+
+// AddEventBus, modüllerin Register'ından ÖNCE: MassTransit'in bus hosted service'i, modüllerin outbox
+// dispatcher'larından (ve migrate+seed'den) ÖNCE başlar → tüketici kuyruk binding'leri hazır olur.
+// Aksi halde seed anında (startup) publish edilen event'ler henüz bağlanmamış exchange'e gidip DÜŞER
+// (OrderPaid bunu görmez çünkü yalnız runtime'da yayınlanır; Catalog ise seed'de yayınlar).
+builder.Services.AddEventBus(builder.Configuration, consumers =>
+{
+    consumers.AddConsumer<OrderPaidNotificationConsumer, OrderPaidNotificationConsumerDefinition>();
+    consumers.AddConsumer<ProductChangedConsumer, ProductChangedConsumerDefinition>();
+});
 
 foreach (var module in modules)
 {
     module.Register(builder.Services, builder.Configuration);
 }
-
-builder.Services.AddEventBus(builder.Configuration, consumers =>
-    consumers.AddConsumer<OrderPaidNotificationConsumer, OrderPaidNotificationConsumerDefinition>());
 
 var app = builder.Build();
 

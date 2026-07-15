@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    # pgvector uzantısını içeren PG17 imajı (Discovery modülü semantik arama için `vector` tipini kullanır).
+    # Düz postgres:17-alpine `CREATE EXTENSION vector` desteklemez.
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_DB: modular_commerce
       POSTGRES_USER: postgres

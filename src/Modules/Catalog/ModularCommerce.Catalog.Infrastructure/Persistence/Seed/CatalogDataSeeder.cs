@@ -53,8 +53,8 @@ public sealed class CatalogDataSeeder : IDataSeeder<CatalogDbContext>
                     $"Seed verisi domain kurallarını ihlal ediyor ({item.Sku}): {product.Error.Message}");
             }
 
-            // Seed geçmiş veri kurulumudur; event'ler dispatch edilmeyecek (outbox Hafta 7).
-            product.Value.ClearDomainEvents();
+            // Outbox artık bağlı: seed'in ProductCreated event'leri outbox'a yazılıp Discovery'ye akar
+            // (ilk indeksleme buradan; ayrı backfill'e gerek yok). Event'ler ARTIK temizlenmez.
             return product.Value;
         }).ToList();
 

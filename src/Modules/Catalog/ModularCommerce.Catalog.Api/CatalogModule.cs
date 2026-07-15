@@ -6,11 +6,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ModularCommerce.Catalog.Api.Endpoints;
 using ModularCommerce.Catalog.Application.Abstractions;
+using ModularCommerce.Catalog.Application.Products.CreateProduct;
 using ModularCommerce.Catalog.Application.Products.GetProductById;
 using ModularCommerce.Catalog.Application.Products.GetProducts;
+using ModularCommerce.Catalog.Application.Products.UpdateProduct;
 using ModularCommerce.Catalog.Domain.Products;
 using ModularCommerce.Catalog.Contracts;
 using ModularCommerce.Catalog.Infrastructure.Caching;
+using ModularCommerce.Catalog.Infrastructure.Outbox;
 using ModularCommerce.Catalog.Infrastructure.Persistence;
 using ModularCommerce.Catalog.Infrastructure.Persistence.Queries;
 using ModularCommerce.Catalog.Infrastructure.Persistence.Repositories;
@@ -27,7 +30,14 @@ public sealed class CatalogModule : IModule
 
     public void Register(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddModuleDbContext<CatalogDbContext>(configuration, CatalogDbContext.Schema);
+        // Transactional outbox (Ordering deseni): ürün mutasyonu → domain event → interceptor aynı
+        // transaction'da outbox satırı yazar → dispatcher RabbitMQ'ya publish eder → Discovery indeksler.
+        services.AddSingleton<IIntegrationEventMapper, CatalogIntegrationEventRegistry>();
+        services.AddScoped<DomainEventToOutboxInterceptor>();
+        services.AddModuleDbContext<CatalogDbContext>(configuration, CatalogDbContext.Schema,
+            configure: (sp, options) =>
+                options.AddInterceptors(sp.GetRequiredService<DomainEventToOutboxInterceptor>()));
+        services.AddHostedService<CatalogOutboxDispatcher>();
 
         services.AddScoped<IProductRepository, ProductRepository>();
 
@@ -55,6 +65,8 @@ public sealed class CatalogModule : IModule
 
         services.AddScoped<GetProductsHandler>();
         services.AddScoped<GetProductByIdHandler>();
+        services.AddScoped<CreateProductHandler>();
+        services.AddScoped<UpdateProductHandler>();
         services.AddValidatorsFromAssemblyContaining<GetProductsQueryValidator>(includeInternalTypes: true);
     }
 
