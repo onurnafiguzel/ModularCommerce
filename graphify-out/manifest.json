@@ -1,0 +1,2467 @@
+{
+  ".vscode/settings.json": {
+    "mtime": 1783079378.0768142,
+    "ast_hash": "4f20d69863b25ee2114c5d2b3d3d41bf",
+    "semantic_hash": "4f20d69863b25ee2114c5d2b3d3d41bf"
+  },
+  "ModularCommerce.sln": {
+    "mtime": 1784120822.2441347,
+    "ast_hash": "320cb2f90f6b95d9c5e62159d6f31387",
+    "semantic_hash": "320cb2f90f6b95d9c5e62159d6f31387"
+  },
+  "docs/postman/ModularCommerce.IdentityCart.postman_collection.json": {
+    "mtime": 1783351795.6633465,
+    "ast_hash": "518422ae4190e3285a550cbbbd5f3eb0",
+    "semantic_hash": "518422ae4190e3285a550cbbbd5f3eb0"
+  },
+  "docs/postman/ModularCommerce.Inventory.postman_collection.json": {
+    "mtime": 1783281822.3431747,
+    "ast_hash": "4543ed033a2d0f3a4c9cb1db87413c64",
+    "semantic_hash": "4543ed033a2d0f3a4c9cb1db87413c64"
+  },
+  "docs/postman/ModularCommerce.Ordering.postman_collection.json": {
+    "mtime": 1783511583.3647363,
+    "ast_hash": "889612ad5876184984b0192eeaf05191",
+    "semantic_hash": "889612ad5876184984b0192eeaf05191"
+  },
+  "docs/postman/ModularCommerce.Payment.postman_collection.json": {
+    "mtime": 1783511624.030687,
+    "ast_hash": "cc406c498a5afe7629ce1fb535079069",
+    "semantic_hash": "cc406c498a5afe7629ce1fb535079069"
+  },
+  "docs/postman/ModularCommerce.postman_collection.json": {
+    "mtime": 1783166850.069841,
+    "ast_hash": "2983aca4f32aa13f2dbdb0155baed6e8",
+    "semantic_hash": "2983aca4f32aa13f2dbdb0155baed6e8"
+  },
+  "global.json": {
+    "mtime": 1783078000.5428538,
+    "ast_hash": "c0b280d944ccffb8c72cb50d5a42deb3",
+    "semantic_hash": "c0b280d944ccffb8c72cb50d5a42deb3"
+  },
+  "src/Bootstrapper/ModularCommerce.Host/ModularCommerce.Host.csproj": {
+    "mtime": 1784119228.894806,
+    "ast_hash": "97efc68d893af8d54a5bf38c45fa2cbf",
+    "semantic_hash": "97efc68d893af8d54a5bf38c45fa2cbf"
+  },
+  "src/Bootstrapper/ModularCommerce.Host/Program.cs": {
+    "mtime": 1784120289.5295467,
+    "ast_hash": "4cf6638b97f983615c89b3c0fc889c10",
+    "semantic_hash": "4cf6638b97f983615c89b3c0fc889c10"
+  },
+  "src/Bootstrapper/ModularCommerce.Host/Properties/launchSettings.json": {
+    "mtime": 1783077556.192847,
+    "ast_hash": "121f32bd9099d02d89ef5342772831b1",
+    "semantic_hash": "121f32bd9099d02d89ef5342772831b1"
+  },
+  "src/Bootstrapper/ModularCommerce.Host/appsettings.json": {
+    "mtime": 1784119244.1926227,
+    "ast_hash": "f2b610a5cebb36d1efde5e157ef75658",
+    "semantic_hash": "f2b610a5cebb36d1efde5e157ef75658"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Api/CartModule.cs": {
+    "mtime": 1784378179.3841994,
+    "ast_hash": "fe8412c6129ae1d4b4580e82e8a50946",
+    "semantic_hash": "fe8412c6129ae1d4b4580e82e8a50946"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Api/Endpoints/CartEndpoints.cs": {
+    "mtime": 1783425679.4886324,
+    "ast_hash": "53c8af1f14466e2ded6acafc31856a98",
+    "semantic_hash": "53c8af1f14466e2ded6acafc31856a98"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Api/ModularCommerce.Cart.Api.csproj": {
+    "mtime": 1783077526.4161336,
+    "ast_hash": "c5c51d59c97adadeb18141d458a52f7d",
+    "semantic_hash": "c5c51d59c97adadeb18141d458a52f7d"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/AddItem/AddItemCommand.cs": {
+    "mtime": 1783425700.4390478,
+    "ast_hash": "fd9d1981e740cbd0e9b44cdc4f759dac",
+    "semantic_hash": "fd9d1981e740cbd0e9b44cdc4f759dac"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/AddItem/AddItemCommandValidator.cs": {
+    "mtime": 1783350699.7238173,
+    "ast_hash": "7d08f14159b14a8d924cef662b13cb08",
+    "semantic_hash": "7d08f14159b14a8d924cef662b13cb08"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/AddItem/AddItemHandler.cs": {
+    "mtime": 1783350900.4936738,
+    "ast_hash": "9e70365b4ac4e8d73caeaec6d4cb8283",
+    "semantic_hash": "9e70365b4ac4e8d73caeaec6d4cb8283"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/Common/CartResponse.cs": {
+    "mtime": 1783425714.8600073,
+    "ast_hash": "e35335513ccff20b24f46a735444a8b6",
+    "semantic_hash": "e35335513ccff20b24f46a735444a8b6"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/Contracts/CartService.cs": {
+    "mtime": 1783450287.2833912,
+    "ast_hash": "2fa7410e599e1a8b2c31f84f9df78a3e",
+    "semantic_hash": "2fa7410e599e1a8b2c31f84f9df78a3e"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/GetCart/GetCartHandler.cs": {
+    "mtime": 1783425721.6938014,
+    "ast_hash": "e4bb9fa6ccaf290e8a37195b36d490f0",
+    "semantic_hash": "e4bb9fa6ccaf290e8a37195b36d490f0"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/RemoveItem/RemoveItemHandler.cs": {
+    "mtime": 1783425730.1062136,
+    "ast_hash": "01aec9381cc8c746cb41e3bdf5d4d2ca",
+    "semantic_hash": "01aec9381cc8c746cb41e3bdf5d4d2ca"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/UpdateItemQuantity/UpdateItemQuantityCommand.cs": {
+    "mtime": 1783425737.4693227,
+    "ast_hash": "8616dad9b6e849f8ae047b29a35eb8ad",
+    "semantic_hash": "8616dad9b6e849f8ae047b29a35eb8ad"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/UpdateItemQuantity/UpdateItemQuantityCommandValidator.cs": {
+    "mtime": 1783350709.7025518,
+    "ast_hash": "7ceb9dd1cf5fc0d774f7795c3946d22e",
+    "semantic_hash": "7ceb9dd1cf5fc0d774f7795c3946d22e"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/Carts/UpdateItemQuantity/UpdateItemQuantityHandler.cs": {
+    "mtime": 1783350905.661364,
+    "ast_hash": "52379e42ecae09591d784d2fbaff9a43",
+    "semantic_hash": "52379e42ecae09591d784d2fbaff9a43"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Application/ModularCommerce.Cart.Application.csproj": {
+    "mtime": 1783350735.6017265,
+    "ast_hash": "32709e946723f9c1b14edf15ade09510",
+    "semantic_hash": "32709e946723f9c1b14edf15ade09510"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Contracts/CartLineDto.cs": {
+    "mtime": 1783450299.6286533,
+    "ast_hash": "9e1777f05e1824c77ffa7f0536f93f08",
+    "semantic_hash": "9e1777f05e1824c77ffa7f0536f93f08"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Contracts/ICartService.cs": {
+    "mtime": 1783450332.0232017,
+    "ast_hash": "d11faf2aa17e53b34ca15ed53c92fec4",
+    "semantic_hash": "d11faf2aa17e53b34ca15ed53c92fec4"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Contracts/ModularCommerce.Cart.Contracts.csproj": {
+    "mtime": 1783450341.388234,
+    "ast_hash": "f09370c2001960a5f134590cc9c3aed1",
+    "semantic_hash": "f09370c2001960a5f134590cc9c3aed1"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Domain/Carts/Cart.cs": {
+    "mtime": 1783425830.6292164,
+    "ast_hash": "9a03b012b4508b82e6a4404700031823",
+    "semantic_hash": "9a03b012b4508b82e6a4404700031823"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Domain/Carts/CartErrors.cs": {
+    "mtime": 1783350604.5822666,
+    "ast_hash": "111d2d12cfa9eaecf904ffa8d8feb321",
+    "semantic_hash": "111d2d12cfa9eaecf904ffa8d8feb321"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Domain/Carts/CartItem.cs": {
+    "mtime": 1783425837.9891453,
+    "ast_hash": "1b9e3207434c87dc6034b678098217c4",
+    "semantic_hash": "1b9e3207434c87dc6034b678098217c4"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Domain/Carts/ICartRepository.cs": {
+    "mtime": 1783425842.1845222,
+    "ast_hash": "a4f997f1d24f79ed9e43305367ee02d8",
+    "semantic_hash": "a4f997f1d24f79ed9e43305367ee02d8"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Domain/ModularCommerce.Cart.Domain.csproj": {
+    "mtime": 1783077526.7919521,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Caching/ICartCache.cs": {
+    "mtime": 1784378204.9267213,
+    "ast_hash": "88cb95200fdd3807198a87b6513db74e",
+    "semantic_hash": "88cb95200fdd3807198a87b6513db74e"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Caching/RedisCartCache.cs": {
+    "mtime": 1784378210.6834168,
+    "ast_hash": "019b7b1a9caf350804712c92c4a5b7b5",
+    "semantic_hash": "019b7b1a9caf350804712c92c4a5b7b5"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Migrations/20260717152814_InitialCartSchema.Designer.cs": {
+    "mtime": 1784302094.8140142,
+    "ast_hash": "a85a5c94d9cb241c0581612f5d88a669",
+    "semantic_hash": "a85a5c94d9cb241c0581612f5d88a669"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Migrations/20260717152814_InitialCartSchema.cs": {
+    "mtime": 1784302094.8140142,
+    "ast_hash": "02f8a8d84c7e24b93a92673e8807cd8f",
+    "semantic_hash": "02f8a8d84c7e24b93a92673e8807cd8f"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Migrations/CartDbContextModelSnapshot.cs": {
+    "mtime": 1784302094.8160143,
+    "ast_hash": "781ef823f5b2560e1eab2e16cb8a211f",
+    "semantic_hash": "781ef823f5b2560e1eab2e16cb8a211f"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/ModularCommerce.Cart.Infrastructure.csproj": {
+    "mtime": 1784301812.2631612,
+    "ast_hash": "3cfac68c4b18b9a924614184be6a2037",
+    "semantic_hash": "3cfac68c4b18b9a924614184be6a2037"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Persistence/CachingCartRepository.cs": {
+    "mtime": 1784378251.2846997,
+    "ast_hash": "3680c9679ef06c214e8c7d61d3bbedc3",
+    "semantic_hash": "3680c9679ef06c214e8c7d61d3bbedc3"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Persistence/CartDbContext.cs": {
+    "mtime": 1784378262.3171134,
+    "ast_hash": "2e20f32dffdede217dec8b9f7dca0842",
+    "semantic_hash": "2e20f32dffdede217dec8b9f7dca0842"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Persistence/CartDocument.cs": {
+    "mtime": 1783425873.2199905,
+    "ast_hash": "40be43e46887e535f99c185fe143998b",
+    "semantic_hash": "40be43e46887e535f99c185fe143998b"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Persistence/CartRecord.cs": {
+    "mtime": 1784378268.421178,
+    "ast_hash": "b924134de62b487b29caa45295a69ac4",
+    "semantic_hash": "b924134de62b487b29caa45295a69ac4"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Persistence/Configurations/CartConfiguration.cs": {
+    "mtime": 1784301857.7418244,
+    "ast_hash": "95f15c60eea96695af6ced0b897571ea",
+    "semantic_hash": "95f15c60eea96695af6ced0b897571ea"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Infrastructure/Persistence/PostgresCartRepository.cs": {
+    "mtime": 1784378281.937741,
+    "ast_hash": "cdcbab86ad33025b9c640e0ca11ac0fe",
+    "semantic_hash": "cdcbab86ad33025b9c640e0ca11ac0fe"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Api/CatalogModule.cs": {
+    "mtime": 1784118285.2325358,
+    "ast_hash": "9de76392ce27265a4271666b2048005c",
+    "semantic_hash": "9de76392ce27265a4271666b2048005c"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Api/Endpoints/ProductEndpoints.cs": {
+    "mtime": 1784118231.9005952,
+    "ast_hash": "b10709fc38a08a98642fa755c49ce59f",
+    "semantic_hash": "b10709fc38a08a98642fa755c49ce59f"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Api/ModularCommerce.Catalog.Api.csproj": {
+    "mtime": 1783077525.4089963,
+    "ast_hash": "c2128fd963f0c39e3f2b64033c29d6c2",
+    "semantic_hash": "c2128fd963f0c39e3f2b64033c29d6c2"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Abstractions/IProductQueries.cs": {
+    "mtime": 1783969370.0646334,
+    "ast_hash": "895d6695b1a3022279ff892b91e667c6",
+    "semantic_hash": "895d6695b1a3022279ff892b91e667c6"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Common/PagedResponse.cs": {
+    "mtime": 1783089899.5127697,
+    "ast_hash": "f419a0ef7d5a2e8c1188274eaa6c4364",
+    "semantic_hash": "f419a0ef7d5a2e8c1188274eaa6c4364"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/ModularCommerce.Catalog.Application.csproj": {
+    "mtime": 1783081944.4539032,
+    "ast_hash": "20670366e89c1bac533676b42cf33339",
+    "semantic_hash": "20670366e89c1bac533676b42cf33339"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/Common/ProductDetailResponse.cs": {
+    "mtime": 1783089902.42351,
+    "ast_hash": "fe6a6b298b828b47080a38d0b2ee4584",
+    "semantic_hash": "fe6a6b298b828b47080a38d0b2ee4584"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/Common/ProductSummaryResponse.cs": {
+    "mtime": 1783089905.6661,
+    "ast_hash": "c4199ab00ce0a3796c3cba9c65e67411",
+    "semantic_hash": "c4199ab00ce0a3796c3cba9c65e67411"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/CreateProduct/CreateProductCommand.cs": {
+    "mtime": 1784118159.8082173,
+    "ast_hash": "643d1a77a967054d8404b0054bafcb49",
+    "semantic_hash": "643d1a77a967054d8404b0054bafcb49"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/CreateProduct/CreateProductCommandValidator.cs": {
+    "mtime": 1784118168.7604065,
+    "ast_hash": "d178af5dc9733d83d9cf14fd49ce4959",
+    "semantic_hash": "d178af5dc9733d83d9cf14fd49ce4959"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/CreateProduct/CreateProductHandler.cs": {
+    "mtime": 1784118179.0359018,
+    "ast_hash": "42289bc7ef2cd4c80d0a08a53ffd3202",
+    "semantic_hash": "42289bc7ef2cd4c80d0a08a53ffd3202"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/GetProductById/GetProductByIdHandler.cs": {
+    "mtime": 1783969396.0126073,
+    "ast_hash": "ce6c04c645ba2f0d7314bebb693a955c",
+    "semantic_hash": "ce6c04c645ba2f0d7314bebb693a955c"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/GetProducts/GetProductsHandler.cs": {
+    "mtime": 1783089922.9370935,
+    "ast_hash": "388a3ac61a0219d81ca550c32c8948d3",
+    "semantic_hash": "388a3ac61a0219d81ca550c32c8948d3"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/GetProducts/GetProductsQuery.cs": {
+    "mtime": 1783089926.406386,
+    "ast_hash": "b9e7e42d285a2931364ea0cb777d8588",
+    "semantic_hash": "b9e7e42d285a2931364ea0cb777d8588"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/GetProducts/GetProductsQueryValidator.cs": {
+    "mtime": 1783089929.678213,
+    "ast_hash": "a81eaa095eb3818ed71b3176e6a13b11",
+    "semantic_hash": "a81eaa095eb3818ed71b3176e6a13b11"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/UpdateProduct/UpdateProductCommand.cs": {
+    "mtime": 1784118185.3836443,
+    "ast_hash": "cf325e08c7f3680221de0f763eb31ba5",
+    "semantic_hash": "cf325e08c7f3680221de0f763eb31ba5"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/UpdateProduct/UpdateProductCommandValidator.cs": {
+    "mtime": 1784118194.1242406,
+    "ast_hash": "d54bd3e810c0a7a5ed752a6cee4b86a9",
+    "semantic_hash": "d54bd3e810c0a7a5ed752a6cee4b86a9"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Application/Products/UpdateProduct/UpdateProductHandler.cs": {
+    "mtime": 1784118205.2948685,
+    "ast_hash": "ea0085d536f84ba8759f863a730cc51b",
+    "semantic_hash": "ea0085d536f84ba8759f863a730cc51b"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Contracts/IProductReader.cs": {
+    "mtime": 1783450362.7005746,
+    "ast_hash": "bbf9299a23a555016c31ee8bb675da38",
+    "semantic_hash": "bbf9299a23a555016c31ee8bb675da38"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Contracts/IntegrationEvents/ProductCreated.cs": {
+    "mtime": 1784118021.4292636,
+    "ast_hash": "ab47183d7a4cd56f3e0388dcbf2d10b2",
+    "semantic_hash": "ab47183d7a4cd56f3e0388dcbf2d10b2"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Contracts/IntegrationEvents/ProductUpdated.cs": {
+    "mtime": 1784118029.6584096,
+    "ast_hash": "8e81ea68f86425adb11f7f64795e8362",
+    "semantic_hash": "8e81ea68f86425adb11f7f64795e8362"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Contracts/ModularCommerce.Catalog.Contracts.csproj": {
+    "mtime": 1783077525.2149968,
+    "ast_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1",
+    "semantic_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Contracts/ProductSnapshotDto.cs": {
+    "mtime": 1783450366.837599,
+    "ast_hash": "2ffcf22c930f9f2d2c9bdf644c67a013",
+    "semantic_hash": "2ffcf22c930f9f2d2c9bdf644c67a013"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Domain/ModularCommerce.Catalog.Domain.csproj": {
+    "mtime": 1783077525.3380003,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Domain/Products/IProductRepository.cs": {
+    "mtime": 1784118124.2547874,
+    "ast_hash": "a583fc5365835ad0baa948385c7e75e8",
+    "semantic_hash": "a583fc5365835ad0baa948385c7e75e8"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Domain/Products/Product.cs": {
+    "mtime": 1784118058.601849,
+    "ast_hash": "9edc6b3aefc9859919c4a2d31aaeaaf6",
+    "semantic_hash": "9edc6b3aefc9859919c4a2d31aaeaaf6"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Domain/Products/ProductCreated.cs": {
+    "mtime": 1784118005.356597,
+    "ast_hash": "c057d5bbf1b57f8a73dcacaedaa21e8d",
+    "semantic_hash": "c057d5bbf1b57f8a73dcacaedaa21e8d"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Domain/Products/ProductErrors.cs": {
+    "mtime": 1783089972.7145748,
+    "ast_hash": "4ca30bcd34dd928b9a42fac1c7b05b15",
+    "semantic_hash": "4ca30bcd34dd928b9a42fac1c7b05b15"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Domain/Products/ProductUpdated.cs": {
+    "mtime": 1784118012.7203326,
+    "ast_hash": "7062295ffdf6879ee99651dce70ab345",
+    "semantic_hash": "7062295ffdf6879ee99651dce70ab345"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Caching/CachingProductQueries.cs": {
+    "mtime": 1783969407.4719713,
+    "ast_hash": "1ed7ba9f071d4f31f27748cbe05a984a",
+    "semantic_hash": "1ed7ba9f071d4f31f27748cbe05a984a"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Caching/CachingProductReader.cs": {
+    "mtime": 1783969420.3929057,
+    "ast_hash": "e5b6bae05a33234be151333ced8eec8a",
+    "semantic_hash": "e5b6bae05a33234be151333ced8eec8a"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Caching/CatalogCacheOptions.cs": {
+    "mtime": 1783969313.9345407,
+    "ast_hash": "20ebc96769c67195ddccfd2f66231e8a",
+    "semantic_hash": "20ebc96769c67195ddccfd2f66231e8a"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Caching/IProductCache.cs": {
+    "mtime": 1783969326.290082,
+    "ast_hash": "ace7ef53d863832db4c28dc7acf4aa7e",
+    "semantic_hash": "ace7ef53d863832db4c28dc7acf4aa7e"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Caching/RedisProductCache.cs": {
+    "mtime": 1783970761.7980804,
+    "ast_hash": "5cfc964af4c182817414d7e4a4bc901f",
+    "semantic_hash": "5cfc964af4c182817414d7e4a4bc901f"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/ModularCommerce.Catalog.Infrastructure.csproj": {
+    "mtime": 1784117980.9748611,
+    "ast_hash": "a63bfe8b04a61394227e7ad501e5dc20",
+    "semantic_hash": "a63bfe8b04a61394227e7ad501e5dc20"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Outbox/CatalogIntegrationEventRegistry.cs": {
+    "mtime": 1784118043.8702374,
+    "ast_hash": "7e9c21a358f44933b4c6abdcc7747f0d",
+    "semantic_hash": "7e9c21a358f44933b4c6abdcc7747f0d"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Outbox/CatalogOutboxDispatcher.cs": {
+    "mtime": 1784117955.7351592,
+    "ast_hash": "7f155a5bdb253f6ffe465bf788efcbb8",
+    "semantic_hash": "7f155a5bdb253f6ffe465bf788efcbb8"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Outbox/DomainEventToOutboxInterceptor.cs": {
+    "mtime": 1784117930.1178715,
+    "ast_hash": "89686530384c9646dfab101ab49bb11b",
+    "semantic_hash": "89686530384c9646dfab101ab49bb11b"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Outbox/IIntegrationEventMapper.cs": {
+    "mtime": 1784117910.4336188,
+    "ast_hash": "eb6f396be4755b8ab7612208d319d0ad",
+    "semantic_hash": "eb6f396be4755b8ab7612208d319d0ad"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Outbox/OutboxMessage.cs": {
+    "mtime": 1784117883.9923096,
+    "ast_hash": "eb1f2d0ddeca1c10334f7bbe1d223755",
+    "semantic_hash": "eb1f2d0ddeca1c10334f7bbe1d223755"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Outbox/OutboxMessageConfiguration.cs": {
+    "mtime": 1784117898.8629184,
+    "ast_hash": "50f8ded7a365c7397df82a8f74cd38d4",
+    "semantic_hash": "50f8ded7a365c7397df82a8f74cd38d4"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/CatalogDbContext.cs": {
+    "mtime": 1784118080.4916596,
+    "ast_hash": "b559a119e73555370a4e440ddb1e7c66",
+    "semantic_hash": "b559a119e73555370a4e440ddb1e7c66"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Configurations/ProductConfiguration.cs": {
+    "mtime": 1783089998.645174,
+    "ast_hash": "306cf66e977d712621af5b52a3a16ec2",
+    "semantic_hash": "306cf66e977d712621af5b52a3a16ec2"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Migrations/20260703123638_InitialCatalogSchema.Designer.cs": {
+    "mtime": 1783082198.930643,
+    "ast_hash": "c32c8c5b244653108d7a522ae75b3499",
+    "semantic_hash": "c32c8c5b244653108d7a522ae75b3499"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Migrations/20260703123638_InitialCatalogSchema.cs": {
+    "mtime": 1783082198.9295778,
+    "ast_hash": "56ad4865a20c0f6976760cf989476181",
+    "semantic_hash": "56ad4865a20c0f6976760cf989476181"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Migrations/20260715122542_AddCatalogOutbox.Designer.cs": {
+    "mtime": 1784118342.6991112,
+    "ast_hash": "051567c2b43be54a9060d2af2455f438",
+    "semantic_hash": "051567c2b43be54a9060d2af2455f438"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Migrations/20260715122542_AddCatalogOutbox.cs": {
+    "mtime": 1784118342.6981118,
+    "ast_hash": "e0d790e87434ffe660e8740b634a7d35",
+    "semantic_hash": "e0d790e87434ffe660e8740b634a7d35"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Migrations/CatalogDbContextModelSnapshot.cs": {
+    "mtime": 1784118342.7001114,
+    "ast_hash": "dd3a8ea7aff8598e4c607f7efa60383b",
+    "semantic_hash": "dd3a8ea7aff8598e4c607f7efa60383b"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Queries/ProductQueries.cs": {
+    "mtime": 1783969380.6698205,
+    "ast_hash": "220bf939aba710fd800e9730cbadad87",
+    "semantic_hash": "220bf939aba710fd800e9730cbadad87"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Queries/ProductReader.cs": {
+    "mtime": 1783450370.682776,
+    "ast_hash": "ed953a1f12bd02fa419630d3552342ee",
+    "semantic_hash": "ed953a1f12bd02fa419630d3552342ee"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Repositories/ProductRepository.cs": {
+    "mtime": 1784118136.2691808,
+    "ast_hash": "3ad4c1c72536a1ab3b5582b4e2f84443",
+    "semantic_hash": "3ad4c1c72536a1ab3b5582b4e2f84443"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Infrastructure/Persistence/Seed/CatalogDataSeeder.cs": {
+    "mtime": 1784118089.4340825,
+    "ast_hash": "bdc23027dd3f0ccab5db117005ec9db3",
+    "semantic_hash": "bdc23027dd3f0ccab5db117005ec9db3"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Api/Consumers/ProductChangedConsumer.cs": {
+    "mtime": 1784119060.9660175,
+    "ast_hash": "21a19a41f9b30b4b43cc82c2dd8b8513",
+    "semantic_hash": "21a19a41f9b30b4b43cc82c2dd8b8513"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Api/Consumers/ProductChangedConsumerDefinition.cs": {
+    "mtime": 1784119077.3352683,
+    "ast_hash": "12ea938ffbf31584d5a63ea427ed0d31",
+    "semantic_hash": "12ea938ffbf31584d5a63ea427ed0d31"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Api/DiscoveryModule.cs": {
+    "mtime": 1784120044.856626,
+    "ast_hash": "22a2b80c76d40d4089d0ddbf437d87a8",
+    "semantic_hash": "22a2b80c76d40d4089d0ddbf437d87a8"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Api/Endpoints/SearchEndpoints.cs": {
+    "mtime": 1784119087.7624724,
+    "ast_hash": "2dd71777d5502902932a1117c883d6a6",
+    "semantic_hash": "2dd71777d5502902932a1117c883d6a6"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Api/ModularCommerce.Discovery.Api.csproj": {
+    "mtime": 1784118531.3414836,
+    "ast_hash": "de0b932b7eb41fe5c74ccab8e3ae3df0",
+    "semantic_hash": "de0b932b7eb41fe5c74ccab8e3ae3df0"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Abstractions/IEmbeddingService.cs": {
+    "mtime": 1784118640.5448883,
+    "ast_hash": "081a3977cba0a6b0cffc22ef7283495d",
+    "semantic_hash": "081a3977cba0a6b0cffc22ef7283495d"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Abstractions/IProductVectorRepository.cs": {
+    "mtime": 1784118654.4902248,
+    "ast_hash": "06faaacb1b4fe70b4f728cfefba99d09",
+    "semantic_hash": "06faaacb1b4fe70b4f728cfefba99d09"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Common/SearchResultResponse.cs": {
+    "mtime": 1784118716.358747,
+    "ast_hash": "67d7d1d145673eee92e2cdb6161fa4b4",
+    "semantic_hash": "67d7d1d145673eee92e2cdb6161fa4b4"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Indexing/IndexProductHandler.cs": {
+    "mtime": 1784118686.0113916,
+    "ast_hash": "66efd48ec55bbe02b5b7f8af3dd0de5e",
+    "semantic_hash": "66efd48ec55bbe02b5b7f8af3dd0de5e"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Indexing/ProductIndexRequest.cs": {
+    "mtime": 1784118665.7861574,
+    "ast_hash": "d97745ce921f5c8cb4b8246417dc07d1",
+    "semantic_hash": "d97745ce921f5c8cb4b8246417dc07d1"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/ModularCommerce.Discovery.Application.csproj": {
+    "mtime": 1784118507.9983778,
+    "ast_hash": "45a848e6ac351870225f8a07e73d835a",
+    "semantic_hash": "45a848e6ac351870225f8a07e73d835a"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Search/SearchProductsHandler.cs": {
+    "mtime": 1784118733.2366157,
+    "ast_hash": "e3d15e5a5ed5292514d52f45438aec02",
+    "semantic_hash": "e3d15e5a5ed5292514d52f45438aec02"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Search/SearchQuery.cs": {
+    "mtime": 1784118698.79258,
+    "ast_hash": "1725ce111b686ef86d538617f78b7a99",
+    "semantic_hash": "1725ce111b686ef86d538617f78b7a99"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Application/Search/SearchQueryValidator.cs": {
+    "mtime": 1784118705.7446337,
+    "ast_hash": "e05b7881e6282390320696f2fd9b0f59",
+    "semantic_hash": "e05b7881e6282390320696f2fd9b0f59"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Contracts/IDiscoveryContractsMarker.cs": {
+    "mtime": 1784118626.8428202,
+    "ast_hash": "b587d0ce412269335f612537e4c1509d",
+    "semantic_hash": "b587d0ce412269335f612537e4c1509d"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Contracts/ModularCommerce.Discovery.Contracts.csproj": {
+    "mtime": 1784118489.8971329,
+    "ast_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1",
+    "semantic_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Domain/Embeddings/DiscoveryErrors.cs": {
+    "mtime": 1784118602.7893102,
+    "ast_hash": "efe8b555119b36c3c2bcc9becd5d93c5",
+    "semantic_hash": "efe8b555119b36c3c2bcc9becd5d93c5"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Domain/Embeddings/ProductEmbedding.cs": {
+    "mtime": 1784118588.3611264,
+    "ast_hash": "1a36b58ab91e5dfe0985310ee2f17dbb",
+    "semantic_hash": "1a36b58ab91e5dfe0985310ee2f17dbb"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Domain/ModularCommerce.Discovery.Domain.csproj": {
+    "mtime": 1784118483.6436846,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Embedding/EmbeddingConstants.cs": {
+    "mtime": 1784118784.6641557,
+    "ast_hash": "1d7a93b447da1286ae86a8a454292648",
+    "semantic_hash": "1d7a93b447da1286ae86a8a454292648"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Embedding/EmbeddingOptions.cs": {
+    "mtime": 1784118800.749325,
+    "ast_hash": "105e2eba3b46f8a4132434ad73b1d847",
+    "semantic_hash": "105e2eba3b46f8a4132434ad73b1d847"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Embedding/EmbeddingTransientException.cs": {
+    "mtime": 1784118811.9220903,
+    "ast_hash": "c3d144510e40be547bfd43f4603e8a26",
+    "semantic_hash": "c3d144510e40be547bfd43f4603e8a26"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Embedding/FakeEmbeddingService.cs": {
+    "mtime": 1784118886.4217904,
+    "ast_hash": "452a3e47735f0999cfe6eb017045863a",
+    "semantic_hash": "452a3e47735f0999cfe6eb017045863a"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Embedding/HttpEmbeddingService.cs": {
+    "mtime": 1784118915.451432,
+    "ast_hash": "d1b2a32af2ddbe5860f0915507bf0e30",
+    "semantic_hash": "d1b2a32af2ddbe5860f0915507bf0e30"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Migrations/20260715124136_InitialDiscoverySchema.Designer.cs": {
+    "mtime": 1784119296.8232057,
+    "ast_hash": "8b1fe631cf6f29bfdc3614c20b57d805",
+    "semantic_hash": "8b1fe631cf6f29bfdc3614c20b57d805"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Migrations/20260715124136_InitialDiscoverySchema.cs": {
+    "mtime": 1784119360.265768,
+    "ast_hash": "6cd137bd9c62b90dff3a2e7a9a928d17",
+    "semantic_hash": "6cd137bd9c62b90dff3a2e7a9a928d17"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Migrations/DiscoveryDbContextModelSnapshot.cs": {
+    "mtime": 1784119296.8252108,
+    "ast_hash": "8f3037ae23010c9b7e8a3927aa285038",
+    "semantic_hash": "8f3037ae23010c9b7e8a3927aa285038"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/ModularCommerce.Discovery.Infrastructure.csproj": {
+    "mtime": 1784118517.2213445,
+    "ast_hash": "605e689e06ad2c7fbe2c00dfa2d22227",
+    "semantic_hash": "605e689e06ad2c7fbe2c00dfa2d22227"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Persistence/Configurations/ProductEmbeddingConfiguration.cs": {
+    "mtime": 1784118970.1583142,
+    "ast_hash": "2dcf1fc3200b2a3f60005268e96b3c5a",
+    "semantic_hash": "2dcf1fc3200b2a3f60005268e96b3c5a"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Persistence/DiscoveryDbContext.cs": {
+    "mtime": 1784118955.2272973,
+    "ast_hash": "244c4645843b9c3f5ecedb8286bd8fc4",
+    "semantic_hash": "244c4645843b9c3f5ecedb8286bd8fc4"
+  },
+  "src/Modules/Discovery/ModularCommerce.Discovery.Infrastructure/Persistence/ProductVectorRepository.cs": {
+    "mtime": 1784119755.1708198,
+    "ast_hash": "51f771485f5a372653cebdaea5be8138",
+    "semantic_hash": "51f771485f5a372653cebdaea5be8138"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Api/Endpoints/AuthEndpoints.cs": {
+    "mtime": 1783777425.3867614,
+    "ast_hash": "4deac1be3de5eb0dc0f38f61d1d39bb4",
+    "semantic_hash": "4deac1be3de5eb0dc0f38f61d1d39bb4"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Api/IdentityModule.cs": {
+    "mtime": 1783777389.9311013,
+    "ast_hash": "6f8c0bd5ad1e3f2e07494e9ba521b7f1",
+    "semantic_hash": "6f8c0bd5ad1e3f2e07494e9ba521b7f1"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Api/ModularCommerce.Identity.Api.csproj": {
+    "mtime": 1783077523.8356667,
+    "ast_hash": "285611a97a5d575f58cf38d8a218572d",
+    "semantic_hash": "285611a97a5d575f58cf38d8a218572d"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Abstractions/IPasswordHasher.cs": {
+    "mtime": 1783425950.2026002,
+    "ast_hash": "02b5aca9b6241c72431ca5413e430839",
+    "semantic_hash": "02b5aca9b6241c72431ca5413e430839"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Abstractions/ITokenService.cs": {
+    "mtime": 1783425964.5342267,
+    "ast_hash": "ececdbacb61903b0bd08d5d328df9f31",
+    "semantic_hash": "ececdbacb61903b0bd08d5d328df9f31"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Common/TokenResponse.cs": {
+    "mtime": 1783425969.0212915,
+    "ast_hash": "789850dac031651c112dfe433b676cdb",
+    "semantic_hash": "789850dac031651c112dfe433b676cdb"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Login/LoginCommand.cs": {
+    "mtime": 1783425972.3346357,
+    "ast_hash": "ea4192d3f7dcdee412248cf3f7ff960f",
+    "semantic_hash": "ea4192d3f7dcdee412248cf3f7ff960f"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Login/LoginCommandValidator.cs": {
+    "mtime": 1783350026.4651115,
+    "ast_hash": "f2ce3ccfa00f6db24b8c819e56845da4",
+    "semantic_hash": "f2ce3ccfa00f6db24b8c819e56845da4"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Login/LoginHandler.cs": {
+    "mtime": 1783426027.77288,
+    "ast_hash": "d760a9f6d9675564a887cadce0bc2bfc",
+    "semantic_hash": "d760a9f6d9675564a887cadce0bc2bfc"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Logout/LogoutCommand.cs": {
+    "mtime": 1783426032.8595417,
+    "ast_hash": "aaad614d968b25801061974b2537b307",
+    "semantic_hash": "aaad614d968b25801061974b2537b307"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Logout/LogoutCommandValidator.cs": {
+    "mtime": 1783350055.2031581,
+    "ast_hash": "fa5511e8539bda1b5bc702b47963d68e",
+    "semantic_hash": "fa5511e8539bda1b5bc702b47963d68e"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Logout/LogoutHandler.cs": {
+    "mtime": 1783426046.2933946,
+    "ast_hash": "ca1c213720ebd3d879617083066bb376",
+    "semantic_hash": "ca1c213720ebd3d879617083066bb376"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Refresh/RefreshCommand.cs": {
+    "mtime": 1783426050.3011808,
+    "ast_hash": "ffabbf200ec64e32e951387b189207a6",
+    "semantic_hash": "ffabbf200ec64e32e951387b189207a6"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Refresh/RefreshCommandValidator.cs": {
+    "mtime": 1783350040.8147924,
+    "ast_hash": "cb81d7c713e10a7829b668a4fa18fb66",
+    "semantic_hash": "cb81d7c713e10a7829b668a4fa18fb66"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Refresh/RefreshHandler.cs": {
+    "mtime": 1783350050.73842,
+    "ast_hash": "fee36dcd53b16bf9939dc4e5ae5e6ea2",
+    "semantic_hash": "fee36dcd53b16bf9939dc4e5ae5e6ea2"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Signup/SignupCommand.cs": {
+    "mtime": 1783426087.075433,
+    "ast_hash": "3edf3f484f3a4dd554c60f7172af9cdf",
+    "semantic_hash": "3edf3f484f3a4dd554c60f7172af9cdf"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Signup/SignupCommandValidator.cs": {
+    "mtime": 1783426096.8892686,
+    "ast_hash": "176d6d6529744fc0dfe2583e52215cb3",
+    "semantic_hash": "176d6d6529744fc0dfe2583e52215cb3"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Signup/SignupHandler.cs": {
+    "mtime": 1783426107.584888,
+    "ast_hash": "31578a4f4c418712c1ac314f86c7a3ef",
+    "semantic_hash": "31578a4f4c418712c1ac314f86c7a3ef"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/Auth/Signup/SignupResponse.cs": {
+    "mtime": 1783426113.8068683,
+    "ast_hash": "20ded0179615f8783a3588bc873108c9",
+    "semantic_hash": "20ded0179615f8783a3588bc873108c9"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Application/ModularCommerce.Identity.Application.csproj": {
+    "mtime": 1783350088.122084,
+    "ast_hash": "b15bacd13ffbd4ea367ed7eed69b3f8e",
+    "semantic_hash": "b15bacd13ffbd4ea367ed7eed69b3f8e"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Contracts/ModularCommerce.Identity.Contracts.csproj": {
+    "mtime": 1783077524.2749977,
+    "ast_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1",
+    "semantic_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/ModularCommerce.Identity.Domain.csproj": {
+    "mtime": 1783077524.396997,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/Users/Email.cs": {
+    "mtime": 1783426136.8404667,
+    "ast_hash": "93c8b92dee79e4ea8099f445906f401d",
+    "semantic_hash": "93c8b92dee79e4ea8099f445906f401d"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/Users/IRefreshTokenRepository.cs": {
+    "mtime": 1783426169.1947064,
+    "ast_hash": "3b2c669ec51aa209215b8fdac9f3b21f",
+    "semantic_hash": "3b2c669ec51aa209215b8fdac9f3b21f"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/Users/IUserRepository.cs": {
+    "mtime": 1783426195.4628367,
+    "ast_hash": "70d7a9392e5cf5539cedb1fa92678a71",
+    "semantic_hash": "70d7a9392e5cf5539cedb1fa92678a71"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/Users/IdentityErrors.cs": {
+    "mtime": 1783426165.2023976,
+    "ast_hash": "4e1e3a43760ac8d27f44154726fb4a65",
+    "semantic_hash": "4e1e3a43760ac8d27f44154726fb4a65"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/Users/RefreshToken.cs": {
+    "mtime": 1783426363.5651872,
+    "ast_hash": "532b6de6f2ba495d651f1ac37c523a3e",
+    "semantic_hash": "532b6de6f2ba495d651f1ac37c523a3e"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/Users/User.cs": {
+    "mtime": 1783426386.5749676,
+    "ast_hash": "f3eafd11fccbbd2def40f63cc46ce8f6",
+    "semantic_hash": "f3eafd11fccbbd2def40f63cc46ce8f6"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Domain/Users/UserRegistered.cs": {
+    "mtime": 1783426396.0193303,
+    "ast_hash": "612243ec7c907a44e86969d2e75ac81c",
+    "semantic_hash": "612243ec7c907a44e86969d2e75ac81c"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/ModularCommerce.Identity.Infrastructure.csproj": {
+    "mtime": 1783350295.829002,
+    "ast_hash": "aba52830f855a2d34582aaf3938b1bd3",
+    "semantic_hash": "aba52830f855a2d34582aaf3938b1bd3"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/Configurations/RefreshTokenConfiguration.cs": {
+    "mtime": 1783426422.841441,
+    "ast_hash": "f70e8e84c5cf37ab3e97fff2912d63c6",
+    "semantic_hash": "f70e8e84c5cf37ab3e97fff2912d63c6"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/Configurations/UserConfiguration.cs": {
+    "mtime": 1783426436.305365,
+    "ast_hash": "b800bc98571435b1d3cc646ffcd37799",
+    "semantic_hash": "b800bc98571435b1d3cc646ffcd37799"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/IdentityDbContext.cs": {
+    "mtime": 1783350258.2996635,
+    "ast_hash": "4192e6d13e07e1fb8eaa1ff2478ce90d",
+    "semantic_hash": "4192e6d13e07e1fb8eaa1ff2478ce90d"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/Migrations/20260706150705_InitialIdentitySchema.Designer.cs": {
+    "mtime": 1783350425.3314793,
+    "ast_hash": "f16800a2431c2def43a54f71fec9cbbd",
+    "semantic_hash": "f16800a2431c2def43a54f71fec9cbbd"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/Migrations/20260706150705_InitialIdentitySchema.cs": {
+    "mtime": 1783350425.3314793,
+    "ast_hash": "237a8814510e38c8392ab9c0146b3c22",
+    "semantic_hash": "237a8814510e38c8392ab9c0146b3c22"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/Migrations/IdentityDbContextModelSnapshot.cs": {
+    "mtime": 1783350425.3324854,
+    "ast_hash": "8777aeb50b31a6edda2183db5728e163",
+    "semantic_hash": "8777aeb50b31a6edda2183db5728e163"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/Repositories/RefreshTokenRepository.cs": {
+    "mtime": 1783426448.6597407,
+    "ast_hash": "ce361fd192733eb919bb00948c94feeb",
+    "semantic_hash": "ce361fd192733eb919bb00948c94feeb"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Persistence/Repositories/UserRepository.cs": {
+    "mtime": 1783350275.8025134,
+    "ast_hash": "1debc75dfafca3c86261274f8e63449e",
+    "semantic_hash": "1debc75dfafca3c86261274f8e63449e"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Security/IdentityPasswordHasher.cs": {
+    "mtime": 1783426528.646581,
+    "ast_hash": "853bf43cb3df9f174e07e71101987be4",
+    "semantic_hash": "853bf43cb3df9f174e07e71101987be4"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Infrastructure/Security/JwtTokenService.cs": {
+    "mtime": 1783426539.0261755,
+    "ast_hash": "a1f97757db94f7f68a52c09159999535",
+    "semantic_hash": "a1f97757db94f7f68a52c09159999535"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Api/Endpoints/ReservationEndpoints.cs": {
+    "mtime": 1783276178.8555734,
+    "ast_hash": "2865fc6c81aca99f986effe42872bf69",
+    "semantic_hash": "2865fc6c81aca99f986effe42872bf69"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Api/Endpoints/StockEndpoints.cs": {
+    "mtime": 1783548023.2644997,
+    "ast_hash": "a29dabea543eadaa40402c68e29470a4",
+    "semantic_hash": "a29dabea543eadaa40402c68e29470a4"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Api/InventoryModule.cs": {
+    "mtime": 1783777391.4238894,
+    "ast_hash": "224b76a84103d9cb1a2eb614b380ad45",
+    "semantic_hash": "224b76a84103d9cb1a2eb614b380ad45"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Api/ModularCommerce.Inventory.Api.csproj": {
+    "mtime": 1783077526.9705496,
+    "ast_hash": "3c468f7dfc9366f07a311b01956463fb",
+    "semantic_hash": "3c468f7dfc9366f07a311b01956463fb"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Abstractions/IDistributedLock.cs": {
+    "mtime": 1783346572.2707312,
+    "ast_hash": "24d98ba3d437678eef681eeaed6400f0",
+    "semantic_hash": "24d98ba3d437678eef681eeaed6400f0"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Abstractions/IInventoryQueries.cs": {
+    "mtime": 1783278751.6756933,
+    "ast_hash": "2ea0467a6863b985b3deb7d2f407ed81",
+    "semantic_hash": "2ea0467a6863b985b3deb7d2f407ed81"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Abstractions/IReservationStrategy.cs": {
+    "mtime": 1783278772.8985815,
+    "ast_hash": "09953c331a1d4362480e6e2b2c302236",
+    "semantic_hash": "09953c331a1d4362480e6e2b2c302236"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/ModularCommerce.Inventory.Application.csproj": {
+    "mtime": 1783266064.035293,
+    "ast_hash": "870568edb0467d557a19b8a108d15d71",
+    "semantic_hash": "870568edb0467d557a19b8a108d15d71"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Reservations/Common/ReservationResponse.cs": {
+    "mtime": 1783278777.2252867,
+    "ast_hash": "20d059335beef100136627da1deb6085",
+    "semantic_hash": "20d059335beef100136627da1deb6085"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Reservations/GetReservation/GetReservationHandler.cs": {
+    "mtime": 1783278779.9964764,
+    "ast_hash": "33fbe6a91b173641a5090ecf1309c1ca",
+    "semantic_hash": "33fbe6a91b173641a5090ecf1309c1ca"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Reservations/ReserveStock/ReserveStockCommand.cs": {
+    "mtime": 1783265986.5461507,
+    "ast_hash": "63185180183966ffc710ede194660bfe",
+    "semantic_hash": "63185180183966ffc710ede194660bfe"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Reservations/ReserveStock/ReserveStockCommandValidator.cs": {
+    "mtime": 1783278870.429031,
+    "ast_hash": "745edc52a50a295283f3e9472aaeff31",
+    "semantic_hash": "745edc52a50a295283f3e9472aaeff31"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Reservations/ReserveStock/ReserveStockHandler.cs": {
+    "mtime": 1783278878.3171668,
+    "ast_hash": "3b55ee40d0cd9c9c66d2032710f7123d",
+    "semantic_hash": "3b55ee40d0cd9c9c66d2032710f7123d"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Stock/GetStock/GetStockHandler.cs": {
+    "mtime": 1783278881.9143827,
+    "ast_hash": "a512b5f34d213995bc7c794500eae7d5",
+    "semantic_hash": "a512b5f34d213995bc7c794500eae7d5"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Stock/GetStock/StockResponse.cs": {
+    "mtime": 1783266014.3171837,
+    "ast_hash": "cb3f94368f36c7e5bf4c8a98227bc0fd",
+    "semantic_hash": "cb3f94368f36c7e5bf4c8a98227bc0fd"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Stock/SetStock/SetStockCommand.cs": {
+    "mtime": 1783278891.3676674,
+    "ast_hash": "bee9d540d961ccac2263ef27af970d5c",
+    "semantic_hash": "bee9d540d961ccac2263ef27af970d5c"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Application/Stock/SetStock/SetStockHandler.cs": {
+    "mtime": 1783278902.6268568,
+    "ast_hash": "707b2dfa8d0505dd43ff11f5d221212c",
+    "semantic_hash": "707b2dfa8d0505dd43ff11f5d221212c"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Contracts/IStockReservationService.cs": {
+    "mtime": 1783590532.6490133,
+    "ast_hash": "0fdbbc149dec1d83f1cfb8d47b2b0c2b",
+    "semantic_hash": "0fdbbc149dec1d83f1cfb8d47b2b0c2b"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Contracts/ModularCommerce.Inventory.Contracts.csproj": {
+    "mtime": 1783450400.1016512,
+    "ast_hash": "e473cea04f479b3e331afd00c4452e05",
+    "semantic_hash": "e473cea04f479b3e331afd00c4452e05"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Contracts/StockReservationDto.cs": {
+    "mtime": 1783450405.0020106,
+    "ast_hash": "a5f6412fd6af80e484b6b5b2431c38cf",
+    "semantic_hash": "a5f6412fd6af80e484b6b5b2431c38cf"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/ModularCommerce.Inventory.Domain.csproj": {
+    "mtime": 1783077527.2225325,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/IStockItemRepository.cs": {
+    "mtime": 1783279712.0481741,
+    "ast_hash": "2344c11563a3bcc1a0c082890f995ad4",
+    "semantic_hash": "2344c11563a3bcc1a0c082890f995ad4"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/InventoryErrors.cs": {
+    "mtime": 1783964034.1220145,
+    "ast_hash": "bf3ea99d168f2724209d5c139379daae",
+    "semantic_hash": "bf3ea99d168f2724209d5c139379daae"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/ProductSoldOut.cs": {
+    "mtime": 1783278926.373694,
+    "ast_hash": "421ae1f59a324f6579fc3cc6817adf32",
+    "semantic_hash": "421ae1f59a324f6579fc3cc6817adf32"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/Reservation.cs": {
+    "mtime": 1783590582.6440666,
+    "ast_hash": "c1c40dec5c41c40be6117caaeb58223f",
+    "semantic_hash": "c1c40dec5c41c40be6117caaeb58223f"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/ReservationStatus.cs": {
+    "mtime": 1783590590.7448719,
+    "ast_hash": "b4ffee95c3534210f743811dba7dc70c",
+    "semantic_hash": "b4ffee95c3534210f743811dba7dc70c"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/StockCommitted.cs": {
+    "mtime": 1783512735.009629,
+    "ast_hash": "bb8bf431c746148dac550b318cad1421",
+    "semantic_hash": "bb8bf431c746148dac550b318cad1421"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/StockExpired.cs": {
+    "mtime": 1783590603.1421943,
+    "ast_hash": "8ed35257524c234432114642e9f34464",
+    "semantic_hash": "8ed35257524c234432114642e9f34464"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/StockItem.cs": {
+    "mtime": 1783590640.85229,
+    "ast_hash": "47e28f5881c072c0638a7d4e8c328298",
+    "semantic_hash": "47e28f5881c072c0638a7d4e8c328298"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/StockReleased.cs": {
+    "mtime": 1783450461.2085636,
+    "ast_hash": "b93a39d61ffedc14d456ca7c4cdb03c2",
+    "semantic_hash": "b93a39d61ffedc14d456ca7c4cdb03c2"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/StockReserved.cs": {
+    "mtime": 1783278974.425615,
+    "ast_hash": "5956ce6cda235881d13f2bceb69261d4",
+    "semantic_hash": "5956ce6cda235881d13f2bceb69261d4"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Domain/Stock/StockReturned.cs": {
+    "mtime": 1783590651.0352592,
+    "ast_hash": "a059ccd91509a75afc929628ea622fec",
+    "semantic_hash": "a059ccd91509a75afc929628ea622fec"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/BackgroundJobs/ReservationTtlSweeper.cs": {
+    "mtime": 1783590668.7516582,
+    "ast_hash": "8372b5b15bf14eaaf534f6bb20329545",
+    "semantic_hash": "8372b5b15bf14eaaf534f6bb20329545"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/ContractAdapters/StockReservationService.cs": {
+    "mtime": 1783546997.7682257,
+    "ast_hash": "2ab63a2fb158dda9cbb0e7013a98d799",
+    "semantic_hash": "2ab63a2fb158dda9cbb0e7013a98d799"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Locking/RedisDistributedLock.cs": {
+    "mtime": 1783346580.9237757,
+    "ast_hash": "b33e329d9cbbc858c5b14e6ed07e0a54",
+    "semantic_hash": "b33e329d9cbbc858c5b14e6ed07e0a54"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/ModularCommerce.Inventory.Infrastructure.csproj": {
+    "mtime": 1783590659.8630295,
+    "ast_hash": "e590d4d29162c55fdc51b54bbe369b62",
+    "semantic_hash": "e590d4d29162c55fdc51b54bbe369b62"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Configurations/ReservationConfiguration.cs": {
+    "mtime": 1783590713.93995,
+    "ast_hash": "8980435050235195d82f5da3f9efe261",
+    "semantic_hash": "8980435050235195d82f5da3f9efe261"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Configurations/StockItemConfiguration.cs": {
+    "mtime": 1783279005.6636007,
+    "ast_hash": "133de8af44c0507f23bafc5df64bd545",
+    "semantic_hash": "133de8af44c0507f23bafc5df64bd545"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/InventoryDbContext.cs": {
+    "mtime": 1783278980.4739518,
+    "ast_hash": "fc2697710734f8ac17e2741942e80417",
+    "semantic_hash": "fc2697710734f8ac17e2741942e80417"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Migrations/20260705154708_InitialInventorySchema.Designer.cs": {
+    "mtime": 1783266428.909674,
+    "ast_hash": "c6cc97d301e3230da9ce7d1c238ea713",
+    "semantic_hash": "c6cc97d301e3230da9ce7d1c238ea713"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Migrations/20260705154708_InitialInventorySchema.cs": {
+    "mtime": 1783266428.909674,
+    "ast_hash": "34c4c777c3574267ca2694804662429a",
+    "semantic_hash": "34c4c777c3574267ca2694804662429a"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Migrations/20260708214721_AddReservationExpiryIndex.Designer.cs": {
+    "mtime": 1783547241.1824918,
+    "ast_hash": "2c1f9d2b1f29c3c9598f36bbd9ba0c46",
+    "semantic_hash": "2c1f9d2b1f29c3c9598f36bbd9ba0c46"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Migrations/20260708214721_AddReservationExpiryIndex.cs": {
+    "mtime": 1783547241.1814957,
+    "ast_hash": "ccb0d1aae0d48ec4a42e9862daf0dcd6",
+    "semantic_hash": "ccb0d1aae0d48ec4a42e9862daf0dcd6"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Migrations/InventoryDbContextModelSnapshot.cs": {
+    "mtime": 1783547241.1839995,
+    "ast_hash": "49994e9124d21bf83c0d09dc39d2efba",
+    "semantic_hash": "49994e9124d21bf83c0d09dc39d2efba"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Queries/InventoryQueries.cs": {
+    "mtime": 1783279027.035355,
+    "ast_hash": "c62ab51265474baaa37fcc18af956728",
+    "semantic_hash": "c62ab51265474baaa37fcc18af956728"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Repositories/StockItemRepository.cs": {
+    "mtime": 1783279045.806064,
+    "ast_hash": "b679b64e23f30705b869b0f0e72aab3b",
+    "semantic_hash": "b679b64e23f30705b869b0f0e72aab3b"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Seed/InventoryDataSeeder.cs": {
+    "mtime": 1783279053.8315566,
+    "ast_hash": "41b7e89bd2649f45d675795e7a755ffb",
+    "semantic_hash": "41b7e89bd2649f45d675795e7a755ffb"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Strategies/NaiveReservationStrategy.cs": {
+    "mtime": 1783279940.7945316,
+    "ast_hash": "9110caae00f0650701c8f01c5d7b0606",
+    "semantic_hash": "9110caae00f0650701c8f01c5d7b0606"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Strategies/OptimisticConcurrencyReservationStrategy.cs": {
+    "mtime": 1783279078.6321123,
+    "ast_hash": "4cfd152561ce3831f2f282bf51a07356",
+    "semantic_hash": "4cfd152561ce3831f2f282bf51a07356"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Infrastructure/Persistence/Strategies/RedisLockReservationStrategy.cs": {
+    "mtime": 1783346602.2845566,
+    "ast_hash": "5ca9c581bd035acd80d35aa93bee48ba",
+    "semantic_hash": "5ca9c581bd035acd80d35aa93bee48ba"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Api/Consumers/OrderPaidNotificationConsumer.cs": {
+    "mtime": 1783775042.525272,
+    "ast_hash": "7f9f275cfc20ec1686ae4770740adca1",
+    "semantic_hash": "7f9f275cfc20ec1686ae4770740adca1"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Api/Consumers/OrderPaidNotificationConsumerDefinition.cs": {
+    "mtime": 1783775071.6586566,
+    "ast_hash": "6b1d51c852b38809f742f403ca8f7333",
+    "semantic_hash": "6b1d51c852b38809f742f403ca8f7333"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Api/Endpoints/NotificationDevEndpoints.cs": {
+    "mtime": 1783775086.8402407,
+    "ast_hash": "c85ea9c0110986c1423595028c73ec48",
+    "semantic_hash": "c85ea9c0110986c1423595028c73ec48"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Api/ModularCommerce.Notification.Api.csproj": {
+    "mtime": 1783521608.1034987,
+    "ast_hash": "99664b30bb5f388521d85a62057c67e3",
+    "semantic_hash": "99664b30bb5f388521d85a62057c67e3"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Api/NotificationModule.cs": {
+    "mtime": 1783963142.239686,
+    "ast_hash": "6be7bca300b1e85a03a7e38e9ac610c1",
+    "semantic_hash": "6be7bca300b1e85a03a7e38e9ac610c1"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Application/Abstractions/INotificationChannel.cs": {
+    "mtime": 1783775104.7980947,
+    "ast_hash": "7bf0144d0840023ceaeecd006392a059",
+    "semantic_hash": "7bf0144d0840023ceaeecd006392a059"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Application/Abstractions/INotificationProcessor.cs": {
+    "mtime": 1783775109.8607724,
+    "ast_hash": "98343331a0365654fb91e3e0724b288f",
+    "semantic_hash": "98343331a0365654fb91e3e0724b288f"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Application/Abstractions/NotificationDeliveryException.cs": {
+    "mtime": 1783775113.8886268,
+    "ast_hash": "71215fec123e1f94897e0b573a07a8d6",
+    "semantic_hash": "71215fec123e1f94897e0b573a07a8d6"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Application/Delivery/NotificationInstruction.cs": {
+    "mtime": 1783775120.2637696,
+    "ast_hash": "3d484dd59178fa2da3ff36add5118761",
+    "semantic_hash": "3d484dd59178fa2da3ff36add5118761"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Application/Delivery/NotificationMessage.cs": {
+    "mtime": 1783775126.2501128,
+    "ast_hash": "559c5caf283177788eac1736317fd4e3",
+    "semantic_hash": "559c5caf283177788eac1736317fd4e3"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Application/Delivery/NotificationOptions.cs": {
+    "mtime": 1783963158.9816334,
+    "ast_hash": "4793425938c1feaf7cc236c0679ced9f",
+    "semantic_hash": "4793425938c1feaf7cc236c0679ced9f"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Application/ModularCommerce.Notification.Application.csproj": {
+    "mtime": 1783077523.500993,
+    "ast_hash": "2c37a3a954b9128715a357ac5532fe04",
+    "semantic_hash": "2c37a3a954b9128715a357ac5532fe04"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Contracts/ModularCommerce.Notification.Contracts.csproj": {
+    "mtime": 1783077523.2807143,
+    "ast_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1",
+    "semantic_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Domain/Inbox/ProcessedMessage.cs": {
+    "mtime": 1783775159.9968338,
+    "ast_hash": "4d5fa953c1de10e58e1a232b567091dc",
+    "semantic_hash": "4d5fa953c1de10e58e1a232b567091dc"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Domain/ModularCommerce.Notification.Domain.csproj": {
+    "mtime": 1783077523.4240067,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Domain/Notifications/NotificationLog.cs": {
+    "mtime": 1783775164.9178622,
+    "ast_hash": "b0501a79e8546d3efe3e297a86784d9c",
+    "semantic_hash": "b0501a79e8546d3efe3e297a86784d9c"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Channels/EmailNotificationChannel.cs": {
+    "mtime": 1783775227.5870657,
+    "ast_hash": "707aaf875d0b0deaa66290e78dcc91f2",
+    "semantic_hash": "707aaf875d0b0deaa66290e78dcc91f2"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Channels/FaultInjectingChannel.cs": {
+    "mtime": 1783775270.6693861,
+    "ast_hash": "c3e6b67e61950eaef7aa09d4c35465c2",
+    "semantic_hash": "c3e6b67e61950eaef7aa09d4c35465c2"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Channels/WebhookNotificationChannel.cs": {
+    "mtime": 1783775274.0904212,
+    "ast_hash": "132a62dadd0f7b587cdcc541d289ad79",
+    "semantic_hash": "132a62dadd0f7b587cdcc541d289ad79"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Migrations/20260709105702_InitialNotification.Designer.cs": {
+    "mtime": 1783594622.5713363,
+    "ast_hash": "61d7036bb10a56cef8aa26dbdff8d9fd",
+    "semantic_hash": "61d7036bb10a56cef8aa26dbdff8d9fd"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Migrations/20260709105702_InitialNotification.cs": {
+    "mtime": 1783594622.5713363,
+    "ast_hash": "32b04614d894c0b631fddf5333d4855e",
+    "semantic_hash": "32b04614d894c0b631fddf5333d4855e"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Migrations/NotificationDbContextModelSnapshot.cs": {
+    "mtime": 1783594622.572852,
+    "ast_hash": "075b158e33b2ea6ddfa8a425af81a8fe",
+    "semantic_hash": "075b158e33b2ea6ddfa8a425af81a8fe"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/ModularCommerce.Notification.Infrastructure.csproj": {
+    "mtime": 1783594295.732692,
+    "ast_hash": "ea706703c74e79fd0d7bba391a62ad98",
+    "semantic_hash": "ea706703c74e79fd0d7bba391a62ad98"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/NotificationProcessor.cs": {
+    "mtime": 1783775222.4055843,
+    "ast_hash": "7ef03e0ca91b435e635383cfdffc484a",
+    "semantic_hash": "7ef03e0ca91b435e635383cfdffc484a"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Persistence/Configurations/NotificationLogConfiguration.cs": {
+    "mtime": 1783594311.2040458,
+    "ast_hash": "ce832a4c16b8621976c15869b45f01ca",
+    "semantic_hash": "ce832a4c16b8621976c15869b45f01ca"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Persistence/Configurations/ProcessedMessageConfiguration.cs": {
+    "mtime": 1783594306.265514,
+    "ast_hash": "1e032826ac66f4de5976910f9910760d",
+    "semantic_hash": "1e032826ac66f4de5976910f9910760d"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Infrastructure/Persistence/NotificationDbContext.cs": {
+    "mtime": 1783594299.231798,
+    "ast_hash": "b75c58adfd0e53f91a305159bb645a1c",
+    "semantic_hash": "b75c58adfd0e53f91a305159bb645a1c"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Api/Endpoints/OrderEndpoints.cs": {
+    "mtime": 1783777421.1824412,
+    "ast_hash": "0de33c85abe997bb536346a59c961293",
+    "semantic_hash": "0de33c85abe997bb536346a59c961293"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Api/ModularCommerce.Ordering.Api.csproj": {
+    "mtime": 1783077525.9089968,
+    "ast_hash": "8b98a5f4c958586ced5b6782fb1f030c",
+    "semantic_hash": "8b98a5f4c958586ced5b6782fb1f030c"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Api/OrderingModule.cs": {
+    "mtime": 1783777393.4384735,
+    "ast_hash": "9fb31cf0e414ebad6044949fba4848ee",
+    "semantic_hash": "9fb31cf0e414ebad6044949fba4848ee"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Abstractions/IOrderQueries.cs": {
+    "mtime": 1783450517.3984482,
+    "ast_hash": "577998d87d712edfa0ce7462835865e1",
+    "semantic_hash": "577998d87d712edfa0ce7462835865e1"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/ModularCommerce.Ordering.Application.csproj": {
+    "mtime": 1783510068.141686,
+    "ast_hash": "8d14a1033fce129be146e9f02deb7c37",
+    "semantic_hash": "8d14a1033fce129be146e9f02deb7c37"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/Cancel/CancelOrderHandler.cs": {
+    "mtime": 1783961642.3154747,
+    "ast_hash": "16d3addd0f6f6a1528fd68d5db7271da",
+    "semantic_hash": "16d3addd0f6f6a1528fd68d5db7271da"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/Checkout/CheckoutCommand.cs": {
+    "mtime": 1783450526.3221476,
+    "ast_hash": "c41202c38cd6e06412b4e25b3c722416",
+    "semantic_hash": "c41202c38cd6e06412b4e25b3c722416"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/Checkout/CheckoutCommandValidator.cs": {
+    "mtime": 1783450531.0779254,
+    "ast_hash": "0cf19de8204997255421970f86961bd4",
+    "semantic_hash": "0cf19de8204997255421970f86961bd4"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/Checkout/CheckoutHandler.cs": {
+    "mtime": 1783961618.5796344,
+    "ast_hash": "8fb34b83eda31e2243f4c471eef1e0ef",
+    "semantic_hash": "8fb34b83eda31e2243f4c471eef1e0ef"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/Checkout/CheckoutResponse.cs": {
+    "mtime": 1783450564.3209124,
+    "ast_hash": "4fe1d64b7b245607f7194eb4d069fe7c",
+    "semantic_hash": "4fe1d64b7b245607f7194eb4d069fe7c"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/Common/OrderResponse.cs": {
+    "mtime": 1783961609.301545,
+    "ast_hash": "f0fc5163680af47ffaa75a0358facaff",
+    "semantic_hash": "f0fc5163680af47ffaa75a0358facaff"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/GetMyOrders/GetMyOrdersHandler.cs": {
+    "mtime": 1783450581.7492137,
+    "ast_hash": "236b502dd33876efa32d8510eea8597f",
+    "semantic_hash": "236b502dd33876efa32d8510eea8597f"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Application/Orders/GetOrder/GetOrderHandler.cs": {
+    "mtime": 1783450591.306898,
+    "ast_hash": "5af9c6cd5b0463948c40e5e332df5e36",
+    "semantic_hash": "5af9c6cd5b0463948c40e5e332df5e36"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Contracts/IOrderReservationReconciler.cs": {
+    "mtime": 1783547034.006441,
+    "ast_hash": "cc6ae3b147881da761a518fd2fb9f5cd",
+    "semantic_hash": "cc6ae3b147881da761a518fd2fb9f5cd"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Contracts/IntegrationEvents/OrderCancelled.cs": {
+    "mtime": 1783590902.8200552,
+    "ast_hash": "97ea979e88b774bd90b969e5eb0a6f58",
+    "semantic_hash": "97ea979e88b774bd90b969e5eb0a6f58"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Contracts/IntegrationEvents/OrderPaid.cs": {
+    "mtime": 1783544492.3836646,
+    "ast_hash": "60654cc7d29a3c398d79b15e7ab1c0b3",
+    "semantic_hash": "60654cc7d29a3c398d79b15e7ab1c0b3"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Contracts/ModularCommerce.Ordering.Contracts.csproj": {
+    "mtime": 1783077525.6629994,
+    "ast_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1",
+    "semantic_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/ModularCommerce.Ordering.Domain.csproj": {
+    "mtime": 1783077525.7299993,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/IOrderRepository.cs": {
+    "mtime": 1783590913.6766975,
+    "ast_hash": "df4524233701dc7ad1e1ec7fc786394e",
+    "semantic_hash": "df4524233701dc7ad1e1ec7fc786394e"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/Order.cs": {
+    "mtime": 1783963209.2753437,
+    "ast_hash": "e214a3ae46f2155bda2e51395af2afb8",
+    "semantic_hash": "e214a3ae46f2155bda2e51395af2afb8"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderCancelled.cs": {
+    "mtime": 1783590943.769385,
+    "ast_hash": "731edf104cba95a3cc6b4b96540e26dc",
+    "semantic_hash": "731edf104cba95a3cc6b4b96540e26dc"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderCreated.cs": {
+    "mtime": 1783450802.699151,
+    "ast_hash": "3c4daa6e9002792fa379d0ae50bca815",
+    "semantic_hash": "3c4daa6e9002792fa379d0ae50bca815"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderErrors.cs": {
+    "mtime": 1783450825.7644174,
+    "ast_hash": "f7c1b975eb0e66946192d50dc809df17",
+    "semantic_hash": "f7c1b975eb0e66946192d50dc809df17"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderLine.cs": {
+    "mtime": 1783963325.0677245,
+    "ast_hash": "537db69685304ab18e83a26e33144f46",
+    "semantic_hash": "537db69685304ab18e83a26e33144f46"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderPaid.cs": {
+    "mtime": 1783544524.0012033,
+    "ast_hash": "535100802bbdfc1b481f563ebe8b629d",
+    "semantic_hash": "535100802bbdfc1b481f563ebe8b629d"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderStatus.cs": {
+    "mtime": 1783434672.7847197,
+    "ast_hash": "585715d721e98613f5840b8e9a24dc9f",
+    "semantic_hash": "585715d721e98613f5840b8e9a24dc9f"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderStatusChange.cs": {
+    "mtime": 1783450879.061757,
+    "ast_hash": "8cada222dd631af47dfda18a0ad04d23",
+    "semantic_hash": "8cada222dd631af47dfda18a0ad04d23"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Domain/Orders/OrderStatusChanged.cs": {
+    "mtime": 1783450884.4565387,
+    "ast_hash": "f3ea931b5ccb7c5875840c49e17afe46",
+    "semantic_hash": "f3ea931b5ccb7c5875840c49e17afe46"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/ContractAdapters/OrderReservationReconciler.cs": {
+    "mtime": 1783547051.9418428,
+    "ast_hash": "7c036333d8e02ec16d609a0c897dfca4",
+    "semantic_hash": "7c036333d8e02ec16d609a0c897dfca4"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/ModularCommerce.Ordering.Infrastructure.csproj": {
+    "mtime": 1783544535.1055603,
+    "ast_hash": "6db9a1547fe0f191922ff50aa57195b1",
+    "semantic_hash": "6db9a1547fe0f191922ff50aa57195b1"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Outbox/DomainEventToOutboxInterceptor.cs": {
+    "mtime": 1783521495.3074114,
+    "ast_hash": "1b2a0f2cebee7f37abf3cdb092170eea",
+    "semantic_hash": "1b2a0f2cebee7f37abf3cdb092170eea"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Outbox/IIntegrationEventMapper.cs": {
+    "mtime": 1783521464.5503044,
+    "ast_hash": "ede196a7272b905a35a52bf7fc5da0da",
+    "semantic_hash": "ede196a7272b905a35a52bf7fc5da0da"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Outbox/OrderingIntegrationEventRegistry.cs": {
+    "mtime": 1783547562.561556,
+    "ast_hash": "0544bf084a75481b864708fe16fa3294",
+    "semantic_hash": "0544bf084a75481b864708fe16fa3294"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Outbox/OutboxDispatcher.cs": {
+    "mtime": 1783521831.591332,
+    "ast_hash": "b6757ab91de32fd568f03dc6193d11a8",
+    "semantic_hash": "b6757ab91de32fd568f03dc6193d11a8"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Outbox/OutboxMessage.cs": {
+    "mtime": 1783544815.9104774,
+    "ast_hash": "68f4ae7146472930867be75f7aa5fc7c",
+    "semantic_hash": "68f4ae7146472930867be75f7aa5fc7c"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Outbox/OutboxMessageConfiguration.cs": {
+    "mtime": 1783521424.1247103,
+    "ast_hash": "446b399f17f60a13421b42d9d54259ea",
+    "semantic_hash": "446b399f17f60a13421b42d9d54259ea"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Configurations/OrderConfiguration.cs": {
+    "mtime": 1783961760.809618,
+    "ast_hash": "72d1c438987c7dbb6b76e34a993348c6",
+    "semantic_hash": "72d1c438987c7dbb6b76e34a993348c6"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Migrations/20260707143950_InitialOrderingSchema.Designer.cs": {
+    "mtime": 1783435190.9320302,
+    "ast_hash": "9c6d761eb9d820a5d1b81379a8193d8d",
+    "semantic_hash": "9c6d761eb9d820a5d1b81379a8193d8d"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Migrations/20260707143950_InitialOrderingSchema.cs": {
+    "mtime": 1783435190.9305243,
+    "ast_hash": "ee7d82c5368d75eda611d714ffb58811",
+    "semantic_hash": "ee7d82c5368d75eda611d714ffb58811"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Migrations/20260708144210_AddOutboxMessages.Designer.cs": {
+    "mtime": 1783521731.055879,
+    "ast_hash": "0783925f8a4397416186b9112b48ad72",
+    "semantic_hash": "0783925f8a4397416186b9112b48ad72"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Migrations/20260708144210_AddOutboxMessages.cs": {
+    "mtime": 1783521731.055879,
+    "ast_hash": "9ca279c57d2e2ba268687a2c8ff00d0b",
+    "semantic_hash": "9ca279c57d2e2ba268687a2c8ff00d0b"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Migrations/OrderingDbContextModelSnapshot.cs": {
+    "mtime": 1783521731.05688,
+    "ast_hash": "976913e4b6015aa02c3dffc441a118a4",
+    "semantic_hash": "976913e4b6015aa02c3dffc441a118a4"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/OrderingDbContext.cs": {
+    "mtime": 1783544851.943336,
+    "ast_hash": "1e9ff78570199f23e2aabbb324a844d5",
+    "semantic_hash": "1e9ff78570199f23e2aabbb324a844d5"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Queries/OrderQueries.cs": {
+    "mtime": 1783961613.9129558,
+    "ast_hash": "ee993924b064a76ecb305dec5c7a68fc",
+    "semantic_hash": "ee993924b064a76ecb305dec5c7a68fc"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Infrastructure/Persistence/Repositories/OrderRepository.cs": {
+    "mtime": 1783591003.9902396,
+    "ast_hash": "2237303f25767d255acc396420b31aac",
+    "semantic_hash": "2237303f25767d255acc396420b31aac"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Api/Endpoints/PaymentDevEndpoints.cs": {
+    "mtime": 1783944840.9933171,
+    "ast_hash": "4f3d5e44fb99780772b07d847196b91b",
+    "semantic_hash": "4f3d5e44fb99780772b07d847196b91b"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Api/ModularCommerce.Payment.Api.csproj": {
+    "mtime": 1783077524.508998,
+    "ast_hash": "20791c6dd9999f163507c2c62a07a7c6",
+    "semantic_hash": "20791c6dd9999f163507c2c62a07a7c6"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Api/PaymentModule.cs": {
+    "mtime": 1783963357.5540884,
+    "ast_hash": "1b437878d7256da104dd2c806107505f",
+    "semantic_hash": "1b437878d7256da104dd2c806107505f"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Application/Abstractions/IPaymentMethodStrategy.cs": {
+    "mtime": 1783514160.7415693,
+    "ast_hash": "a9d52641d118eb5e48ad0b5b139b2893",
+    "semantic_hash": "a9d52641d118eb5e48ad0b5b139b2893"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Application/Abstractions/IPspClient.cs": {
+    "mtime": 1783509502.1036203,
+    "ast_hash": "b894724fe11d3aad4a854a08ecb27376",
+    "semantic_hash": "b894724fe11d3aad4a854a08ecb27376"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Application/ModularCommerce.Payment.Application.csproj": {
+    "mtime": 1783077524.8979976,
+    "ast_hash": "7b3796f9529cd2eab31a6fa33d245803",
+    "semantic_hash": "7b3796f9529cd2eab31a6fa33d245803"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/ChargeRequest.cs": {
+    "mtime": 1783509325.5336692,
+    "ast_hash": "77bd0ae2c510418f63ba16fd446ab872",
+    "semantic_hash": "77bd0ae2c510418f63ba16fd446ab872"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/IPaymentService.cs": {
+    "mtime": 1783591011.4622269,
+    "ast_hash": "b4a98d039e877886ab21f46d9805627b",
+    "semantic_hash": "b4a98d039e877886ab21f46d9805627b"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/ModularCommerce.Payment.Contracts.csproj": {
+    "mtime": 1783509318.4917545,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/PaymentMethod.cs": {
+    "mtime": 1783509329.700298,
+    "ast_hash": "019ff2d21c7b657d687d556516d1ce00",
+    "semantic_hash": "019ff2d21c7b657d687d556516d1ce00"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/PaymentResultDto.cs": {
+    "mtime": 1783509327.943328,
+    "ast_hash": "564c57727bbc2ea46059c929e3f99416",
+    "semantic_hash": "564c57727bbc2ea46059c929e3f99416"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/RefundRequest.cs": {
+    "mtime": 1783591016.6975513,
+    "ast_hash": "ddf949cb40193e54109fbb86b1a16d93",
+    "semantic_hash": "ddf949cb40193e54109fbb86b1a16d93"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/RefundResultDto.cs": {
+    "mtime": 1783591022.140805,
+    "ast_hash": "1dc5fb36685d5fbbad5df466d9a818f6",
+    "semantic_hash": "1dc5fb36685d5fbbad5df466d9a818f6"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/ModularCommerce.Payment.Domain.csproj": {
+    "mtime": 1783077524.8279963,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/Payment.cs": {
+    "mtime": 1783963375.0974908,
+    "ast_hash": "56ddc5c387c61d7ad0d46e5eae620128",
+    "semantic_hash": "56ddc5c387c61d7ad0d46e5eae620128"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentAttempt.cs": {
+    "mtime": 1783509352.045887,
+    "ast_hash": "cb8a6e140ecfcc955abf6d15656f6224",
+    "semantic_hash": "cb8a6e140ecfcc955abf6d15656f6224"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentAttemptOutcome.cs": {
+    "mtime": 1783509346.3960385,
+    "ast_hash": "83e35902b2810c6d30299cf0f6f99122",
+    "semantic_hash": "83e35902b2810c6d30299cf0f6f99122"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentCompleted.cs": {
+    "mtime": 1783509354.8565485,
+    "ast_hash": "ba2f9b8b5a0099623cc15fe92a5ec361",
+    "semantic_hash": "ba2f9b8b5a0099623cc15fe92a5ec361"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentErrors.cs": {
+    "mtime": 1783964056.5362997,
+    "ast_hash": "7237d60a5cea09e632dc981fcdc87491",
+    "semantic_hash": "7237d60a5cea09e632dc981fcdc87491"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentFailed.cs": {
+    "mtime": 1783509356.7362475,
+    "ast_hash": "d7d6e54b6c80afdba10036cfa887b65f",
+    "semantic_hash": "d7d6e54b6c80afdba10036cfa887b65f"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentMethod.cs": {
+    "mtime": 1783509394.775314,
+    "ast_hash": "9541ec92659d7ee753c1bf63b59753ec",
+    "semantic_hash": "9541ec92659d7ee753c1bf63b59753ec"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentRefunded.cs": {
+    "mtime": 1783547706.4303524,
+    "ast_hash": "b993978a4f729eb5373c084a3b8a82c4",
+    "semantic_hash": "b993978a4f729eb5373c084a3b8a82c4"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Domain/Payments/PaymentStatus.cs": {
+    "mtime": 1783591059.7842095,
+    "ast_hash": "2a305d1f139cfceb105d39c1bce2d431",
+    "semantic_hash": "2a305d1f139cfceb105d39c1bce2d431"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/ContractAdapters/PaymentService.cs": {
+    "mtime": 1783944831.3335018,
+    "ast_hash": "1d439d51f263018892af9a9a882a1f15",
+    "semantic_hash": "1d439d51f263018892af9a9a882a1f15"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/ModularCommerce.Payment.Infrastructure.csproj": {
+    "mtime": 1783509623.0185134,
+    "ast_hash": "5289ade9f086b3910afd5b9089f88a02",
+    "semantic_hash": "5289ade9f086b3910afd5b9089f88a02"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Persistence/Configurations/PaymentConfiguration.cs": {
+    "mtime": 1783963403.0939176,
+    "ast_hash": "b50a80cf82b39899fc9a1fd775e15d17",
+    "semantic_hash": "b50a80cf82b39899fc9a1fd775e15d17"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Persistence/Migrations/20260708112653_InitialPaymentSchema.Designer.cs": {
+    "mtime": 1783510013.8773272,
+    "ast_hash": "ebb1b9164c45282c9e3aa9fb9d5c9d6e",
+    "semantic_hash": "ebb1b9164c45282c9e3aa9fb9d5c9d6e"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Persistence/Migrations/20260708112653_InitialPaymentSchema.cs": {
+    "mtime": 1783510013.8763268,
+    "ast_hash": "c779fc3a1c25c78547434eb48af4bf1f",
+    "semantic_hash": "c779fc3a1c25c78547434eb48af4bf1f"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Persistence/Migrations/20260708215714_AddPaymentRefund.Designer.cs": {
+    "mtime": 1783547834.2508142,
+    "ast_hash": "612ef1b8ea7ad9387bc49e0712840843",
+    "semantic_hash": "612ef1b8ea7ad9387bc49e0712840843"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Persistence/Migrations/20260708215714_AddPaymentRefund.cs": {
+    "mtime": 1783547834.2498133,
+    "ast_hash": "3b62ee7b81255c4c96ea844636cbb560",
+    "semantic_hash": "3b62ee7b81255c4c96ea844636cbb560"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Persistence/Migrations/PaymentDbContextModelSnapshot.cs": {
+    "mtime": 1783547834.2518163,
+    "ast_hash": "e0adc045dc039e6a3487b93376845aa0",
+    "semantic_hash": "e0adc045dc039e6a3487b93376845aa0"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Persistence/PaymentDbContext.cs": {
+    "mtime": 1783509764.330101,
+    "ast_hash": "713a4d8e6c6446f257dcb919522e3a78",
+    "semantic_hash": "713a4d8e6c6446f257dcb919522e3a78"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Psp/CardPaymentStrategy.cs": {
+    "mtime": 1783509812.2124543,
+    "ast_hash": "e0b1dc8d4e200272c2e679228750c4f0",
+    "semantic_hash": "e0b1dc8d4e200272c2e679228750c4f0"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Psp/FakePspClient.cs": {
+    "mtime": 1783509789.7659647,
+    "ast_hash": "2b88ec654d4a92d300c4798dae40e914",
+    "semantic_hash": "2b88ec654d4a92d300c4798dae40e914"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Infrastructure/Psp/PspOptions.cs": {
+    "mtime": 1783943578.0323648,
+    "ast_hash": "4c23f9b57e83f25347d6a7f322e2f290",
+    "semantic_hash": "4c23f9b57e83f25347d6a7f322e2f290"
+  },
+  "src/Modules/Shipping/ModularCommerce.Shipping.Api/ModularCommerce.Shipping.Api.csproj": {
+    "mtime": 1783077526.346947,
+    "ast_hash": "bb2d004a04d51ec5473c65942b997064",
+    "semantic_hash": "bb2d004a04d51ec5473c65942b997064"
+  },
+  "src/Modules/Shipping/ModularCommerce.Shipping.Api/ShippingModule.cs": {
+    "mtime": 1783777384.429539,
+    "ast_hash": "4c5efcb412b30fc4caa761a21f3f3b48",
+    "semantic_hash": "4c5efcb412b30fc4caa761a21f3f3b48"
+  },
+  "src/Modules/Shipping/ModularCommerce.Shipping.Application/ModularCommerce.Shipping.Application.csproj": {
+    "mtime": 1783077526.2219968,
+    "ast_hash": "4fbef43078d146f02042535ba367ace3",
+    "semantic_hash": "4fbef43078d146f02042535ba367ace3"
+  },
+  "src/Modules/Shipping/ModularCommerce.Shipping.Contracts/ModularCommerce.Shipping.Contracts.csproj": {
+    "mtime": 1783077526.1589997,
+    "ast_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1",
+    "semantic_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1"
+  },
+  "src/Modules/Shipping/ModularCommerce.Shipping.Domain/ModularCommerce.Shipping.Domain.csproj": {
+    "mtime": 1783077525.9769976,
+    "ast_hash": "470d2798bec0ae1fef9320b88b5ebef0",
+    "semantic_hash": "470d2798bec0ae1fef9320b88b5ebef0"
+  },
+  "src/Modules/Shipping/ModularCommerce.Shipping.Infrastructure/ModularCommerce.Shipping.Infrastructure.csproj": {
+    "mtime": 1783077526.042999,
+    "ast_hash": "334b5dd4638c2b7265b2ee98adb627dc",
+    "semantic_hash": "334b5dd4638c2b7265b2ee98adb627dc"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Auth/ClaimsPrincipalExtensions.cs": {
+    "mtime": 1783426545.6096687,
+    "ast_hash": "4bda38d50c114900f077a4fab1bd43b6",
+    "semantic_hash": "4bda38d50c114900f077a4fab1bd43b6"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Auth/JwtAuthenticationExtensions.cs": {
+    "mtime": 1783426550.0252793,
+    "ast_hash": "9ac6aa40016a4b183c45458e7514af7f",
+    "semantic_hash": "9ac6aa40016a4b183c45458e7514af7f"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Auth/JwtOptions.cs": {
+    "mtime": 1783426558.0755477,
+    "ast_hash": "1acf33b2bc54dcd86b8797cdb551c792",
+    "semantic_hash": "1acf33b2bc54dcd86b8797cdb551c792"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Configuration/OptionsExtensions.cs": {
+    "mtime": 1783943546.0574172,
+    "ast_hash": "3ec14d21e197974b03faebda1b4b7fcf",
+    "semantic_hash": "3ec14d21e197974b03faebda1b4b7fcf"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Endpoints/ProblemMapping.cs": {
+    "mtime": 1783964089.324102,
+    "ast_hash": "2f7782eeb6699843fc22960cc7b81b9a",
+    "semantic_hash": "2f7782eeb6699843fc22960cc7b81b9a"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Endpoints/ResultExtensions.cs": {
+    "mtime": 1783964072.2602093,
+    "ast_hash": "65a02b337c609872a66d9373a7a99554",
+    "semantic_hash": "65a02b337c609872a66d9373a7a99554"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/ExceptionHandling/GlobalExceptionHandler.cs": {
+    "mtime": 1783090033.535674,
+    "ast_hash": "905804c384632335f0ee10e786d3819b",
+    "semantic_hash": "905804c384632335f0ee10e786d3819b"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Messaging/EventBusExtensions.cs": {
+    "mtime": 1783521529.9365895,
+    "ast_hash": "0a33c59df4d584ec585ef6f66a7a83d5",
+    "semantic_hash": "0a33c59df4d584ec585ef6f66a7a83d5"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/ModularCommerce.Shared.Infrastructure.csproj": {
+    "mtime": 1783521522.7749503,
+    "ast_hash": "441578ef46b1308f4fe0f4518254c828",
+    "semantic_hash": "441578ef46b1308f4fe0f4518254c828"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Modules/IModule.cs": {
+    "mtime": 1783077527.3391986,
+    "ast_hash": "55fb393d753ede88c975a2d5d9b66b91",
+    "semantic_hash": "55fb393d753ede88c975a2d5d9b66b91"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Observability/CorrelationIdMiddleware.cs": {
+    "mtime": 1783346609.827852,
+    "ast_hash": "d7c298640a1d50cfdd74ad8e8ab8b626",
+    "semantic_hash": "d7c298640a1d50cfdd74ad8e8ab8b626"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Observability/HealthCheckExtensions.cs": {
+    "mtime": 1783940637.1973858,
+    "ast_hash": "11e2549cf286f2755bff51f5fbc11c1a",
+    "semantic_hash": "11e2549cf286f2755bff51f5fbc11c1a"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Observability/HealthResponseWriter.cs": {
+    "mtime": 1783777275.282349,
+    "ast_hash": "40665e9f430b1800db1669b147fb1311",
+    "semantic_hash": "40665e9f430b1800db1669b147fb1311"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Observability/PostgresHealthCheck.cs": {
+    "mtime": 1783940609.9508517,
+    "ast_hash": "cfbbc67296e4d48a5b416ef9d9dd0499",
+    "semantic_hash": "cfbbc67296e4d48a5b416ef9d9dd0499"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Observability/RedisHealthCheck.cs": {
+    "mtime": 1783940603.3121493,
+    "ast_hash": "d93b44a26b8fbd39efd8a8f0b0ca2d3a",
+    "semantic_hash": "d93b44a26b8fbd39efd8a8f0b0ca2d3a"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Persistence/IDataSeeder.cs": {
+    "mtime": 1783090040.029884,
+    "ast_hash": "67ce02844943c08598f7c5c9cfd831a9",
+    "semantic_hash": "67ce02844943c08598f7c5c9cfd831a9"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Persistence/MigrateAndSeedHostedService.cs": {
+    "mtime": 1783090048.1813214,
+    "ast_hash": "81728751b4653a00991c98e3b37e0ed7",
+    "semantic_hash": "81728751b4653a00991c98e3b37e0ed7"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Persistence/ModuleDbContextExtensions.cs": {
+    "mtime": 1783521510.3741663,
+    "ast_hash": "0bb20d7302b1154f28f69c5018cfc93a",
+    "semantic_hash": "0bb20d7302b1154f28f69c5018cfc93a"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/RateLimiting/RateLimitingExtensions.cs": {
+    "mtime": 1783964141.0789125,
+    "ast_hash": "103a6f8f2f2d163bf222ea9444babad5",
+    "semantic_hash": "103a6f8f2f2d163bf222ea9444babad5"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/RateLimiting/RateLimitingOptions.cs": {
+    "mtime": 1783940571.2521045,
+    "ast_hash": "06768d4573db40da989ef6166751de7a",
+    "semantic_hash": "06768d4573db40da989ef6166751de7a"
+  },
+  "src/Shared/ModularCommerce.Shared.Infrastructure/Redis/RedisExtensions.cs": {
+    "mtime": 1783346618.5836644,
+    "ast_hash": "358abba0386e48565be54900a7d6b88a",
+    "semantic_hash": "358abba0386e48565be54900a7d6b88a"
+  },
+  "src/Shared/ModularCommerce.Shared.Kernel/Entity.cs": {
+    "mtime": 1783077527.53692,
+    "ast_hash": "9e9691bdd3c539acfc19525ecbe8f9eb",
+    "semantic_hash": "9e9691bdd3c539acfc19525ecbe8f9eb"
+  },
+  "src/Shared/ModularCommerce.Shared.Kernel/IDomainEvent.cs": {
+    "mtime": 1783077527.3983357,
+    "ast_hash": "fc1699b98cf7f03a9a7452431203f671",
+    "semantic_hash": "fc1699b98cf7f03a9a7452431203f671"
+  },
+  "src/Shared/ModularCommerce.Shared.Kernel/ModularCommerce.Shared.Kernel.csproj": {
+    "mtime": 1783077527.4914348,
+    "ast_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1",
+    "semantic_hash": "d1de05d6f98bfe8c0ca911e23e0c56d1"
+  },
+  "src/Shared/ModularCommerce.Shared.Kernel/Money.cs": {
+    "mtime": 1783963452.958985,
+    "ast_hash": "a49261f374baefe59c44d25a3a68cab8",
+    "semantic_hash": "a49261f374baefe59c44d25a3a68cab8"
+  },
+  "src/Shared/ModularCommerce.Shared.Kernel/Result.cs": {
+    "mtime": 1783964759.300025,
+    "ast_hash": "09f24ce8b42c2bcc26de68c3f5a41e69",
+    "semantic_hash": "09f24ce8b42c2bcc26de68c3f5a41e69"
+  },
+  "tests/LoadTests/scenarios/cart-smoke.js": {
+    "mtime": 1783351361.9370458,
+    "ast_hash": "34ef454643e1dfd2c506f4452d1a4e10",
+    "semantic_hash": "34ef454643e1dfd2c506f4452d1a4e10"
+  },
+  "tests/LoadTests/scenarios/checkout-smoke.js": {
+    "mtime": 1783510834.208628,
+    "ast_hash": "f8ba5c9456e69bb5ab052064a949c548",
+    "semantic_hash": "f8ba5c9456e69bb5ab052064a949c548"
+  },
+  "tests/LoadTests/scenarios/flash-sale.js": {
+    "mtime": 1783777981.2357526,
+    "ast_hash": "fad3789acba871ba0a3a264354f82487",
+    "semantic_hash": "fad3789acba871ba0a3a264354f82487"
+  },
+  "tests/LoadTests/scenarios/identity-login-smoke.js": {
+    "mtime": 1783351347.0615776,
+    "ast_hash": "4da678426e1158e05500be59b67c7f41",
+    "semantic_hash": "4da678426e1158e05500be59b67c7f41"
+  },
+  "tests/LoadTests/scenarios/inventory-oversell.js": {
+    "mtime": 1783340216.4894962,
+    "ast_hash": "028aaf83ef2b9697fd1de322e94e5ac5",
+    "semantic_hash": "028aaf83ef2b9697fd1de322e94e5ac5"
+  },
+  "tests/LoadTests/scenarios/inventory-smoke.js": {
+    "mtime": 1783340578.5697887,
+    "ast_hash": "f9eb2ef13890b12ba51db9ca395362fe",
+    "semantic_hash": "f9eb2ef13890b12ba51db9ca395362fe"
+  },
+  "tests/LoadTests/scenarios/payment-resiliency.js": {
+    "mtime": 1783511251.7680304,
+    "ast_hash": "a3e5f544e92b0a76bcb8d73476e90a36",
+    "semantic_hash": "a3e5f544e92b0a76bcb8d73476e90a36"
+  },
+  "tests/ModularCommerce.ArchitectureTests/ModularCommerce.ArchitectureTests.csproj": {
+    "mtime": 1784119271.1484942,
+    "ast_hash": "497a95392d344a44b6a018956815f826",
+    "semantic_hash": "497a95392d344a44b6a018956815f826"
+  },
+  "tests/ModularCommerce.ArchitectureTests/ModuleBoundaryTests.cs": {
+    "mtime": 1784119251.6245823,
+    "ast_hash": "b6efccafedaf2a45606228755a7ce5e3",
+    "semantic_hash": "b6efccafedaf2a45606228755a7ce5e3"
+  },
+  "tests/ModularCommerce.Cart.IntegrationTests/Fixtures/PostgresContainerFixture.cs": {
+    "mtime": 1784302559.3793015,
+    "ast_hash": "16fdd5a99a6493f9c42829c25a1b757a",
+    "semantic_hash": "16fdd5a99a6493f9c42829c25a1b757a"
+  },
+  "tests/ModularCommerce.Cart.IntegrationTests/Fixtures/RedisContainerFixture.cs": {
+    "mtime": 1783945391.8287394,
+    "ast_hash": "a44b89a15317c29da32254bf5045be8f",
+    "semantic_hash": "a44b89a15317c29da32254bf5045be8f"
+  },
+  "tests/ModularCommerce.Cart.IntegrationTests/ModularCommerce.Cart.IntegrationTests.csproj": {
+    "mtime": 1783945344.138559,
+    "ast_hash": "5ae85cedeab1de5dea0584d819c92818",
+    "semantic_hash": "5ae85cedeab1de5dea0584d819c92818"
+  },
+  "tests/ModularCommerce.Cart.IntegrationTests/PostgresCartRepositoryTests.cs": {
+    "mtime": 1784302583.6316605,
+    "ast_hash": "d38570624d3774ad764935944de5216c",
+    "semantic_hash": "d38570624d3774ad764935944de5216c"
+  },
+  "tests/ModularCommerce.Cart.IntegrationTests/RedisCartCacheIntegrationTests.cs": {
+    "mtime": 1784302619.9027371,
+    "ast_hash": "6624f0d4b8a93e81ab6e5fe4c6a5ecba",
+    "semantic_hash": "6624f0d4b8a93e81ab6e5fe4c6a5ecba"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/Application/AddItemHandlerTests.cs": {
+    "mtime": 1783350929.062545,
+    "ast_hash": "902a265b8c9d8a18a6fdbe0cab8403ae",
+    "semantic_hash": "902a265b8c9d8a18a6fdbe0cab8403ae"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/Application/GetCartHandlerTests.cs": {
+    "mtime": 1783350933.711573,
+    "ast_hash": "d09a4ad00f25d6721233c4550e08eebc",
+    "semantic_hash": "d09a4ad00f25d6721233c4550e08eebc"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/Application/RemoveItemHandlerTests.cs": {
+    "mtime": 1783350960.2739215,
+    "ast_hash": "cfb3395eaea59b3a434a0f0b85792e63",
+    "semantic_hash": "cfb3395eaea59b3a434a0f0b85792e63"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/Application/UpdateItemQuantityHandlerTests.cs": {
+    "mtime": 1783350939.479429,
+    "ast_hash": "9fed91e7995d95b514cf0fd61d4e3317",
+    "semantic_hash": "9fed91e7995d95b514cf0fd61d4e3317"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/Caching/RedisCartCacheTests.cs": {
+    "mtime": 1784302519.10142,
+    "ast_hash": "077753c756a20eb0099c7e21329e5214",
+    "semantic_hash": "077753c756a20eb0099c7e21329e5214"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/Domain/CartTests.cs": {
+    "mtime": 1783426595.5999541,
+    "ast_hash": "13e3966e589510036370a8f37f229305",
+    "semantic_hash": "13e3966e589510036370a8f37f229305"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/ModularCommerce.Cart.UnitTests.csproj": {
+    "mtime": 1784302452.6666348,
+    "ast_hash": "bbc0f5c37d99b4486394efa6eae5a413",
+    "semantic_hash": "bbc0f5c37d99b4486394efa6eae5a413"
+  },
+  "tests/ModularCommerce.Cart.UnitTests/Persistence/CachingCartRepositoryTests.cs": {
+    "mtime": 1784302484.2943077,
+    "ast_hash": "5bd91cdd3270e56109cae626ee047cc2",
+    "semantic_hash": "5bd91cdd3270e56109cae626ee047cc2"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Application/GetProductByIdHandlerTests.cs": {
+    "mtime": 1783969496.1086075,
+    "ast_hash": "12d595ebc8907afbb46a6cd0cee386e8",
+    "semantic_hash": "12d595ebc8907afbb46a6cd0cee386e8"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Application/GetProductsHandlerTests.cs": {
+    "mtime": 1783090133.9966419,
+    "ast_hash": "f74ab1e82e3e35320492b9e31a00da3d",
+    "semantic_hash": "f74ab1e82e3e35320492b9e31a00da3d"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Application/GetProductsQueryValidatorTests.cs": {
+    "mtime": 1783082338.4189196,
+    "ast_hash": "d84515133baa6996c046a38dbb74a66b",
+    "semantic_hash": "d84515133baa6996c046a38dbb74a66b"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Caching/CachingProductQueriesTests.cs": {
+    "mtime": 1783969556.4874783,
+    "ast_hash": "fc85d9ffb06f0313226ab65dc5426f67",
+    "semantic_hash": "fc85d9ffb06f0313226ab65dc5426f67"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Caching/CachingProductReaderTests.cs": {
+    "mtime": 1783969572.6053863,
+    "ast_hash": "79485eed90adf0cca94085281214c021",
+    "semantic_hash": "79485eed90adf0cca94085281214c021"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Caching/FakeProductCache.cs": {
+    "mtime": 1783969534.9993374,
+    "ast_hash": "1f8cc216b004b639f1b62f16e771bf3a",
+    "semantic_hash": "1f8cc216b004b639f1b62f16e771bf3a"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Caching/RedisProductCacheTests.cs": {
+    "mtime": 1783970803.6145186,
+    "ast_hash": "16ab1aef5c6823043c345b2498e31283",
+    "semantic_hash": "16ab1aef5c6823043c345b2498e31283"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Domain/MoneyTests.cs": {
+    "mtime": 1783944595.0948606,
+    "ast_hash": "8ff8f8596f41ea910b1f8327615c2693",
+    "semantic_hash": "8ff8f8596f41ea910b1f8327615c2693"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Domain/ProductTests.cs": {
+    "mtime": 1783944595.1330745,
+    "ast_hash": "478c1b64c4e8652955ffb4b43c26ab73",
+    "semantic_hash": "478c1b64c4e8652955ffb4b43c26ab73"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/ModularCommerce.Catalog.UnitTests.csproj": {
+    "mtime": 1783969483.6192627,
+    "ast_hash": "cb19b3f3993b7434a7b972dc66e5eaaa",
+    "semantic_hash": "cb19b3f3993b7434a7b972dc66e5eaaa"
+  },
+  "tests/ModularCommerce.Catalog.UnitTests/Outbox/CatalogIntegrationEventRegistryTests.cs": {
+    "mtime": 1784120581.0499773,
+    "ast_hash": "3724b6722ce4e85fccdb1e067a047fbe",
+    "semantic_hash": "3724b6722ce4e85fccdb1e067a047fbe"
+  },
+  "tests/ModularCommerce.Discovery.IntegrationTests/ModularCommerce.Discovery.IntegrationTests.csproj": {
+    "mtime": 1784120758.141808,
+    "ast_hash": "8a3d89795fccff82db73c36d824a27c5",
+    "semantic_hash": "8a3d89795fccff82db73c36d824a27c5"
+  },
+  "tests/ModularCommerce.Discovery.IntegrationTests/PgVectorFixture.cs": {
+    "mtime": 1784120777.676445,
+    "ast_hash": "8b4cbee4861b45a7ee0004fa64c01653",
+    "semantic_hash": "8b4cbee4861b45a7ee0004fa64c01653"
+  },
+  "tests/ModularCommerce.Discovery.IntegrationTests/ProductVectorRepositoryTests.cs": {
+    "mtime": 1784120800.964231,
+    "ast_hash": "1f0789d8c136294e7279f5410f706a45",
+    "semantic_hash": "1f0789d8c136294e7279f5410f706a45"
+  },
+  "tests/ModularCommerce.Discovery.UnitTests/Embedding/FakeEmbeddingServiceTests.cs": {
+    "mtime": 1784120612.989282,
+    "ast_hash": "67fd2f7e1f041caf761c05abc6deac19",
+    "semantic_hash": "67fd2f7e1f041caf761c05abc6deac19"
+  },
+  "tests/ModularCommerce.Discovery.UnitTests/Indexing/IndexProductHandlerTests.cs": {
+    "mtime": 1784120641.4243603,
+    "ast_hash": "1fb25b2b647193dd9c4e7387f670b849",
+    "semantic_hash": "1fb25b2b647193dd9c4e7387f670b849"
+  },
+  "tests/ModularCommerce.Discovery.UnitTests/ModularCommerce.Discovery.UnitTests.csproj": {
+    "mtime": 1784120592.1099422,
+    "ast_hash": "3128c5e662ae1be9fb5ae56a9354de4e",
+    "semantic_hash": "3128c5e662ae1be9fb5ae56a9354de4e"
+  },
+  "tests/ModularCommerce.Discovery.UnitTests/Search/SearchProductsHandlerTests.cs": {
+    "mtime": 1784120693.229538,
+    "ast_hash": "18f138aac949a46445dec818da1202b9",
+    "semantic_hash": "18f138aac949a46445dec818da1202b9"
+  },
+  "tests/ModularCommerce.Identity.IntegrationTests/AuthFlowTests.cs": {
+    "mtime": 1783351185.9203622,
+    "ast_hash": "665f758bd10a8829e477bddd7a46d3af",
+    "semantic_hash": "665f758bd10a8829e477bddd7a46d3af"
+  },
+  "tests/ModularCommerce.Identity.IntegrationTests/Fixtures/PostgresContainerFixture.cs": {
+    "mtime": 1783945374.0207794,
+    "ast_hash": "aa498cc0be64fe6103ad10a7f87011ff",
+    "semantic_hash": "aa498cc0be64fe6103ad10a7f87011ff"
+  },
+  "tests/ModularCommerce.Identity.IntegrationTests/ModularCommerce.Identity.IntegrationTests.csproj": {
+    "mtime": 1783945341.2192435,
+    "ast_hash": "e8832ce81a8a36e6f6c7778d8e657679",
+    "semantic_hash": "e8832ce81a8a36e6f6c7778d8e657679"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Application/LoginHandlerTests.cs": {
+    "mtime": 1783350135.3566377,
+    "ast_hash": "d57b4fc19acb92d3da55e85b8991db85",
+    "semantic_hash": "d57b4fc19acb92d3da55e85b8991db85"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Application/LogoutHandlerTests.cs": {
+    "mtime": 1783350160.2688184,
+    "ast_hash": "328b76493b79adca3b2dbf9a5e58779b",
+    "semantic_hash": "328b76493b79adca3b2dbf9a5e58779b"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Application/RefreshHandlerTests.cs": {
+    "mtime": 1783350149.317085,
+    "ast_hash": "fbbfba35c472eda26f6f8d3a08515147",
+    "semantic_hash": "fbbfba35c472eda26f6f8d3a08515147"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Application/SignupHandlerTests.cs": {
+    "mtime": 1783350119.2059517,
+    "ast_hash": "d1fa6bde6216ef886f9b528e94dfd71f",
+    "semantic_hash": "d1fa6bde6216ef886f9b528e94dfd71f"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Domain/EmailTests.cs": {
+    "mtime": 1783349585.2146626,
+    "ast_hash": "a3dc77af9b803ecda76fafeef21fe462",
+    "semantic_hash": "a3dc77af9b803ecda76fafeef21fe462"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Domain/RefreshTokenTests.cs": {
+    "mtime": 1783349602.4306645,
+    "ast_hash": "c0fa78d13701e213e92de0c08a4a8ebd",
+    "semantic_hash": "c0fa78d13701e213e92de0c08a4a8ebd"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Domain/UserTests.cs": {
+    "mtime": 1783349591.374519,
+    "ast_hash": "132ae02db3b9139ae770077842198c77",
+    "semantic_hash": "132ae02db3b9139ae770077842198c77"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/Infrastructure/JwtTokenServiceTests.cs": {
+    "mtime": 1783350452.1382833,
+    "ast_hash": "8213dc8302616b470921c2f677faf67b",
+    "semantic_hash": "8213dc8302616b470921c2f677faf67b"
+  },
+  "tests/ModularCommerce.Identity.UnitTests/ModularCommerce.Identity.UnitTests.csproj": {
+    "mtime": 1783350435.2212243,
+    "ast_hash": "ee67e4ed31a34ce315fdd60de3eafb1c",
+    "semantic_hash": "ee67e4ed31a34ce315fdd60de3eafb1c"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/CommitReservationTests.cs": {
+    "mtime": 1783509235.5779498,
+    "ast_hash": "cb223e47885ec36f7fcdb64abcb8b665",
+    "semantic_hash": "cb223e47885ec36f7fcdb64abcb8b665"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/Fixtures/PostgresContainerFixture.cs": {
+    "mtime": 1783945376.3864896,
+    "ast_hash": "f3b694ad653f723166e0744905a0e5a0",
+    "semantic_hash": "f3b694ad653f723166e0744905a0e5a0"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/Fixtures/RedisContainerFixture.cs": {
+    "mtime": 1783945380.389061,
+    "ast_hash": "b3c72714a67e46175ab0f3e34e601c2a",
+    "semantic_hash": "b3c72714a67e46175ab0f3e34e601c2a"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/MigrationTests.cs": {
+    "mtime": 1783266505.978546,
+    "ast_hash": "b997665ad78f2c3022e309b9b13a1cd8",
+    "semantic_hash": "b997665ad78f2c3022e309b9b13a1cd8"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/ModularCommerce.Inventory.IntegrationTests.csproj": {
+    "mtime": 1783945342.1612933,
+    "ast_hash": "b6b5e34d66dfe54f1a7ba51e2d4faead",
+    "semantic_hash": "b6b5e34d66dfe54f1a7ba51e2d4faead"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/RedisLockConcurrencyTests.cs": {
+    "mtime": 1783340093.8324387,
+    "ast_hash": "8e44b76a42cc9e59a758728441d0c7c3",
+    "semantic_hash": "8e44b76a42cc9e59a758728441d0c7c3"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/ReleaseReservationTests.cs": {
+    "mtime": 1783434432.8750842,
+    "ast_hash": "d389008045b66794824978879f5ad44e",
+    "semantic_hash": "d389008045b66794824978879f5ad44e"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/ReservationConcurrencyTests.cs": {
+    "mtime": 1783279156.5539932,
+    "ast_hash": "9643e70da54b07513373dd3dadcbc1a0",
+    "semantic_hash": "9643e70da54b07513373dd3dadcbc1a0"
+  },
+  "tests/ModularCommerce.Inventory.IntegrationTests/ReservationTtlSweeperTests.cs": {
+    "mtime": 1783548104.3383844,
+    "ast_hash": "6d017f072d83c1d37091533c59fa7cf4",
+    "semantic_hash": "6d017f072d83c1d37091533c59fa7cf4"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/Application/ReserveStockHandlerTests.cs": {
+    "mtime": 1783266083.2837229,
+    "ast_hash": "4c171ffe185f7bdb714f4f1e11abf291",
+    "semantic_hash": "4c171ffe185f7bdb714f4f1e11abf291"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/Domain/InventoryErrorContractTests.cs": {
+    "mtime": 1783964344.6725905,
+    "ast_hash": "7af8d394a093fcc51f7911933173dd7b",
+    "semantic_hash": "7af8d394a093fcc51f7911933173dd7b"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/Domain/StockItemCommitTests.cs": {
+    "mtime": 1783509107.372796,
+    "ast_hash": "2bd02e61be2cf932c58ac4754380656c",
+    "semantic_hash": "2bd02e61be2cf932c58ac4754380656c"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/Domain/StockItemExpireTests.cs": {
+    "mtime": 1783546934.0471017,
+    "ast_hash": "0f509dd45cb58fc9c624218307ad76b4",
+    "semantic_hash": "0f509dd45cb58fc9c624218307ad76b4"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/Domain/StockItemReleaseTests.cs": {
+    "mtime": 1783451057.1113698,
+    "ast_hash": "3be634f5873efd0e9491bf94c61d47cf",
+    "semantic_hash": "3be634f5873efd0e9491bf94c61d47cf"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/Domain/StockItemReturnTests.cs": {
+    "mtime": 1783546949.2443938,
+    "ast_hash": "277be67f25de9444dc3159856d3509b9",
+    "semantic_hash": "277be67f25de9444dc3159856d3509b9"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/Domain/StockItemTests.cs": {
+    "mtime": 1783265949.430576,
+    "ast_hash": "affda6c5df0b06c412b1455df2201588",
+    "semantic_hash": "affda6c5df0b06c412b1455df2201588"
+  },
+  "tests/ModularCommerce.Inventory.UnitTests/ModularCommerce.Inventory.UnitTests.csproj": {
+    "mtime": 1783265922.4606047,
+    "ast_hash": "0b7f806d2091e253368870a14c77e0f6",
+    "semantic_hash": "0b7f806d2091e253368870a14c77e0f6"
+  },
+  "tests/ModularCommerce.Notification.IntegrationTests/Fixtures/NotificationPostgresFixture.cs": {
+    "mtime": 1783945390.780326,
+    "ast_hash": "3c78dc63117131ae6a59977ab1bebfaf",
+    "semantic_hash": "3c78dc63117131ae6a59977ab1bebfaf"
+  },
+  "tests/ModularCommerce.Notification.IntegrationTests/ModularCommerce.Notification.IntegrationTests.csproj": {
+    "mtime": 1783945343.5064635,
+    "ast_hash": "c771007ec8eba9d7900fbfd5f7d93e14",
+    "semantic_hash": "c771007ec8eba9d7900fbfd5f7d93e14"
+  },
+  "tests/ModularCommerce.Notification.IntegrationTests/OrderPaidConsumerHarnessTests.cs": {
+    "mtime": 1783594916.8200686,
+    "ast_hash": "0fd8cf0b327246f3b7b98f1bc004917d",
+    "semantic_hash": "0fd8cf0b327246f3b7b98f1bc004917d"
+  },
+  "tests/ModularCommerce.Notification.IntegrationTests/ProcessorIdempotencyTests.cs": {
+    "mtime": 1783594981.067199,
+    "ast_hash": "7faa84fb532f0618b5b9643e61866d43",
+    "semantic_hash": "7faa84fb532f0618b5b9643e61866d43"
+  },
+  "tests/ModularCommerce.Notification.UnitTests/FaultInjectingChannelTests.cs": {
+    "mtime": 1783594812.7744038,
+    "ast_hash": "505d3bd55b8782d952132878863809e2",
+    "semantic_hash": "505d3bd55b8782d952132878863809e2"
+  },
+  "tests/ModularCommerce.Notification.UnitTests/ModularCommerce.Notification.UnitTests.csproj": {
+    "mtime": 1783594803.139641,
+    "ast_hash": "5e6dd63cf2c9060128720bd3e7d416e9",
+    "semantic_hash": "5e6dd63cf2c9060128720bd3e7d416e9"
+  },
+  "tests/ModularCommerce.Ordering.IntegrationTests/CheckoutIdempotencyRaceTests.cs": {
+    "mtime": 1783510602.7281888,
+    "ast_hash": "68d62b04ab8c1b80f9ecf2584743d101",
+    "semantic_hash": "68d62b04ab8c1b80f9ecf2584743d101"
+  },
+  "tests/ModularCommerce.Ordering.IntegrationTests/Fixtures/PostgresContainerFixture.cs": {
+    "mtime": 1783945385.8879118,
+    "ast_hash": "3c2c55ba7f447b5f95cb2e3e460ea5cb",
+    "semantic_hash": "3c2c55ba7f447b5f95cb2e3e460ea5cb"
+  },
+  "tests/ModularCommerce.Ordering.IntegrationTests/MigrationTests.cs": {
+    "mtime": 1783961674.9301498,
+    "ast_hash": "ed9194785c8f69f4fe7f7c3f23d37b0d",
+    "semantic_hash": "ed9194785c8f69f4fe7f7c3f23d37b0d"
+  },
+  "tests/ModularCommerce.Ordering.IntegrationTests/ModularCommerce.Ordering.IntegrationTests.csproj": {
+    "mtime": 1783945342.8431644,
+    "ast_hash": "765f61d5d0e6253a1a26938ae5f36c0b",
+    "semantic_hash": "765f61d5d0e6253a1a26938ae5f36c0b"
+  },
+  "tests/ModularCommerce.Ordering.IntegrationTests/OrderPaidPublishConsumeTests.cs": {
+    "mtime": 1783595063.8905232,
+    "ast_hash": "6cd25562957a19bc0e335a0a6f1c6ab2",
+    "semantic_hash": "6cd25562957a19bc0e335a0a6f1c6ab2"
+  },
+  "tests/ModularCommerce.Ordering.IntegrationTests/OrderReservationReconcilerTests.cs": {
+    "mtime": 1783548124.5146735,
+    "ast_hash": "b1077e83e7e9fd20e233de8b1d4ff492",
+    "semantic_hash": "b1077e83e7e9fd20e233de8b1d4ff492"
+  },
+  "tests/ModularCommerce.Ordering.IntegrationTests/OutboxIntegrationTests.cs": {
+    "mtime": 1783522246.6608224,
+    "ast_hash": "eb05e80fed46d4b2c5ed4517e2449dd0",
+    "semantic_hash": "eb05e80fed46d4b2c5ed4517e2449dd0"
+  },
+  "tests/ModularCommerce.Ordering.UnitTests/Application/CancelOrderHandlerTests.cs": {
+    "mtime": 1783547957.7264395,
+    "ast_hash": "d6c5793f4a0812427f82122d697c0093",
+    "semantic_hash": "d6c5793f4a0812427f82122d697c0093"
+  },
+  "tests/ModularCommerce.Ordering.UnitTests/Application/CheckoutHandlerTests.cs": {
+    "mtime": 1783510254.327864,
+    "ast_hash": "1e001e0ebbb47fc7e0e51eb1f38812d9",
+    "semantic_hash": "1e001e0ebbb47fc7e0e51eb1f38812d9"
+  },
+  "tests/ModularCommerce.Ordering.UnitTests/Domain/OrderCreateTests.cs": {
+    "mtime": 1783961662.6456008,
+    "ast_hash": "db33a9aaddce9d77a7ddb7ac16bd1a88",
+    "semantic_hash": "db33a9aaddce9d77a7ddb7ac16bd1a88"
+  },
+  "tests/ModularCommerce.Ordering.UnitTests/Domain/OrderStateMachineTests.cs": {
+    "mtime": 1783961669.7055326,
+    "ast_hash": "bd94a22397c0cd2699f1c26627ce06d5",
+    "semantic_hash": "bd94a22397c0cd2699f1c26627ce06d5"
+  },
+  "tests/ModularCommerce.Ordering.UnitTests/ModularCommerce.Ordering.UnitTests.csproj": {
+    "mtime": 1783522391.336224,
+    "ast_hash": "8fdc948245b2836dd8179b42429c7287",
+    "semantic_hash": "8fdc948245b2836dd8179b42429c7287"
+  },
+  "tests/ModularCommerce.Ordering.UnitTests/Outbox/OrderingIntegrationEventRegistryTests.cs": {
+    "mtime": 1783521853.143034,
+    "ast_hash": "f12cf7709ddd562a357b66fefb100b17",
+    "semantic_hash": "f12cf7709ddd562a357b66fefb100b17"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/ChargeIdempotencyRaceTests.cs": {
+    "mtime": 1783510385.2091444,
+    "ast_hash": "0d7e8999c5e7f929f56370682f4a3658",
+    "semantic_hash": "0d7e8999c5e7f929f56370682f4a3658"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/DeclinedReplayTests.cs": {
+    "mtime": 1783510403.080845,
+    "ast_hash": "c929e99ef249cb221903283fd2af976b",
+    "semantic_hash": "c929e99ef249cb221903283fd2af976b"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/Fixtures/PostgresContainerFixture.cs": {
+    "mtime": 1783945371.0223851,
+    "ast_hash": "9465b17400ff645ccbefbe001d98f051",
+    "semantic_hash": "9465b17400ff645ccbefbe001d98f051"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/Fixtures/TestPaymentServiceFactory.cs": {
+    "mtime": 1783510450.5236046,
+    "ast_hash": "ab2d96406be815ce36b216aab39b1b65",
+    "semantic_hash": "ab2d96406be815ce36b216aab39b1b65"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/MigrationTests.cs": {
+    "mtime": 1783944973.656775,
+    "ast_hash": "50af69696969ba80b84115cfe66d20bb",
+    "semantic_hash": "50af69696969ba80b84115cfe66d20bb"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/ModularCommerce.Payment.IntegrationTests.csproj": {
+    "mtime": 1783945340.2795908,
+    "ast_hash": "f5a81c1d00790da67eeb481c4a57876b",
+    "semantic_hash": "f5a81c1d00790da67eeb481c4a57876b"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/RefundTests.cs": {
+    "mtime": 1783548153.660318,
+    "ast_hash": "86a61ab80c5ccaa3c9cb14972aa24368",
+    "semantic_hash": "86a61ab80c5ccaa3c9cb14972aa24368"
+  },
+  "tests/ModularCommerce.Payment.IntegrationTests/StalePendingTakeoverTests.cs": {
+    "mtime": 1783510452.6529248,
+    "ast_hash": "a34eb3eed8823072c962dd7d41df717e",
+    "semantic_hash": "a34eb3eed8823072c962dd7d41df717e"
+  },
+  "tests/ModularCommerce.Payment.UnitTests/Domain/PaymentErrorContractTests.cs": {
+    "mtime": 1783964327.8639548,
+    "ast_hash": "47123c427f6fc964c8d971a859a1ec1e",
+    "semantic_hash": "47123c427f6fc964c8d971a859a1ec1e"
+  },
+  "tests/ModularCommerce.Payment.UnitTests/Domain/PaymentRefundTests.cs": {
+    "mtime": 1783547747.3287613,
+    "ast_hash": "2d760a34e075126561d1b7a2d938e04b",
+    "semantic_hash": "2d760a34e075126561d1b7a2d938e04b"
+  },
+  "tests/ModularCommerce.Payment.UnitTests/Domain/PaymentTests.cs": {
+    "mtime": 1783944876.3108785,
+    "ast_hash": "faa556839671cb9a8eaf52733346551d",
+    "semantic_hash": "faa556839671cb9a8eaf52733346551d"
+  },
+  "tests/ModularCommerce.Payment.UnitTests/ModularCommerce.Payment.UnitTests.csproj": {
+    "mtime": 1783509449.2426186,
+    "ast_hash": "42e437c5d545d27cd5b70fa043e075a1",
+    "semantic_hash": "42e437c5d545d27cd5b70fa043e075a1"
+  },
+  "tests/ModularCommerce.Shared.IntegrationTests/Fixtures/InfraContainersFixture.cs": {
+    "mtime": 1783778052.6242852,
+    "ast_hash": "087b7fd1eb05e70b880941b4dd869c36",
+    "semantic_hash": "087b7fd1eb05e70b880941b4dd869c36"
+  },
+  "tests/ModularCommerce.Shared.IntegrationTests/HealthCheckTests.cs": {
+    "mtime": 1783778065.6429403,
+    "ast_hash": "b54a688d1bb7fc91e96c0b55b9483a28",
+    "semantic_hash": "b54a688d1bb7fc91e96c0b55b9483a28"
+  },
+  "tests/ModularCommerce.Shared.IntegrationTests/ModularCommerce.Shared.IntegrationTests.csproj": {
+    "mtime": 1783778046.6273158,
+    "ast_hash": "b9444fbcdb9190967279ebf674cbbc13",
+    "semantic_hash": "b9444fbcdb9190967279ebf674cbbc13"
+  },
+  "tests/ModularCommerce.Shared.IntegrationTests/ProblemMappingTests.cs": {
+    "mtime": 1783964296.4127672,
+    "ast_hash": "e90229a2bda97b2132fd36e38f69083c",
+    "semantic_hash": "e90229a2bda97b2132fd36e38f69083c"
+  },
+  "tests/ModularCommerce.Shared.IntegrationTests/RateLimiterSizingTests.cs": {
+    "mtime": 1783778075.053421,
+    "ast_hash": "c6609e53b27c89d986714d34134cf1e0",
+    "semantic_hash": "c6609e53b27c89d986714d34134cf1e0"
+  },
+  "tests/ModularCommerce.TestKit/ModularCommerce.TestKit.csproj": {
+    "mtime": 1783945307.9910157,
+    "ast_hash": "99c2f7e9f973bc0ac47d675983e4dd91",
+    "semantic_hash": "99c2f7e9f973bc0ac47d675983e4dd91"
+  },
+  "tests/ModularCommerce.TestKit/PostgresFixture.cs": {
+    "mtime": 1783945318.4016094,
+    "ast_hash": "221de5d5302174f1db4b80268b4320ef",
+    "semantic_hash": "221de5d5302174f1db4b80268b4320ef"
+  },
+  "tests/ModularCommerce.TestKit/RedisFixture.cs": {
+    "mtime": 1783945322.7487767,
+    "ast_hash": "c4410987be91fa7b8fb0d01d265bb298",
+    "semantic_hash": "c4410987be91fa7b8fb0d01d265bb298"
+  },
+  "CLAUDE.md": {
+    "mtime": 1784303065.3362525,
+    "ast_hash": "6be355f0e2b91ccfd66f491653fbc15f",
+    "semantic_hash": "6be355f0e2b91ccfd66f491653fbc15f"
+  },
+  "README.md": {
+    "mtime": 1783778399.6231256,
+    "ast_hash": "e0b3b0ec9a28deded34aec09498094d1",
+    "semantic_hash": "e0b3b0ec9a28deded34aec09498094d1"
+  },
+  "docker-compose.yml": {
+    "mtime": 1784117803.3283951,
+    "ast_hash": "980e3e9c6fa3ec70aa9f72e613d9e158",
+    "semantic_hash": "980e3e9c6fa3ec70aa9f72e613d9e158"
+  },
+  "docs/hafta-10-notlar.md": {
+    "mtime": 1783595166.6568735,
+    "ast_hash": "22ddffec1ab394568360c9671d4ceecd",
+    "semantic_hash": "22ddffec1ab394568360c9671d4ceecd"
+  },
+  "docs/hafta-11-notlar.md": {
+    "mtime": 1783778360.5720596,
+    "ast_hash": "556fea84ba3397228076a817c6e0a253",
+    "semantic_hash": "556fea84ba3397228076a817c6e0a253"
+  },
+  "docs/hafta-2-notlar.md": {
+    "mtime": 1783166780.2090855,
+    "ast_hash": "855140b6bd99f097616b620cd177eba4",
+    "semantic_hash": "855140b6bd99f097616b620cd177eba4"
+  },
+  "docs/hafta-3-notlar.md": {
+    "mtime": 1783266699.3804784,
+    "ast_hash": "ddc09f7418c9c3ffc2b34a46f591a052",
+    "semantic_hash": "ddc09f7418c9c3ffc2b34a46f591a052"
+  },
+  "docs/hafta-4-notlar.md": {
+    "mtime": 1783340854.876858,
+    "ast_hash": "14f76f8b1464305d9ead7d9e44c8d7a6",
+    "semantic_hash": "14f76f8b1464305d9ead7d9e44c8d7a6"
+  },
+  "docs/hafta-5-notlar.md": {
+    "mtime": 1783351711.6132135,
+    "ast_hash": "239fc37fc1c5bddbe273db6c7a4bdc52",
+    "semantic_hash": "239fc37fc1c5bddbe273db6c7a4bdc52"
+  },
+  "docs/hafta-6-notlar.md": {
+    "mtime": 1783435923.0977266,
+    "ast_hash": "c8588b0a7e327f0da8c6b87ceac60303",
+    "semantic_hash": "c8588b0a7e327f0da8c6b87ceac60303"
+  },
+  "docs/hafta-7-notlar.md": {
+    "mtime": 1783511450.3820128,
+    "ast_hash": "6d1d117764863001d06c336933f6fdbc",
+    "semantic_hash": "6d1d117764863001d06c336933f6fdbc"
+  },
+  "docs/hafta-8-notlar.md": {
+    "mtime": 1783522703.092045,
+    "ast_hash": "b97ac577b41e858e8fa4d19de77dca9c",
+    "semantic_hash": "b97ac577b41e858e8fa4d19de77dca9c"
+  },
+  "docs/hafta-9-notlar.md": {
+    "mtime": 1783548504.5720904,
+    "ast_hash": "4ef3e6253470105c548337da2ec18046",
+    "semantic_hash": "4ef3e6253470105c548337da2ec18046"
+  },
+  "docs/medium-mimari-diagramlar.md": {
+    "mtime": 1783986374.2482743,
+    "ast_hash": "c7846ae2b4fe91ff376c65f3b54bc98f",
+    "semantic_hash": "c7846ae2b4fe91ff376c65f3b54bc98f"
+  },
+  "docs/medium-mimari-makale.md": {
+    "mtime": 1783974081.983098,
+    "ast_hash": "516e6a42cb310c21227143931b1a6074",
+    "semantic_hash": "516e6a42cb310c21227143931b1a6074"
+  },
+  "docs/requirements.md": {
+    "mtime": 1783460486.774943,
+    "ast_hash": "0d5803103e983d5571ba895dd8fbdcc0",
+    "semantic_hash": "0d5803103e983d5571ba895dd8fbdcc0"
+  },
+  "docs/rezervasyon-akisi.md": {
+    "mtime": 1783339108.4547365,
+    "ast_hash": "524c8e481e8940293541b5753825bfe7",
+    "semantic_hash": "524c8e481e8940293541b5753825bfe7"
+  },
+  "docs/roadmap.md": {
+    "mtime": 1783940911.3311727,
+    "ast_hash": "bccda4caa7a0dad815fcd6db341d73e2",
+    "semantic_hash": "bccda4caa7a0dad815fcd6db341d73e2"
+  },
+  "src/Modules/Cart/ModularCommerce.Cart.Contracts/README.md": {
+    "mtime": 1783077526.6689513,
+    "ast_hash": "57f4a6f2af10de6c07e6b9859c4b9f9c",
+    "semantic_hash": "57f4a6f2af10de6c07e6b9859c4b9f9c"
+  },
+  "src/Modules/Catalog/ModularCommerce.Catalog.Contracts/README.md": {
+    "mtime": 1783077525.2719998,
+    "ast_hash": "5ab03bf6454f6657b96e2bba0814921c",
+    "semantic_hash": "5ab03bf6454f6657b96e2bba0814921c"
+  },
+  "src/Modules/Identity/ModularCommerce.Identity.Contracts/README.md": {
+    "mtime": 1783077524.196823,
+    "ast_hash": "b4c7c7a8ac8a4612e13646e22c24cac1",
+    "semantic_hash": "b4c7c7a8ac8a4612e13646e22c24cac1"
+  },
+  "src/Modules/Inventory/ModularCommerce.Inventory.Contracts/README.md": {
+    "mtime": 1783077527.106523,
+    "ast_hash": "11fa7a8c537bbbd8513d05cadbe41d92",
+    "semantic_hash": "11fa7a8c537bbbd8513d05cadbe41d92"
+  },
+  "src/Modules/Notification/ModularCommerce.Notification.Contracts/README.md": {
+    "mtime": 1783077523.3468661,
+    "ast_hash": "b2fd074272e64e9677f960e3acfe2c46",
+    "semantic_hash": "b2fd074272e64e9677f960e3acfe2c46"
+  },
+  "src/Modules/Ordering/ModularCommerce.Ordering.Contracts/README.md": {
+    "mtime": 1783077525.6029978,
+    "ast_hash": "09b86e0fc0ddb57e5c18e42a356cb102",
+    "semantic_hash": "09b86e0fc0ddb57e5c18e42a356cb102"
+  },
+  "src/Modules/Payment/ModularCommerce.Payment.Contracts/README.md": {
+    "mtime": 1783077524.741999,
+    "ast_hash": "533d1bfcabd84b51f80bff107a14f3d3",
+    "semantic_hash": "533d1bfcabd84b51f80bff107a14f3d3"
+  },
+  "src/Modules/Shipping/ModularCommerce.Shipping.Contracts/README.md": {
+    "mtime": 1783077526.1009974,
+    "ast_hash": "95b49338d25e8534b66d3ad55d20ebe2",
+    "semantic_hash": "95b49338d25e8534b66d3ad55d20ebe2"
+  },
+  "tests/LoadTests/README.md": {
+    "mtime": 1783778409.8949163,
+    "ast_hash": "f8fd47ec7c80a827c0723a24cf53f1e5",
+    "semantic_hash": "f8fd47ec7c80a827c0723a24cf53f1e5"
+  }
+}
