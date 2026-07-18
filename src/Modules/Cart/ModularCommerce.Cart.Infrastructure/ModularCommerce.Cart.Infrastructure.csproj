@@ -5,5 +5,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="ModularCommerce.Cart.IntegrationTests" />
   </ItemGroup>
 </Project>

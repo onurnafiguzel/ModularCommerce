@@ -12,5 +12,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Cart\ModularCommerce.Cart.Domain\ModularCommerce.Cart.Domain.csproj" />
     <ProjectReference Include="..\..\src\Modules\Cart\ModularCommerce.Cart.Application\ModularCommerce.Cart.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Cart\ModularCommerce.Cart.Infrastructure\ModularCommerce.Cart.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

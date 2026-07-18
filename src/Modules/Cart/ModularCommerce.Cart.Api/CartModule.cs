@@ -10,8 +10,10 @@ using ModularCommerce.Cart.Application.Carts.GetCart;
 using ModularCommerce.Cart.Application.Carts.RemoveItem;
 using ModularCommerce.Cart.Application.Carts.UpdateItemQuantity;
 using ModularCommerce.Cart.Domain.Carts;
+using ModularCommerce.Cart.Infrastructure.Caching;
 using ModularCommerce.Cart.Infrastructure.Persistence;
 using ModularCommerce.Shared.Infrastructure.Modules;
+using ModularCommerce.Shared.Infrastructure.Persistence;
 
 namespace ModularCommerce.Cart.Api;
 
@@ -21,7 +23,13 @@ public sealed class CartModule : IModule
 
     public void Register(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ICartRepository, RedisCartRepository>();
+        services.AddModuleDbContext<CartDbContext>(configuration, CartDbContext.Schema);
+        services.AddScoped<PostgresCartRepository>();
+        services.AddSingleton<ICartCache, RedisCartCache>();
+        services.AddScoped<ICartRepository>(
+            sp => new CachingCartRepository(
+                 sp.GetRequiredService<PostgresCartRepository>(),
+                 sp.GetRequiredService<ICartCache>()));
 
         services.AddScoped<ModularCommerce.Cart.Contracts.ICartService, Application.Carts.Contracts.CartService>();
         services.AddScoped<GetCartHandler>();
