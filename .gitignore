@@ -4,5 +4,3 @@ obj/
 .vs/
 .idea/
 TestResults/
-graphify-out/.graphify_*
-graphify-out/cache/
