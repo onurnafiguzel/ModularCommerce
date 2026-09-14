@@ -10,11 +10,11 @@ namespace ModularCommerce.Shared.IntegrationTests.Fixtures;
 /// </summary>
 public sealed class InfraContainersFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17")
         .WithImage("postgres:17-alpine")
         .Build();
 
-    private readonly RedisContainer _redis = new RedisBuilder()
+    private readonly RedisContainer _redis = new RedisBuilder("redis:7-alpine")
         .WithImage("redis:7-alpine")
         .Build();
 

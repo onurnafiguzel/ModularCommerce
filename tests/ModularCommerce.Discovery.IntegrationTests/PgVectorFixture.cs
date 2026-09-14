@@ -13,7 +13,7 @@ namespace ModularCommerce.Discovery.IntegrationTests;
 /// </summary>
 public sealed class PgVectorFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder()
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:17")
         .WithImage("pgvector/pgvector:pg17")
         .Build();
 

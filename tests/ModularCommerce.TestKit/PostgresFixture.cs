@@ -13,7 +13,7 @@ namespace ModularCommerce.TestKit;
 public abstract class PostgresFixture<TContext> : IAsyncLifetime
     where TContext : DbContext
 {
-    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder()
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:17")
         .WithImage("postgres:17-alpine") // docker-compose ile aynı imaj
         .Build();
 

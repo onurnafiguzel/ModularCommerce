@@ -11,7 +11,7 @@ namespace ModularCommerce.TestKit;
 /// </summary>
 public class RedisFixture : IAsyncLifetime
 {
-    private readonly RedisContainer _container = new RedisBuilder()
+    private readonly RedisContainer _container = new RedisBuilder("redis:7-alpine")
         .WithImage("redis:7-alpine")
         .Build();
 
