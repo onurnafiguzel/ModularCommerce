@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.11904.113 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FE52EC43-F54E-4534-AE06-A9034E7D154B}"
 EndProject
@@ -162,6 +162,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModularCommerce.Discovery.UnitTests", "tests\ModularCommerce.Discovery.UnitTests\ModularCommerce.Discovery.UnitTests.csproj", "{5133430E-2E84-4B6D-8465-28AB5FA3CDDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModularCommerce.Discovery.IntegrationTests", "tests\ModularCommerce.Discovery.IntegrationTests\ModularCommerce.Discovery.IntegrationTests.csproj", "{7F531664-DB13-440D-92AB-A72302F9A78E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB4A1821-EB61-4E4A-BD29-F8BB7CB7D0A2}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1048,5 +1055,8 @@ Global
 		{078DB605-B047-44C3-A52F-72BB8BEC1406} = {D6DF1590-B861-AF2F-BD85-EB4BD281830C}
 		{5133430E-2E84-4B6D-8465-28AB5FA3CDDA} = {BE556373-3BA4-45C4-882D-57A457CAF350}
 		{7F531664-DB13-440D-92AB-A72302F9A78E} = {BE556373-3BA4-45C4-882D-57A457CAF350}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4C58E378-1155-45ED-B857-80DD8AADD02F}
 	EndGlobalSection
 EndGlobal
