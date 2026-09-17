@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: modularcommerce-api
+spec:
+  type: ClusterIP
+  selector:
+    app: modularcommerce-api    # deployment.yaml'daki label ile AYNI
+  ports:
+    - port: 80                  # Service'in dinlediği port
+      targetPort: 8080          # pod'un dinlediği port
