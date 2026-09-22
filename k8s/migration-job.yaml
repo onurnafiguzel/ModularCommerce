@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: modularcommerce-migrate
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: ghcr.io/onurnafiguzel/modularcommerce:4f3b9c6865f90461ebabe11544e0bd196485ddd7
+          env:
+            - name: RUN_MIGRATIONS
+              value: "true"
+          envFrom:
+            - configMapRef:
+                name: modularcommerce-config
+            - secretRef:
+                name: modularcommerce-secrets

@@ -87,4 +87,14 @@ foreach (var module in modules)
     module.MapEndpoints(app);
 }
 
-app.Run();
+// RUN_MIGRATIONS=true → k8s migration Job modu: hosted service'ler (migrate+seed dahil) çalışsın,
+// sonra süreç temiz kapansın. HTTP dinlemeye hiç girmiyoruz; StopApplication tek tek çağrılmıyor
+// çünkü her modülün kendi MigrateAndSeedHostedService instance'ı var, ilk biten diğerlerini keser.
+if (app.Configuration.GetValue<bool>("RUN_MIGRATIONS"))
+{
+    await app.StartAsync();
+    await app.StopAsync();
+    return;
+}
+
+await app.RunAsync();

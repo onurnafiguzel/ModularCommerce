@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -6,12 +7,15 @@ namespace ModularCommerce.Shared.Infrastructure.Persistence;
 
 public sealed class MigrateAndSeedHostedService<TContext>(
     IServiceProvider serviceProvider,
-    IHostEnvironment environment) : IHostedService
+    IHostEnvironment environment,
+    IConfiguration configuration) : IHostedService
     where TContext : DbContext
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        if (!environment.IsDevelopment())
+        var runMigrations = configuration.GetValue<bool>("RUN_MIGRATIONS");
+
+        if (!runMigrations && !environment.IsDevelopment())
         {
             return;
         }
