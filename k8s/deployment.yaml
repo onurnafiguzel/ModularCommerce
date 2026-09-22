@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modularcommerce-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: modularcommerce-api      # hangi pod'ları yöneteceğini bu seçer
+  template:
+    metadata:
+      labels:
+        app: modularcommerce-api    # yukarıdaki selector ile AYNI olmalı
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/onurnafiguzel/modularcommerce:4f3b9c6865f90461ebabe11544e0bd196485ddd7
+          ports:
+            - containerPort: 8080
+          envFrom: 
+            - configMapRef:
+                name: modularcommerce-config
+            - secretRef:
+                name: modularcommerce-secrets
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
