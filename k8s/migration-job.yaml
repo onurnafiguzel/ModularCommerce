@@ -10,7 +10,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: migrate
-          image: ghcr.io/onurnafiguzel/modularcommerce:4f3b9c6865f90461ebabe11544e0bd196485ddd7
+          image: ghcr.io/onurnafiguzel/modularcommerce:a21e2bc884a9d7cb8a617fbfbc089ba20bd35dcc
           env:
             - name: RUN_MIGRATIONS
               value: "true"
