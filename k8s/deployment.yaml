@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/onurnafiguzel/modularcommerce:a21e2bc884a9d7cb8a617fbfbc089ba20bd35dcc
+          image: ghcr.io/onurnafiguzel/modularcommerce:IMAGE_TAG
           ports:
             - containerPort: 8080
           envFrom: 
