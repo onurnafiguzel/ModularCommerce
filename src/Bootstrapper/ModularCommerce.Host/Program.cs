@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using MassTransit;
 using ModularCommerce.Discovery.Api.Consumers;
 using ModularCommerce.Notification.Api.Consumers;
@@ -8,19 +9,45 @@ using ModularCommerce.Shared.Infrastructure.Modules;
 using ModularCommerce.Shared.Infrastructure.Observability;
 using ModularCommerce.Shared.Infrastructure.RateLimiting;
 using ModularCommerce.Shared.Infrastructure.Redis;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, loggerConfiguration) =>
-    loggerConfiguration.ReadFrom.Configuration(context.Configuration));
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration).Enrich.With<ActivityEnricher>());
 
 builder.Services.AddRedis(builder.Configuration);
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(
+            serviceName: "modularcommerce-api",
+            serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown")
+        .AddAttributes([new("deployment.environment", builder.Environment.EnvironmentName)]))
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation(options =>
+            options.Filter = httpContext => !httpContext.Request.Path.StartsWithSegments("/health")
+                && !httpContext.Request.Path.StartsWithSegments("/metrics"))
+        .AddHttpClientInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation()
+        .AddSource("MassTransit")
+        .AddOtlpExporter())
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddRuntimeInstrumentation()
+        .AddMeter("MassTransit")
+        .AddPrometheusExporter());
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddProblemDetails(options =>
     options.CustomizeProblemDetails = context =>
     {
-        context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+        context.ProblemDetails.Extensions["traceId"] =
+            Activity.Current?.TraceId.ToString() ?? context.HttpContext.TraceIdentifier;
 
         if (context.HttpContext.Items[CorrelationIdMiddleware.ItemKey] is string correlationId)
         {
@@ -68,13 +95,26 @@ foreach (var module in modules)
 var app = builder.Build();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging(options =>
+    options.GetLevel = (httpContext, _, exception) =>
+        exception is not null || httpContext.Response.StatusCode >= 500
+            ? LogEventLevel.Error
+            : httpContext.Request.Path.StartsWithSegments("/health") ||
+              httpContext.Request.Path.StartsWithSegments("/metrics")
+                ? LogEventLevel.Verbose   // minimum seviye Information → bu satırlar yazılmaz
+                : LogEventLevel.Information);
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 app.MapHealthEndpoints();
+
+// /metrics'i ayrı bir portta (varsayılan 9464) sunuyoruz ki Service/Ingress sadece 8080'i açınca
+// dışarıdan erişilemez olsun; Prometheus pod'a doğrudan bu porttan (ClusterIP üzerinden, Service'siz)
+// ulaşır. Port sabit yazılmadı, appsettings/env ile değiştirilebilir (Observability:MetricsPort).
+var metricsPort = app.Configuration.GetValue("Observability:MetricsPort", 9464);
+app.MapPrometheusScrapingEndpoint().RequireHost($"*:{metricsPort}").DisableRateLimiting();
 
 app.MapGet("/", () => Results.Ok(new
 {

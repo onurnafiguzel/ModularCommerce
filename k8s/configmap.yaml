@@ -4,4 +4,5 @@ metadata:
   name: modularcommerce-config
 data:
   ASPNETCORE_ENVIRONMENT: "Production"
-  ASPNETCORE_URLS: "http://+:8080"
+  ASPNETCORE_URLS: "http://+:8080;http://+:9464"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4317"

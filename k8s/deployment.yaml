@@ -11,17 +11,30 @@ spec:
     metadata:
       labels:
         app: modularcommerce-api    # yukarıdaki selector ile AYNI olmalı
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9464"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
         - name: api
           image: ghcr.io/onurnafiguzel/modularcommerce:IMAGE_TAG
           ports:
             - containerPort: 8080
+            - containerPort: 9464
+              name: metrics
           envFrom: 
             - configMapRef:
                 name: modularcommerce-config
             - secretRef:
                 name: modularcommerce-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           livenessProbe:
             httpGet:
               path: /health/live

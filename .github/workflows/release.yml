@@ -37,6 +37,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
+    if: vars.AKS_DEPLOY_ENABLED == 'true'
     permissions:
       id-token: write
       contents: read
