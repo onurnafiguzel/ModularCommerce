@@ -26,6 +26,36 @@ dotnet run --project src/Bootstrapper/ModularCommerce.Host
 # http://localhost:5000/api/catalog/health
 ```
 
+## İşletim notları
+
+### Postgres bağlantı havuzu boyutlandırma
+
+Her modülün kendi `AddModuleDbContext` çağrısı ayrı bir `UseNpgsql(connectionString)` yapar —
+EF Core'un Npgsql sağlayıcısı her çağrı için AYRI bir connection pool kurar, aynı connection
+string metni bile olsa modüller arasında PAYLAŞILMAZ. Varsayılan Npgsql Max Pool Size (100) ile
+çalışıldığında, tek bir checkout isteği bile (Cart+Catalog+Inventory+Payment+Ordering'in AYRI
+pool'larını eşzamanlı kullanır) yüksek paralellik altında Postgres'in kendi `max_connections`
+sınırını kolayca aşabilir ("sorry, too many clients already" — ölçüldü: 100-paralel tek bir
+place_order koşusunda `pg_stat_activity` 98/100'e çıktı).
+
+Bu yüzden `Npgsql:MaxPoolSizePerModule` (appsettings, varsayılan **10**) ile her modülün pool'u
+sabitlenir. Doğru boyutlandırma formülü:
+
+```
+modül_sayısı × MaxPoolSizePerModule × replika_sayısı ≤ Postgres max_connections − headroom
+```
+
+- **modül_sayısı**: Postgres kullanan modül sayısı (bugün 8 — Shipping'in henüz DB'si yok).
+- **headroom**: health check'ler, migration job'u, `superuser_reserved_connections`, doğrudan
+  `NpgsqlConnection` kullanan kod (ör. `PostgresHealthCheck`) için pay.
+- Varsayılan (`MaxPoolSizePerModule=10`) tek replika (dev/test) için güvenli:
+  `8 × 10 × 1 = 80 ≤ 100` (20 bağlantı headroom). Ölçüldü: aynı 100-paralel test, bu değerle
+  `pg_stat_activity` 13/100'e düştü.
+- **ÜRETİMDE** (`k8s/deployment.yaml`: `replicas: 3`) varsayılanla `8 × 10 × 3 = 240` —
+  Postgres'in varsayılan `max_connections`'ını (100) AŞAR. Gerçek bir çoklu-replika deploy'dan
+  önce ya `Npgsql:MaxPoolSizePerModule`'ü düşürün (ör. 3-4) ya da Postgres'in `max_connections`'ını
+  bu formüle göre yükseltin — hangisi tercih edilirse edilsin, formül yeniden hesaplanmalı.
+
 ## Kanıt yükümlülükleri
 
 Bu projede her iddia ölçümle kanıtlanır (bkz. requirements §10):
