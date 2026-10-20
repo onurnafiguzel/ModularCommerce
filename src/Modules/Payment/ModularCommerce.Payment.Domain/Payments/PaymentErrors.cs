@@ -26,10 +26,14 @@ public static class PaymentErrors
         "Payment.Timeout",
         "Ödeme zaman aşımına uğradı. Yeni bir deneme için yeni bir Idempotency-Key kullanın.");
 
-    /// <summary>Replay güvenliği: aynı key'in ödemesi farklı tutara aitti (sepet değişmiş).</summary>
-    public static readonly Error AmountMismatch = Error.Conflict(
-        "Payment.AmountMismatch",
-        "Bu Idempotency-Key farklı bir tutar için kullanılmış. Yeni bir key ile tekrar deneyin.");
+    /// <summary>
+    /// Replay güvenliği: aynı key'in ödemesi farklı bir sipariş/tutara aitti (sepet değişmiş).
+    /// Terminal client hatası (retryable=false) — Ordering'in IdempotencyKeyReused'u ile aynı
+    /// 422 ailesinde: aynı key ile tekrar denemek anlamsız, çağıran YENİ bir key üretmeli.
+    /// </summary>
+    public static readonly Error IdempotencyKeyReused = Error.UnprocessableEntity(
+        "Payment.IdempotencyKeyReused",
+        "Bu Idempotency-Key farklı bir sipariş/tutar için kullanılmış. Yeni bir key ile tekrar deneyin.");
 
     public static readonly Error UnsupportedMethod = Error.Validation(
         "Payment.UnsupportedMethod",

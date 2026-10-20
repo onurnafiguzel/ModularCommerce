@@ -69,8 +69,8 @@ public sealed class DeclinedReplayTests(PostgresContainerFixture fixture)
         }
     }
 
-    [Fact(DisplayName = "Replay güvenliği: Completed ödemenin key'i FARKLI tutarla gelirse AmountMismatch (sepet değişmiş)")]
-    public async Task CompletedReplay_WithDifferentAmount_ReturnsAmountMismatch()
+    [Fact(DisplayName = "Replay güvenliği: Completed ödemenin key'i FARKLI tutarla gelirse IdempotencyKeyReused (422, sepet değişmiş)")]
+    public async Task CompletedReplay_WithDifferentAmount_ReturnsIdempotencyKeyReused()
     {
         var customerId = Guid.NewGuid();
         var key = $"tutar-{Guid.NewGuid():N}";
@@ -91,7 +91,36 @@ public sealed class DeclinedReplayTests(PostgresContainerFixture fixture)
                 CancellationToken.None);
 
             mismatch.IsFailure.Should().BeTrue();
-            mismatch.Error.Code.Should().Be("Payment.AmountMismatch");
+            mismatch.Error.Code.Should().Be("Payment.IdempotencyKeyReused");
+        }
+
+        psp.Calls.Should().Be(1, "mismatch yolunda PSP aranmaz");
+    }
+
+    [Fact(DisplayName = "Replay güvenliği: Completed ödemenin key'i AYNI tutar ama FARKLI OrderId ile gelirse IdempotencyKeyReused (422, FAZ 0)")]
+    public async Task CompletedReplay_WithDifferentOrderIdSameAmount_ReturnsIdempotencyKeyReused()
+    {
+        var customerId = Guid.NewGuid();
+        var key = $"siparis-{Guid.NewGuid():N}";
+        var options = new PspOptions { LatencyMs = 0 };
+        var psp = TestPaymentServiceFactory.CreatePspClient(options);
+
+        await using (var context = fixture.CreateContext())
+        {
+            (await TestPaymentServiceFactory.Create(context, psp, options).ChargeAsync(
+                new ChargeRequest(customerId, Guid.NewGuid(), key, 100m, "TRY"),
+                CancellationToken.None)).IsSuccess.Should().BeTrue();
+        }
+
+        await using (var context = fixture.CreateContext())
+        {
+            // Amount/Currency AYNI (100m/TRY) ama OrderId FARKLI — Amount eşleşse bile reddedilmeli.
+            var mismatch = await TestPaymentServiceFactory.Create(context, psp, options).ChargeAsync(
+                new ChargeRequest(customerId, Guid.NewGuid(), key, 100m, "TRY"),
+                CancellationToken.None);
+
+            mismatch.IsFailure.Should().BeTrue();
+            mismatch.Error.Code.Should().Be("Payment.IdempotencyKeyReused");
         }
 
         psp.Calls.Should().Be(1, "mismatch yolunda PSP aranmaz");

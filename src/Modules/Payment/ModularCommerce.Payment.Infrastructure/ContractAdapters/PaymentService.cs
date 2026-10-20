@@ -144,10 +144,15 @@ public sealed class PaymentService(
         switch (existing.Status)
         {
             case PaymentStatus.Completed:
-                // Replay güvenliği: aynı key farklı tutara yapıştırılamaz (sepet değişmiş olabilir).
-                if (existing.Amount.Amount != request.Amount || existing.Amount.Currency != request.Currency)
+                // Replay güvenliği: aynı key farklı bir sipariş/tutara yapıştırılamaz (sepet
+                // değişmiş olabilir). OrderId de kontrol edilir — Amount/Currency rastlantısal
+                // olarak eşleşse bile farklı bir sipariş için bu key'in tekrar kullanılması
+                // engellenmeli.
+                if (existing.OrderId != request.OrderId
+                    || existing.Amount.Amount != request.Amount
+                    || existing.Amount.Currency != request.Currency)
                 {
-                    return Result.Failure<PaymentResultDto>(PaymentErrors.AmountMismatch);
+                    return Result.Failure<PaymentResultDto>(PaymentErrors.IdempotencyKeyReused);
                 }
 
                 return Result.Success(ToDto(existing));
