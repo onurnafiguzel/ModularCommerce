@@ -145,9 +145,15 @@ public sealed class PaymentService(
         {
             case PaymentStatus.Completed:
                 // Replay güvenliği: aynı key farklı bir sipariş/tutara yapıştırılamaz (sepet
-                // değişmiş olabilir). OrderId de kontrol edilir — Amount/Currency rastlantısal
-                // olarak eşleşse bile farklı bir sipariş için bu key'in tekrar kullanılması
-                // engellenmeli.
+                // değişmiş olabilir). OrderId KARŞILAŞTIRMASI GÜVENLE geri eklendi (bir süre
+                // kaldırılmıştı — bkz. git geçmişi): Order.Id artık (CustomerId, IdempotencyKey)
+                // çiftinden DETERMİNİSTİK üretiliyor (Ordering.Domain.Orders.DeterministicOrderId,
+                // RFC 9562 UUIDv5) — aynı key için yarışan TÜM paralel checkout denemeleri,
+                // ChargeAsync'e hangisi önce ulaşırsa ulaşsın, AYNI OrderId'yi hesaplar. Bu yüzden
+                // bir OrderId uyuşmazlığı artık HER ZAMAN gerçek bir "farklı niyet" sinyalidir
+                // (meşru bir yarışla asla karıştırılamaz), savunma derinliği olarak güvenle
+                // karşılaştırılabilir. Payment başka bir modülden de çağrılır hale gelirse (bugün
+                // öyle değil) bu varsayım yeniden değerlendirilmeli.
                 if (existing.OrderId != request.OrderId
                     || existing.Amount.Amount != request.Amount
                     || existing.Amount.Currency != request.Currency)
