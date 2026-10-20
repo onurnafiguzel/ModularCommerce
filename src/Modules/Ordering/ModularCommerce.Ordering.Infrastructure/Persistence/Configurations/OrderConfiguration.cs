@@ -8,11 +8,21 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public const string IdempotencyIndexName = "ix_orders_customer_id_idempotency_key";
 
+    /// <summary>
+    /// Order.Id artık (CustomerId, IdempotencyKey)'den DETERMİNİSTİK üretiliyor
+    /// (<see cref="Order.DeterministicOrderId"/>'nin dolaylı sonucu) — aynı key için yarışan
+    /// paralel denemeler AYNI Id'yi hesapladığından, bir yarış kaybı artık PK ihlali olarak da
+    /// gelebilir (önceden SADECE <see cref="IdempotencyIndexName"/> ihlal edilirdi). İsim adı
+    /// açıkça sabitlenir ki EF'in konvansiyonu değişse bile <see cref="OrderRepository"/>'nin
+    /// exception-translation filtresi kırılmasın.
+    /// </summary>
+    public const string PrimaryKeyName = "PK_orders";
+
     public void Configure(EntityTypeBuilder<Order> builder)
     {
         builder.ToTable("orders");
 
-        builder.HasKey(o => o.Id);
+        builder.HasKey(o => o.Id).HasName(PrimaryKeyName);
 
         builder.Property(o => o.IdempotencyKey)
             .HasMaxLength(Order.IdempotencyKeyMaxLength)

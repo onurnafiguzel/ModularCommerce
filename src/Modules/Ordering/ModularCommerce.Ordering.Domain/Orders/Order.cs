@@ -66,6 +66,11 @@ public sealed class Order : Entity
     {
         var utcNow = DateTime.UtcNow;
 
+        // DETERMİNİSTİK Id (bkz. DeterministicOrderId): aynı (CustomerId, IdempotencyKey) için
+        // yarışan TÜM paralel checkout denemeleri AYNI Id'yi hesaplar — Payment'ın ve Ordering'in
+        // birbirinden bağımsız hakemlerinin (iki farklı unique index) FARKLI bir "kazanan"
+        // seçmesi artık mümkün değil, ikisi de zaten aynı Id'yi görür.
+        Id = DeterministicOrderId.Create(customerId, idempotencyKey);
         CustomerId = customerId;
         Status = OrderStatus.Created;
         IdempotencyKey = idempotencyKey;
