@@ -43,6 +43,7 @@ public enum ErrorType
     NotFound = 2,
     Conflict = 3,
     Unauthorized = 4,
+    UnprocessableEntity = 5,
 }
 
 /// <param name="Retryable">
@@ -64,4 +65,9 @@ public sealed record Error(
     public static Error Conflict(string code, string message, bool retryable = false)
         => new(code, message, ErrorType.Conflict, retryable);
     public static Error Unauthorized(string code, string message) => new(code, message, ErrorType.Unauthorized);
+
+    // Retryable HER ZAMAN false: aynı Idempotency-Key ile tekrar denemek anlamsız, çağıran
+    // farklı bir niyet için YENİ bir key üretmeli (ör. IdempotencyKeyReused).
+    public static Error UnprocessableEntity(string code, string message)
+        => new(code, message, ErrorType.UnprocessableEntity);
 }
