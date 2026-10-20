@@ -76,12 +76,12 @@ public class CheckoutHandlerTests
         return reservationId;
     }
 
-    private static Order ExistingOrder(Guid customerId, string key)
+    private static Order ExistingOrder(Guid customerId, string key, string? payloadHash = null)
     {
         var order = Order.Create(
             customerId, key,
             [new OrderLineDraft(Guid.NewGuid(), "Mevcut", 10m, "TRY", 1, Guid.NewGuid())],
-            "checkout").Value;
+            "checkout", payloadHash).Value;
         order.MarkStockReserved("checkout");
         order.MarkPaymentPending("checkout");
         order.MarkPaid("checkout");
@@ -128,7 +128,78 @@ public class CheckoutHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.IsExisting.Should().BeTrue();
         result.Value.Order.Id.Should().Be(existing.Id);
-        await _cartService.DidNotReceive().GetItemsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+        // FAZ 0: sepet artık payload-hash karşılaştırması için HER ZAMAN okunur (varsayılan
+        // mock boş sepet döner → existing.PayloadHash null olduğundan zaten replay'e düşer).
+        await _cartService.Received(1).GetItemsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact(DisplayName = "Aynı key + AYNI sepet (hash eşleşir) → replay, yeni sipariş/rezervasyon YOK (FAZ 0)")]
+    public async Task Handle_WithExistingKey_SameCartHash_ReturnsReplay()
+    {
+        SetupCart((_productA, 2));
+        var hash = CheckoutHandler.ComputePayloadHash([new CartLineDto(_productA, 2)]);
+        var existing = ExistingOrder(_customerId, "anahtar-1", hash);
+        _orders.GetByIdempotencyKeyAsync(_customerId, "anahtar-1", Arg.Any<CancellationToken>())
+            .Returns(existing);
+
+        var result = await _handler.HandleAsync(Command(), CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.IsExisting.Should().BeTrue();
+        result.Value.Order.Id.Should().Be(existing.Id);
+        await _orders.DidNotReceive().AddAsync(Arg.Any<Order>(), Arg.Any<CancellationToken>());
+        await _stockReservation.DidNotReceive().ReserveAsync(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact(DisplayName = "Aynı key + FARKLI sepet (hash uyuşmaz) → 422 IdempotencyKeyReused, yeni sipariş/rezervasyon YOK (FAZ 0)")]
+    public async Task Handle_WithExistingKey_DifferentCartHash_ReturnsIdempotencyKeyReused()
+    {
+        // existing, _productB için bir hash taşıyor; gelen istek _productA'nın sepetiyle geliyor.
+        var hashForDifferentCart = CheckoutHandler.ComputePayloadHash([new CartLineDto(_productB, 5)]);
+        var existing = ExistingOrder(_customerId, "anahtar-1", hashForDifferentCart);
+        _orders.GetByIdempotencyKeyAsync(_customerId, "anahtar-1", Arg.Any<CancellationToken>())
+            .Returns(existing);
+        SetupCart((_productA, 2));
+
+        var result = await _handler.HandleAsync(Command(), CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(OrderErrors.IdempotencyKeyReused);
+        await _orders.DidNotReceive().AddAsync(Arg.Any<Order>(), Arg.Any<CancellationToken>());
+        await _stockReservation.DidNotReceive().ReserveAsync(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact(DisplayName = "Aynı key + PayloadHash NULL (migration-öncesi kayıt) + farklı sepet → yine replay, 422 DEĞİL (geriye uyumluluk, FAZ 0)")]
+    public async Task Handle_WithExistingKey_NullPayloadHash_StillReplaysRegardlessOfCart()
+    {
+        var existing = ExistingOrder(_customerId, "anahtar-1", payloadHash: null);
+        _orders.GetByIdempotencyKeyAsync(_customerId, "anahtar-1", Arg.Any<CancellationToken>())
+            .Returns(existing);
+        SetupCart((_productA, 999)); // mevcut sepet ne olursa olsun fark etmemeli
+
+        var result = await _handler.HandleAsync(Command(), CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.IsExisting.Should().BeTrue();
+        result.Value.Order.Id.Should().Be(existing.Id);
+    }
+
+    [Fact(DisplayName = "Yeni sipariş: sepetten hesaplanan payload hash Order'a geçiriliyor (FAZ 0)")]
+    public async Task Handle_NewOrder_PersistsComputedPayloadHash()
+    {
+        SetupCart((_productA, 2));
+        SetupProducts(new ProductSnapshotDto(_productA, "Ürün A", 100m, "TRY", true));
+        SetupReservation(_productA, 2);
+
+        Order? captured = null;
+        _orders.AddAsync(Arg.Do<Order>(o => captured = o), Arg.Any<CancellationToken>())
+            .Returns(Result.Success());
+
+        await _handler.HandleAsync(Command(), CancellationToken.None);
+
+        var expectedHash = CheckoutHandler.ComputePayloadHash([new CartLineDto(_productA, 2)]);
+        captured.Should().NotBeNull();
+        captured!.PayloadHash.Should().Be(expectedHash);
     }
 
     [Fact(DisplayName = "Boş sepet → 400 EmptyCart")]

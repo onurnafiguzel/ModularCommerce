@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using ModularCommerce.Cart.Contracts;
@@ -32,15 +34,13 @@ public sealed class CheckoutHandler(
                 string.Join(" ", validation.Errors.Select(e => e.ErrorMessage))));
         }
 
-        // (a) Hızlı yol: aynı key daha önce işlendiyse kopyasını dön (FR-5.4).
+        // (a) Hızlı yol: aynı key daha önce işlendiyse kopyasını dön (FR-5.4) — AMA sepetin
+        // o zamanki niyetle AYNI olduğunu da doğrula (IdempotencyKeyReused koruması, aşağıda).
         var existing = await orders.GetByIdempotencyKeyAsync(
             command.CustomerId, command.IdempotencyKey, cancellationToken);
-        if (existing is not null)
-        {
-            return Replay(existing);
-        }
 
-        // (b) Sepet checkout'un kaynağıdır (FR-4.3).
+        // (b) Sepet checkout'un kaynağıdır (FR-4.3). existing bulunsa da HER ZAMAN okunur —
+        // payload-hash karşılaştırması bunu gerektirir.
         var cartResult = await cartService.GetItemsAsync(command.CustomerId, cancellationToken);
         if (cartResult.IsFailure)
         {
@@ -48,6 +48,32 @@ public sealed class CheckoutHandler(
         }
 
         var cartLines = cartResult.Value;
+
+        if (existing is not null)
+        {
+            if (cartLines.Count == 0)
+            {
+                // Sepet zaten temizlenmiş: retry-after-success (kazananın kendi akışı temizledi).
+                return Replay(existing);
+            }
+
+            if (existing.PayloadHash is null)
+            {
+                // Migration-öncesi kayıt: hash hiç yok, karşılaştırma yapılamaz — güvenli taraf,
+                // replay (geriye dönük uyumluluk, FAZ 0 öncesi davranış korunur).
+                return Replay(existing);
+            }
+
+            if (ComputePayloadHash(cartLines) == existing.PayloadHash)
+            {
+                return Replay(existing);
+            }
+
+            // Aynı key, FARKLI niyet (sepet içeriği değişmiş) — eski siparişi sessizce dönmek
+            // yerine reddet; çağıran farklı bir sipariş için YENİ bir key üretmeli.
+            return Result.Failure<CheckoutResponse>(OrderErrors.IdempotencyKeyReused);
+        }
+
         if (cartLines.Count == 0)
         {
             // İkincil yarış: paralel kazanan siparişi yazıp SEPETİ TEMİZLEMİŞ olabilir —
@@ -102,7 +128,8 @@ public sealed class CheckoutHandler(
 
         // (e) Yaşam döngüsü domain'de: Created doğar, zincir tamamlandığı için
         // StockReserved'a geçer (her iki adım da history + event bırakır).
-        var orderResult = Order.Create(command.CustomerId, command.IdempotencyKey, drafts, Trigger);
+        var orderResult = Order.Create(
+            command.CustomerId, command.IdempotencyKey, drafts, Trigger, ComputePayloadHash(cartLines));
         if (orderResult.IsFailure)
         {
             await ReleaseAllAsync(reservedIds);
@@ -209,6 +236,23 @@ public sealed class CheckoutHandler(
 
     private static Result<CheckoutResponse> Replay(Order existing)
         => Result.Success(new CheckoutResponse(OrderResponse.FromOrder(existing), IsExisting: true));
+
+    /// <summary>
+    /// Aynı Idempotency-Key'in AYNI niyeti mi temsil ettiğini doğrulamak için sepet içeriğinin
+    /// (ProductId:Quantity, ProductId'ye göre sıralı) sürüm etiketli SHA-256 hash'i.
+    /// NOT: Bugün <see cref="CheckoutCommand"/> yalnız (CustomerId, IdempotencyKey) taşıyor —
+    /// sepet DIŞINDA hiçbir alan (adres, ödeme yöntemi vb.) yok. İleride checkout'a böyle bir
+    /// alan eklenirse, o alan da bu hash'in kapsamına dahil edilmelidir.
+    /// </summary>
+    internal static string ComputePayloadHash(IReadOnlyList<CartLineDto> lines)
+    {
+        var canonical = string.Join(';', lines
+            .OrderBy(l => l.ProductId)
+            .Select(l => $"{l.ProductId}:{l.Quantity}"));
+
+        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(canonical));
+        return $"v1:{Convert.ToHexString(hashBytes)}";
+    }
 
     /// <summary>
     /// Telafi: alınmış rezervasyonları geri bırakır. İptal token'ı BİLEREK yok —

@@ -11,4 +11,8 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="ModularCommerce.Ordering.UnitTests" />
+    <InternalsVisibleTo Include="ModularCommerce.Ordering.IntegrationTests" />
+  </ItemGroup>
 </Project>

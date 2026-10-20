@@ -18,6 +18,10 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasMaxLength(Order.IdempotencyKeyMaxLength)
             .IsRequired();
 
+        // Nullable: migration-öncesi kayıtlarda NULL kalır (geriye dönük uyumluluk, backfill yok).
+        builder.Property(o => o.PayloadHash)
+            .HasMaxLength(80); // "v1:" + 64 hex karakter
+
         builder.HasIndex(o => new { o.CustomerId, o.IdempotencyKey })
             .IsUnique()
             .HasDatabaseName(IdempotencyIndexName);
