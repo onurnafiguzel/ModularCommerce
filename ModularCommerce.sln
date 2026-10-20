@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.8.11904.113 insiders
+VisualStudioVersion = 18.8.11904.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FE52EC43-F54E-4534-AE06-A9034E7D154B}"
 EndProject
@@ -169,6 +169,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModularCommerce.Mcp", "src\Bootstrapper\ModularCommerce.Mcp\ModularCommerce.Mcp.csproj", "{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -972,6 +974,18 @@ Global
 		{7F531664-DB13-440D-92AB-A72302F9A78E}.Release|x64.Build.0 = Release|Any CPU
 		{7F531664-DB13-440D-92AB-A72302F9A78E}.Release|x86.ActiveCfg = Release|Any CPU
 		{7F531664-DB13-440D-92AB-A72302F9A78E}.Release|x86.Build.0 = Release|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Debug|x64.Build.0 = Debug|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Debug|x86.Build.0 = Debug|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Release|x64.ActiveCfg = Release|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Release|x64.Build.0 = Release|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Release|x86.ActiveCfg = Release|Any CPU
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1055,6 +1069,7 @@ Global
 		{078DB605-B047-44C3-A52F-72BB8BEC1406} = {D6DF1590-B861-AF2F-BD85-EB4BD281830C}
 		{5133430E-2E84-4B6D-8465-28AB5FA3CDDA} = {BE556373-3BA4-45C4-882D-57A457CAF350}
 		{7F531664-DB13-440D-92AB-A72302F9A78E} = {BE556373-3BA4-45C4-882D-57A457CAF350}
+		{F6FE9C97-1541-40B1-AA35-BEDCC0E1BC4B} = {FBE19815-71DF-43A9-8C8D-36183EDD32D9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C58E378-1155-45ED-B857-80DD8AADD02F}
