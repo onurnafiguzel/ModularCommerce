@@ -27,6 +27,25 @@ public static class JwtAuthenticationExtensions
 
         services.Configure<JwtOptions>(section);
 
+        // issuer → signing key eşlemesi. Host'un KENDİ anahtarıyla başlar; Jwt:Mcp
+        // yapılandırılmışsa (MCP deploy edilmişse) ikinci, AYRI bir issuer/key çifti eklenir.
+        // IssuerSigningKeyResolver issuer'ı belirli bir key'e BAĞLAR — basit bir
+        // IssuerSigningKeys+ValidIssuers listesi YETERSİZDİR, çünkü imzayı listedeki
+        // HERHANGİ bir key'e karşı doğrular, hangi issuer'ın hangi key'i kullanması
+        // gerektiğini kilitlemez (MCP key'iyle imzalanmış ama iss=Host olan sahte bir
+        // token da geçerdi).
+        var issuerKeys = new Dictionary<string, SecurityKey>
+        {
+            [options.Issuer] = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.SigningKey)),
+        };
+
+        if (options.Mcp is { Issuer.Length: > 0, SigningKey.Length: > 0 } mcp)
+        {
+            issuerKeys[mcp.Issuer] = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(mcp.SigningKey));
+        }
+
+        var validIssuers = issuerKeys.Keys.ToArray();
+
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(bearer =>
@@ -38,14 +57,18 @@ public static class JwtAuthenticationExtensions
                 bearer.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = options.Issuer,
+                    ValidIssuers = validIssuers,
                     ValidateAudience = true,
                     ValidAudience = options.Audience,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(30),
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(options.SigningKey)),
+                    IssuerSigningKeyResolver = (_, securityToken, _, _) =>
+                        // Issuer, SecurityToken'ın TÜM alt tiplerinde (JwtSecurityToken,
+                        // JsonWebToken) base class seviyesinde tanımlı — tipe özel cast gerekmez.
+                        issuerKeys.TryGetValue(securityToken.Issuer, out var key)
+                            ? [key]
+                            : [],
                 };
             });
 
