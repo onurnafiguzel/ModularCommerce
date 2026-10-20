@@ -18,7 +18,7 @@ public sealed class StoreToolsTests
             .ConfigurePrimaryHttpMessageHandler(() => handler);
 
         var apiClient = services.BuildServiceProvider().GetRequiredService<ModularCommerceApiClient>();
-        return new StoreTools(apiClient);
+        return new StoreTools(apiClient, TestSupport.CreateExecutionWrapper());
     }
 
     [Fact(DisplayName = "place_order tool'u hata mesajına idempotency_key'e özgü rehberlik ekler (AYNI/YENİ key)")]

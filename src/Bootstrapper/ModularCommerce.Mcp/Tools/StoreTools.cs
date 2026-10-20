@@ -2,12 +2,13 @@ using System.ComponentModel;
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
 using ModularCommerce.Mcp.Clients;
+using ModularCommerce.Mcp.Observability;
 
 namespace ModularCommerce.Mcp.Tools;
 
 /// <summary>ModularCommerce mağazasını bir AI agent'a açan MCP tool'ları.</summary>
 [McpServerToolType]
-public sealed class StoreTools(ModularCommerceApiClient apiClient)
+public sealed class StoreTools(ModularCommerceApiClient apiClient, ToolExecutionWrapper execution)
 {
     [McpServerTool, Description("Mağazada metin, kategori ve fiyat aralığına göre ürün arar, sayfalanmış sonuç döner.")]
     public Task<string> SearchProducts(
@@ -17,24 +18,28 @@ public sealed class StoreTools(ModularCommerceApiClient apiClient)
         [Description("Minimum fiyat (dahil).")] decimal? minPrice = null,
         [Description("Maksimum fiyat (dahil).")] decimal? maxPrice = null,
         CancellationToken cancellationToken = default)
-        => apiClient.SearchProductsAsync(query, page, pageSize, minPrice, maxPrice, cancellationToken);
+        => execution.ExecuteAsync(
+            "search_products",
+            ToolRateLimitPolicy.Read,
+            () => apiClient.SearchProductsAsync(query, page, pageSize, minPrice, maxPrice, cancellationToken));
 
     [McpServerTool, Description("Bir ürünün anlık stok durumunu kontrol eder.")]
-    public async Task<string> CheckStock(
+    public Task<string> CheckStock(
         [Description("Ürünün kimliği (GUID).")] string productId,
         CancellationToken cancellationToken = default)
-    {
-        if (!Guid.TryParse(productId, out var id))
+        => execution.ExecuteAsync("check_stock", ToolRateLimitPolicy.Read, () =>
         {
-            throw new McpException($"'{productId}' geçerli bir GUID değil.");
-        }
+            if (!Guid.TryParse(productId, out var id))
+            {
+                throw new McpException($"'{productId}' geçerli bir GUID değil.");
+            }
 
-        return await apiClient.CheckStockAsync(id, cancellationToken);
-    }
+            return apiClient.CheckStockAsync(id, cancellationToken);
+        });
 
     [McpServerTool, Description("Mevcut sepetin içeriğini (ürünler ve miktarları) döner.")]
     public Task<string> GetCart(CancellationToken cancellationToken = default)
-        => apiClient.GetCartAsync(cancellationToken);
+        => execution.ExecuteAsync("get_cart", ToolRateLimitPolicy.Read, () => apiClient.GetCartAsync(cancellationToken));
 
     [McpServerTool, Description(
         "Sepetteki bir ürünün miktarını TAM OLARAK belirtilen değere ayarlar — 'ekle/artır' DEĞİL, " +
@@ -43,59 +48,66 @@ public sealed class StoreTools(ModularCommerceApiClient apiClient)
         "API'si artırmalı çalışır, ama bu tool önce sepeti okuyup ürünün sepette olup olmadığına " +
         "bakar ve sadece ürün sepette HİÇ YOKKEN o artırmalı uca gider — o durumda sıfırdan " +
         "başladığı için sonuç yine de 'tam olarak istenen miktar' olur).")]
-    public async Task<string> SetCartItem(
+    public Task<string> SetCartItem(
         [Description("Ürünün kimliği (GUID).")] string productId,
         [Description("Hedef miktar. 0 → ürün sepetten kaldırılır. 1+ → sepetteki miktar TAM OLARAK bu değere ayarlanır (mevcut miktara eklenmez).")]
         int quantity,
         CancellationToken cancellationToken = default)
-    {
-        if (!Guid.TryParse(productId, out var id))
+        => execution.ExecuteAsync("set_cart_item", ToolRateLimitPolicy.Write, () =>
         {
-            throw new McpException($"'{productId}' geçerli bir GUID değil.");
-        }
+            if (!Guid.TryParse(productId, out var id))
+            {
+                throw new McpException($"'{productId}' geçerli bir GUID değil.");
+            }
 
-        if (quantity < 0)
-        {
-            throw new McpException("quantity negatif olamaz (0 = kaldır, 1+ = hedef miktar).");
-        }
+            if (quantity < 0)
+            {
+                throw new McpException("quantity negatif olamaz (0 = kaldır, 1+ = hedef miktar).");
+            }
 
-        return await apiClient.SetCartItemAsync(id, quantity, cancellationToken);
-    }
+            return apiClient.SetCartItemAsync(id, quantity, cancellationToken);
+        });
 
     [McpServerTool, Description("Bir siparişin güncel durumunu sorgular.")]
-    public async Task<string> GetOrderStatus(
+    public Task<string> GetOrderStatus(
         [Description("Siparişin kimliği (GUID).")] string orderId,
         CancellationToken cancellationToken = default)
-    {
-        if (!Guid.TryParse(orderId, out var id))
+        => execution.ExecuteAsync("get_order_status", ToolRateLimitPolicy.Read, () =>
         {
-            throw new McpException($"'{orderId}' geçerli bir GUID değil.");
-        }
+            if (!Guid.TryParse(orderId, out var id))
+            {
+                throw new McpException($"'{orderId}' geçerli bir GUID değil.");
+            }
 
-        return await apiClient.GetOrderStatusAsync(id, cancellationToken);
-    }
+            return apiClient.GetOrderStatusAsync(id, cancellationToken);
+        });
 
     [McpServerTool, Description(
         "Sepetteki ürünlerle sipariş oluşturur (checkout). idempotency_key'i kullanıcının her " +
         "yeni sipariş NİYETİ için BİR KEZ üret (örn. UUID). Aynı siparişi tekrar denerken (örn. " +
         "zaman aşımı sonrası) AYNI key'i kullan. Farklı bir sipariş için MUTLAKA yeni bir key " +
         "üret — aynı key'i farklı ürün/miktarla tekrar kullanırsan istek reddedilir (422).")]
-    public async Task<string> PlaceOrder(
+    public Task<string> PlaceOrder(
         [Description("Bu sipariş NİYETİ için benzersiz anahtar (UUID önerilir). Aynı niyetin " +
             "tekrar denemelerinde AYNI değer, yeni bir sipariş için YENİ bir değer kullanılmalı.")]
         string idempotencyKey,
         CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            return await apiClient.PlaceOrderAsync(idempotencyKey, cancellationToken);
-        }
-        catch (McpException ex)
-        {
-            // place_order'a özgü ek rehberlik: retryable ise AYNI key, değilse YENİ key.
-            throw new McpException(
-                $"{ex.Message} Retryable ise bu ÇAĞRIYI AYNI idempotency_key ('{idempotencyKey}') " +
-                "ile tekrar dene; değilse farklı bir sipariş için YENİ bir idempotency_key üret.");
-        }
-    }
+        => execution.ExecuteAsync(
+            "place_order",
+            ToolRateLimitPolicy.Write,
+            async () =>
+            {
+                try
+                {
+                    return await apiClient.PlaceOrderAsync(idempotencyKey, cancellationToken);
+                }
+                catch (McpException ex)
+                {
+                    // place_order'a özgü ek rehberlik: retryable ise AYNI key, değilse YENİ key.
+                    throw new McpException(
+                        $"{ex.Message} Retryable ise bu ÇAĞRIYI AYNI idempotency_key ('{idempotencyKey}') " +
+                        "ile tekrar dene; değilse farklı bir sipariş için YENİ bir idempotency_key üret.");
+                }
+            },
+            idempotencyKey);
 }

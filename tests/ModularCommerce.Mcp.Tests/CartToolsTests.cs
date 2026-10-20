@@ -33,7 +33,7 @@ public sealed class CartToolsTests
             .ConfigurePrimaryHttpMessageHandler(() => handler);
 
         var apiClient = services.BuildServiceProvider().GetRequiredService<ModularCommerceApiClient>();
-        return new StoreTools(apiClient);
+        return new StoreTools(apiClient, TestSupport.CreateExecutionWrapper());
     }
 
     [Fact(DisplayName = "get_cart sepet gövdesini olduğu gibi döner")]
