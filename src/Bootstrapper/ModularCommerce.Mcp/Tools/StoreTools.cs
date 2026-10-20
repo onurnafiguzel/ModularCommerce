@@ -32,6 +32,36 @@ public sealed class StoreTools(ModularCommerceApiClient apiClient)
         return await apiClient.CheckStockAsync(id, cancellationToken);
     }
 
+    [McpServerTool, Description("Mevcut sepetin içeriğini (ürünler ve miktarları) döner.")]
+    public Task<string> GetCart(CancellationToken cancellationToken = default)
+        => apiClient.GetCartAsync(cancellationToken);
+
+    [McpServerTool, Description(
+        "Sepetteki bir ürünün miktarını TAM OLARAK belirtilen değere ayarlar — 'ekle/artır' DEĞİL, " +
+        "'miktarı X yap' semantiği. quantity=0 verilirse ürün sepetten kaldırılır. İDEMPOTENTTİR: " +
+        "aynı çağrıyı art arda tekrarlasan bile sepet bozulmaz/çoğalmaz (altta yatan 'ürün ekle' " +
+        "API'si artırmalı çalışır, ama bu tool önce sepeti okuyup ürünün sepette olup olmadığına " +
+        "bakar ve sadece ürün sepette HİÇ YOKKEN o artırmalı uca gider — o durumda sıfırdan " +
+        "başladığı için sonuç yine de 'tam olarak istenen miktar' olur).")]
+    public async Task<string> SetCartItem(
+        [Description("Ürünün kimliği (GUID).")] string productId,
+        [Description("Hedef miktar. 0 → ürün sepetten kaldırılır. 1+ → sepetteki miktar TAM OLARAK bu değere ayarlanır (mevcut miktara eklenmez).")]
+        int quantity,
+        CancellationToken cancellationToken = default)
+    {
+        if (!Guid.TryParse(productId, out var id))
+        {
+            throw new McpException($"'{productId}' geçerli bir GUID değil.");
+        }
+
+        if (quantity < 0)
+        {
+            throw new McpException("quantity negatif olamaz (0 = kaldır, 1+ = hedef miktar).");
+        }
+
+        return await apiClient.SetCartItemAsync(id, quantity, cancellationToken);
+    }
+
     [McpServerTool, Description("Bir siparişin güncel durumunu sorgular.")]
     public async Task<string> GetOrderStatus(
         [Description("Siparişin kimliği (GUID).")] string orderId,

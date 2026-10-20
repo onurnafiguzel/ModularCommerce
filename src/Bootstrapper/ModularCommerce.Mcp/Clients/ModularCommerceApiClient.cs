@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 using ModelContextProtocol;
 using Polly.Registry;
@@ -42,6 +43,77 @@ public sealed class ModularCommerceApiClient(
     public Task<string> GetOrderStatusAsync(Guid orderId, CancellationToken cancellationToken)
         => SendAsync(() => new HttpRequestMessage(HttpMethod.Get, $"/api/ordering/orders/{orderId}"),
             cancellationToken);
+
+    public Task<string> GetCartAsync(CancellationToken cancellationToken)
+        => SendAsync(() => new HttpRequestMessage(HttpMethod.Get, "/api/cart"), cancellationToken);
+
+    /// <summary>
+    /// Sepetteki bir ürünün miktarını TAM OLARAK <paramref name="quantity"/>'ye ayarlar
+    /// (artırma değil, "ayarlama" semantiği) — idempotenttir, aynı çağrı art arda tekrarlansa
+    /// bile sepet bozulmaz. Altta yatan API'de bu tam karşılığıyla YOK: PUT /items/{id} mevcut
+    /// bir satırı istenen değere SET eder (idempotent) ama satır sepette yoksa ItemNotFound
+    /// döner; POST /items ise ARTIRMALI çalışır (var olan miktara ekler). Bu yüzden önce
+    /// GetCart ile ürünün sepette olup olmadığına bakılır, sonra duruma göre doğru fiil
+    /// (PUT/POST/DELETE) seçilir — POST yalnız ürün sepette HİÇ YOKKEN çağrılır, o durumda
+    /// "artırma" sıfırdan başladığı için fiilen "ayarlama"yla aynı sonucu verir.
+    /// </summary>
+    public async Task<string> SetCartItemAsync(Guid productId, int quantity, CancellationToken cancellationToken)
+    {
+        var currentCartJson = await GetCartAsync(cancellationToken);
+        var alreadyInCart = CartContainsProduct(currentCartJson, productId);
+
+        if (quantity <= 0)
+        {
+            if (!alreadyInCart)
+            {
+                // Zaten sepette yok — istenen durum (yok) zaten sağlanmış, no-op (idempotent).
+                return currentCartJson;
+            }
+
+            return await SendAsync(
+                () => new HttpRequestMessage(HttpMethod.Delete, $"/api/cart/items/{productId}"),
+                cancellationToken);
+        }
+
+        if (alreadyInCart)
+        {
+            return await SendAsync(() =>
+            {
+                var request = new HttpRequestMessage(HttpMethod.Put, $"/api/cart/items/{productId}");
+                request.Content = JsonContent.Create(new { Quantity = quantity });
+                return request;
+            }, cancellationToken);
+        }
+
+        return await SendAsync(() =>
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "/api/cart/items");
+            request.Content = JsonContent.Create(new { ProductId = productId, Quantity = quantity });
+            return request;
+        }, cancellationToken);
+    }
+
+    private static bool CartContainsProduct(string cartJson, Guid productId)
+    {
+        using var document = JsonDocument.Parse(cartJson);
+        if (!document.RootElement.TryGetProperty("items", out var items)
+            || items.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        foreach (var item in items.EnumerateArray())
+        {
+            if (item.TryGetProperty("productId", out var idElement)
+                && idElement.TryGetGuid(out var id)
+                && id == productId)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public Task<string> PlaceOrderAsync(string idempotencyKey, CancellationToken cancellationToken)
         => SendAsync(() =>
