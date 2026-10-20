@@ -62,4 +62,17 @@ public sealed class RateLimitingTests
             "search_products", ToolRateLimitPolicy.Read, () => Task.FromResult("ok"));
         readResult.Should().Be("ok");
     }
+
+    [Fact(DisplayName = "Limit aşılınca McpException mesajı 'X saniye sonra tekrar dene' şeklinde somut bir süre içerir")]
+    public async Task ExceedingLimit_MessageIncludesConcreteRetryAfterSeconds()
+    {
+        var wrapper = CreateWrapper(readLimit: 1, writeLimit: 1);
+        await wrapper.ExecuteAsync("check_stock", ToolRateLimitPolicy.Read, () => Task.FromResult("ok"));
+
+        var act = async () => await wrapper.ExecuteAsync("check_stock", ToolRateLimitPolicy.Read, () => Task.FromResult("ok"));
+
+        var exception = await act.Should().ThrowAsync<McpException>();
+        exception.Which.Message.Should().MatchRegex(@"\d+ saniye sonra tekrar deneyebilirsin",
+            "SlidingWindowRateLimiter RetryAfter metadata sağlar, mesaj bunu somut bir sayıya çevirmeli");
+    }
 }

@@ -5,6 +5,7 @@ using ModularCommerce.Mcp.Clients;
 using ModularCommerce.Mcp.Observability;
 using ModularCommerce.Shared.Infrastructure.Auth;
 using ModularCommerce.Shared.Infrastructure.Observability;
+using ModularCommerce.Shared.Infrastructure.RateLimiting;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
@@ -38,6 +39,15 @@ builder.Services
         ApiKeyAuthenticationHandler.SchemeName, _ => { });
 builder.Services.AddAuthorization();
 
+// AddRateLimiting'in OnRejected yolu IProblemDetailsService kullanıyor (Host'taki gibi).
+builder.Services.AddProblemDetails();
+
+// DIŞTAN, KABA, IP bazlı HTTP katmanı: Shared.Infrastructure/RateLimiting'in AYNI GlobalLimiter'ı
+// (auth'tan ÖNCE çalışır — UseRateLimiter, UseAuthentication'dan önce — context.User henüz
+// kimliksiz olduğu için UserOrIpKey her zaman IP'ye düşer). Amaç: auth handler'a hiç ulaşmadan
+// kaba bir istek selini kesmek. Tool-bazlı (Read/Write) ince ayrım İÇERDE, ToolExecutionWrapper'da.
+builder.Services.AddRateLimiting(builder.Configuration);
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<McpAuthDelegatingHandler>();
 
@@ -47,7 +57,8 @@ builder.Services
 
 // Tool-seviyeli rate limiting + span/log — bkz. McpRateLimitingOptions üzerindeki not: MapMcp()
 // tek bir route'ta tüm tool'ları JSON-RPC ile multiplexlediği için HTTP-endpoint bazlı
-// Shared.Infrastructure/RateLimiting burada kullanılamıyor, programatik bir alternatif var.
+// Shared.Infrastructure/RateLimiting (yukarıdaki GlobalLimiter dışında) tool-bazlı ayrım için
+// kullanılamıyor, programatik bir alternatif var.
 builder.Services.Configure<McpRateLimitingOptions>(
     builder.Configuration.GetSection(McpRateLimitingOptions.SectionName));
 builder.Services.AddSingleton<McpRateLimiter>();
@@ -60,6 +71,7 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -25,11 +25,15 @@ public sealed class ToolExecutionWrapper(
     {
         var customerId = httpContextAccessor.HttpContext?.User.FindFirst("sub")?.Value ?? "unknown";
 
-        if (!rateLimiter.TryAcquire(policy, customerId))
+        if (!rateLimiter.TryAcquire(policy, customerId, out var retryAfter))
         {
-            logger.LogWarning("MCP tool rate-limited: {ToolName} (customer {CustomerId})", toolName, customerId);
+            logger.LogWarning(
+                "MCP tool rate-limited: {ToolName} (customer {CustomerId}, retryAfter={RetryAfter})",
+                toolName, customerId, retryAfter);
+
             throw new McpException(
-                $"'{toolName}' için çok fazla istek gönderildi; lütfen biraz bekleyip tekrar deneyin.");
+                $"'{toolName}' için çok fazla istek gönderildi; " +
+                $"{Math.Ceiling(retryAfter.TotalSeconds)} saniye sonra tekrar deneyebilirsin.");
         }
 
         using var activity = ActivitySource.StartActivity(toolName, ActivityKind.Client);
