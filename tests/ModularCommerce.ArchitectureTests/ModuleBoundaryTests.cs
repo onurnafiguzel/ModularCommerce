@@ -113,4 +113,31 @@ public class ModuleBoundaryTests
         result.IsSuccessful.Should().BeTrue(
             $"{module}.Domain saf kalmalı: EF Core dahil hiçbir dış katmana bağımlılık olamaz");
     }
+
+    /// <summary>
+    /// MCP sunucusu modüllere YALNIZ mevcut public HTTP API'si üzerinden konuşur (web/mobile bir
+    /// client gibi) — hiçbir modülün Domain/Application/Infrastructure'ına derleme zamanı
+    /// referansı olamaz. Bu, ModularCommerceApiClient'ın gerçekten sadece HTTP çağrısı yaptığını,
+    /// yanlışlıkla bir modülün iç katmanına (ör. kolaylık olsun diye bir repository/handler'a
+    /// doğrudan referans) sızmadığını derleme zamanında kilitler.
+    /// </summary>
+    [Fact]
+    public void Mcp_should_not_depend_on_any_module_internals()
+    {
+        var assembly = System.Reflection.Assembly.Load("ModularCommerce.Mcp");
+
+        var forbidden = Modules
+            .SelectMany(module => InternalLayers.Select(layer => $"ModularCommerce.{module}.{layer}"))
+            .ToArray();
+
+        var result = Types.InAssembly(assembly)
+            .Should()
+            .NotHaveDependencyOnAny(forbidden)
+            .GetResult();
+
+        result.IsSuccessful.Should().BeTrue(
+            "ModularCommerce.Mcp hiçbir modülün iç katmanına (Domain/Application/Infrastructure/Api) " +
+            "bağımlı olmamalı — modüllerle yalnız mevcut HTTP API'si üzerinden, diğer dış client'lar " +
+            "gibi konuşmalı");
+    }
 }
