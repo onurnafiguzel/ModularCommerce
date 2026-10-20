@@ -2,4 +2,10 @@
   <ItemGroup>
     <PackageReference Include="ModelContextProtocol.AspNetCore" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- JwtOptions/AddJwtAuthentication (Host ile aynı tip), Shared.Kernel değil doğrudan
+         Shared.Infrastructure'a bağımlı — Host'un kendisi de aynı şekilde referans veriyor,
+         modül-sınırı kuralı yalnız business modülleri için geçerli, Shared.* her ikisi için ortak. -->
+    <ProjectReference Include="..\..\Shared\ModularCommerce.Shared.Infrastructure\ModularCommerce.Shared.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>
