@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using ModelContextProtocol.AspNetCore;
 using ModularCommerce.Mcp.Auth;
+using ModularCommerce.Mcp.Clients;
 using ModularCommerce.Shared.Infrastructure.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,13 @@ builder.Services
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
         ApiKeyAuthenticationHandler.SchemeName, _ => { });
 builder.Services.AddAuthorization();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<McpAuthDelegatingHandler>();
+
+builder.Services
+    .AddModularCommerceApiClient(builder.Configuration["ModularCommerceApi:BaseUrl"] ?? "http://localhost:8080")
+    .AddHttpMessageHandler<McpAuthDelegatingHandler>();
 
 builder.Services
     .AddMcpServer()
