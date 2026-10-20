@@ -75,6 +75,8 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapMcp().RequireAuthorization();
+// "/mcp" sabit: k8s Ingress bu path'i Mcp Service'ine rewrite'sız yönlendirir (ingress.yaml) —
+// pattern burada değişirse ingress path'i de güncellenmeli.
+app.MapMcp("/mcp").RequireAuthorization();
 
 await app.RunAsync();

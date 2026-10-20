@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modularcommerce-mcp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: modularcommerce-mcp
+  template:
+    metadata:
+      labels:
+        app: modularcommerce-mcp
+    spec:
+      containers:
+        - name: mcp
+          image: ghcr.io/onurnafiguzel/modularcommerce-mcp:IMAGE_TAG
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: modularcommerce-mcp-config
+            - secretRef:
+                name: modularcommerce-mcp-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"

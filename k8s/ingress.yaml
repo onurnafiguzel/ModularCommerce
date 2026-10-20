@@ -14,6 +14,15 @@ spec:
     - host: shop.changehere.org
       http:
         paths:
+          # MCP app kendi route'unu DA "/mcp" olarak sunuyor (Program.cs: MapMcp("/mcp")) —
+          # rewrite GEREKMİYOR, path ingress'ten Service'e değişmeden akar.
+          - path: /mcp
+            pathType: Prefix
+            backend:
+              service:
+                name: modularcommerce-mcp
+                port:
+                  number: 80
           - path: /
             pathType: Prefix
             backend:
