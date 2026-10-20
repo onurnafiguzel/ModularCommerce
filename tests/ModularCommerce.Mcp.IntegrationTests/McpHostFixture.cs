@@ -52,6 +52,11 @@ public sealed class McpHostFixture : IAsyncLifetime
     public WebApplicationFactory<Program> Factory { get; private set; } = null!;
     public ModularCommerceApiClient ApiClient { get; private set; } = null!;
 
+    /// <summary>Testlerin yarış-sonrası DB'yi (payments/reservations/outbox) ham SQL ile
+    /// doğrulaması için — Host'un KENDİ DbContext'leri yerine (modül iç katmanına referans
+    /// gerektirir, Mcp.IntegrationTests bunu bilerek yapmaz) doğrudan Npgsql kullanılır.</summary>
+    public string PostgresConnectionString => _postgres.GetConnectionString();
+
     public async Task InitializeAsync()
     {
         await Task.WhenAll(_postgres.StartAsync(), _redis.StartAsync());
@@ -88,6 +93,25 @@ public sealed class McpHostFixture : IAsyncLifetime
 
         ApiClient = services.BuildServiceProvider().GetRequiredService<ModularCommerceApiClient>();
     }
+
+    /// <summary>
+    /// AYNI (zaten migrate+seed edilmiş) Postgres/Redis testcontainer'larına karşı, ama
+    /// ASPNETCORE_ENVIRONMENT=Production ile ikinci bir Host instance'ı kurar. Production'da
+    /// <see cref="ModularCommerce.Shared.Infrastructure.Persistence.MigrateAndSeedHostedService{TContext}"/>
+    /// RUN_MIGRATIONS=true olmadan migrate/seed ÇALIŞTIRMIYOR (bkz. kaynağı) — burada sorun değil,
+    /// şema zaten Development factory'si tarafından oluşturuldu. Tek amaç: dev-only endpoint'lerin
+    /// (ör. Inventory'nin PUT /dev/stock'u) gerçek Production ortam adında da 404 verdiğini kanıtlamak.
+    /// </summary>
+    public WebApplicationFactory<Program> CreateProductionFactory() =>
+        new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseEnvironment("Production");
+            builder.UseSetting("ConnectionStrings:Database", _postgres.GetConnectionString());
+            builder.UseSetting("ConnectionStrings:Redis", _redis.GetConnectionString());
+            builder.UseSetting("ConnectionStrings:RabbitMq", "amqp://guest:guest@localhost:1/");
+            builder.UseSetting("Jwt:Mcp:Issuer", McpIssuer);
+            builder.UseSetting("Jwt:Mcp:SigningKey", McpSigningKey);
+        });
 
     public async Task DisposeAsync()
     {
