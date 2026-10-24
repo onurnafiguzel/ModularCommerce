@@ -34,4 +34,7 @@ public static class OrderErrors
     public static readonly Error DuplicateIdempotencyKey = Error.Conflict(
         "Ordering.Checkout.DuplicateIdempotencyKey",
         "Bu istek zaten işlendi.");
+    public static readonly Error IdempotencyKeyReused = Error.UnprocessableEntity(
+        "Ordering.Checkout.IdempotencyKeyReused",
+        "Bu Idempotency-Key farklı bir sepet içeriğiyle daha önce kullanıldı; yeni bir sipariş için yeni bir key üretin.");
 }

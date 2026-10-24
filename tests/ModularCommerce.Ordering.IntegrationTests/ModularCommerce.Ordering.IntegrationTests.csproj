@@ -9,9 +9,13 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.Redis" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Ordering\ModularCommerce.Ordering.Infrastructure\ModularCommerce.Ordering.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Bootstrapper\ModularCommerce.Host\ModularCommerce.Host.csproj" />
     <ProjectReference Include="..\ModularCommerce.TestKit\ModularCommerce.TestKit.csproj" />
   </ItemGroup>
 </Project>

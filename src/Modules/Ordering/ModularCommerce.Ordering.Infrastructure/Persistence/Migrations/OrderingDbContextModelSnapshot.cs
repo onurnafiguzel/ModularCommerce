@@ -40,6 +40,10 @@ namespace ModularCommerce.Ordering.Infrastructure.Persistence.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<string>("PayloadHash")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -104,11 +108,6 @@ namespace ModularCommerce.Ordering.Infrastructure.Persistence.Migrations
 
                             NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("id"));
 
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)");
-
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uuid");
 
@@ -123,9 +122,6 @@ namespace ModularCommerce.Ordering.Infrastructure.Persistence.Migrations
                             b1.Property<Guid>("ReservationId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<decimal>("UnitPrice")
-                                .HasColumnType("numeric(18,2)");
-
                             b1.Property<Guid>("order_id")
                                 .HasColumnType("uuid");
 
@@ -137,6 +133,32 @@ namespace ModularCommerce.Ordering.Infrastructure.Persistence.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("order_id");
+
+                            b1.OwnsOne("ModularCommerce.Shared.Kernel.Money", "UnitPrice", b2 =>
+                                {
+                                    b2.Property<int>("OrderLineid")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<decimal>("Amount")
+                                        .HasColumnType("numeric(18,2)")
+                                        .HasColumnName("UnitPrice");
+
+                                    b2.Property<string>("Currency")
+                                        .IsRequired()
+                                        .HasMaxLength(3)
+                                        .HasColumnType("character varying(3)")
+                                        .HasColumnName("Currency");
+
+                                    b2.HasKey("OrderLineid");
+
+                                    b2.ToTable("order_lines", "ordering");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("OrderLineid");
+                                });
+
+                            b1.Navigation("UnitPrice")
+                                .IsRequired();
                         });
 
                     b.OwnsMany("ModularCommerce.Ordering.Domain.Orders.OrderStatusChange", "StatusHistory", b1 =>

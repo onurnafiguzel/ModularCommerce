@@ -34,6 +34,14 @@ public sealed class Order : Entity
     public Guid CustomerId { get; private set; }
     public OrderStatus Status { get; private set; }
     public string IdempotencyKey { get; private set; } = null!;
+
+    /// <summary>
+    /// Aynı (CustomerId, IdempotencyKey) ile gelen bir sonraki isteğin, AYNI niyeti mi temsil
+    /// ettiğini doğrulamak için saklanan sepet-içerik hash'i ("v1:" + hex SHA-256). NULL ise bu
+    /// migration-öncesi bir kayıttır — hash karşılaştırması atlanır (geriye dönük uyumluluk).
+    /// </summary>
+    public string? PayloadHash { get; private set; }
+
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime UpdatedAtUtc { get; private set; }
 
@@ -51,15 +59,22 @@ public sealed class Order : Entity
     }
 
     private Order(
-        Guid customerId, 
-        string idempotencyKey, 
-        IEnumerable<OrderLine> lines)
+        Guid customerId,
+        string idempotencyKey,
+        IEnumerable<OrderLine> lines,
+        string? payloadHash)
     {
         var utcNow = DateTime.UtcNow;
 
+        // DETERMİNİSTİK Id (bkz. DeterministicOrderId): aynı (CustomerId, IdempotencyKey) için
+        // yarışan TÜM paralel checkout denemeleri AYNI Id'yi hesaplar — Payment'ın ve Ordering'in
+        // birbirinden bağımsız hakemlerinin (iki farklı unique index) FARKLI bir "kazanan"
+        // seçmesi artık mümkün değil, ikisi de zaten aynı Id'yi görür.
+        Id = DeterministicOrderId.Create(customerId, idempotencyKey);
         CustomerId = customerId;
         Status = OrderStatus.Created;
         IdempotencyKey = idempotencyKey;
+        PayloadHash = payloadHash;
         CreatedAtUtc = utcNow;
         UpdatedAtUtc = utcNow;
         _lines.AddRange(lines);
@@ -69,7 +84,8 @@ public sealed class Order : Entity
         Guid customerId,
         string idempotencyKey,
         IReadOnlyList<OrderLineDraft> lines,
-        string triggeredBy)
+        string triggeredBy,
+        string? payloadHash = null)
     {
         if (customerId == Guid.Empty)
         {
@@ -113,7 +129,7 @@ public sealed class Order : Entity
             return Result.Failure<Order>(OrderErrors.CurrencyMismatch);
         }
 
-        var order = new Order(customerId, idempotencyKey, orderLines);
+        var order = new Order(customerId, idempotencyKey, orderLines, payloadHash);
 
         // Doğuş da izlenebilir bir geçiştir: ∅ → Created (NFR-5.3).
         order._statusHistory.Add(new OrderStatusChange(null, OrderStatus.Created, triggeredBy));

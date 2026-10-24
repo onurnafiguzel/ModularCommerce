@@ -34,11 +34,15 @@ public sealed class OrderRepository(OrderingDbContext context) : IOrderRepositor
             ex.InnerException is PostgresException
             {
                 SqlState: PostgresErrorCodes.UniqueViolation,
-                ConstraintName: OrderConfiguration.IdempotencyIndexName,
-            })
+            } pg
+            && (pg.ConstraintName == OrderConfiguration.IdempotencyIndexName
+                || pg.ConstraintName == OrderConfiguration.PrimaryKeyName))
         {
-            // FR-5.4 yarışının kapandığı yer: iki eşzamanlı aynı-key checkout'tan
-            // ikincisini index durdurur; handler kazananın siparişini döndürür.
+            // FR-5.4 yarışının kapandığı yer: iki eşzamanlı aynı-key checkout'tan ikincisini
+            // index durdurur; handler kazananın siparişini döndürür. Order.Id artık
+            // (CustomerId, IdempotencyKey)'den DETERMİNİSTİK üretildiğinden (bkz.
+            // DeterministicOrderId) bu yarış PK'yi de ihlal edebilir — ikisi de AYNI olayı
+            // (aynı key, ikinci deneme) temsil eder, ikisi de aynı şekilde ele alınır.
             return Result.Failure(OrderErrors.DuplicateIdempotencyKey);
         }
     }
