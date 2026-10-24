@@ -138,3 +138,7 @@ if (app.Configuration.GetValue<bool>("RUN_MIGRATIONS"))
 }
 
 await app.RunAsync();
+
+// WebApplicationFactory<Program> şartı: top-level statement Program.cs'in örtük Program sınıfını
+// test projelerinin görebilmesi için public partial olması gerekir. Davranışsal etkisi yok.
+public partial class Program;
