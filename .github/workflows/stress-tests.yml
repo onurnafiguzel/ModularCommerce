@@ -1,0 +1,27 @@
+name: Stress tests
+
+# "Stress" kategorisiyle işaretli testler (100-paralel, gerçek Testcontainers) ci.yml'den
+# (PR/push) BİLEREK hariç tutulur — yavaş ve bilinen bir TTL-ile-kendiliğinden-düzelen
+# sızıntıya karşı gürültülü (bkz. FOLLOWUPS.md). Burada ayrı, haftalık + elle tetiklenebilir
+# bir workflow'da çalışır.
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 3 * * 1" # her Pazartesi 03:00 UTC
+
+jobs:
+  stress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Stress tests
+        run: dotnet test --verbosity normal --filter "Category=Stress"

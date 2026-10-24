@@ -14,4 +14,17 @@ public sealed class JwtOptions
 
     public int AccessTokenMinutes { get; init; } = 15;
     public int RefreshTokenDays { get; init; } = 7;
+
+    /// <summary>
+    /// MCP sunucusunun kendi issuer/signing key'i (opsiyonel — yalnız MCP deploy edilmişse
+    /// dolu). Host'un ana Jwt:SigningKey'inden AYRI tutulur: biri ele geçirilirse diğeriyle
+    /// imzalanmış token üretilemez (issuer↔key bağlı doğrulama, bkz. AddJwtAuthentication).
+    /// </summary>
+    public JwtIssuerOptions? Mcp { get; init; }
+}
+
+public sealed class JwtIssuerOptions
+{
+    public string Issuer { get; init; } = string.Empty;
+    public string SigningKey { get; init; } = string.Empty;
 }

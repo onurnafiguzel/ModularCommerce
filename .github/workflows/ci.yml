@@ -25,4 +25,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --verbosity normal
+      # "Stress" kategorisi (100-paralel, gerçek Testcontainers, yavaş + bilinen bir TTL-ile-
+      # kendiliğinden-düzelen sızıntıya karşı gürültülü, bkz. FOLLOWUPS.md) burada hariç
+      # tutulur; ayrı bir workflow'da (stress-tests.yml, haftalık + workflow_dispatch) çalışır.
+      run: dotnet test --verbosity normal --filter "Category!=Stress"

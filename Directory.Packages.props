@@ -25,7 +25,9 @@
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
   </ItemGroup>
   <ItemGroup Label="Observability">
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <!-- OpenTelemetry.Extensions.Hosting'in transitive bağımlılığıyla (Hosting.Abstractions 10.0.10)
+         birebir tutulur (NU1605 önlemi) -->
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Formatting.Compact" Version="3.0.0" />
     <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
@@ -43,6 +45,12 @@
     <!-- JwtBearer 10.0.9'un transitive sürümüyle birebir aynı tutulur (NU1605 önlemi) -->
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
   </ItemGroup>
+  <ItemGroup Label="Mcp">
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
+    <!-- Mcp.Tests, Sdk.Web'in shared framework'ü olmadan plain bir sınıf kütüphanesi/test projesi
+         olduğu için AddHttpClient'ı ekstra paket olmadan çekemiyor. -->
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.0" />
+  </ItemGroup>
   <ItemGroup Label="Tests">
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
@@ -52,6 +60,8 @@
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.15.0" />
     <PackageVersion Include="Testcontainers.Redis" Version="4.15.0" />
+    <!-- WebApplicationFactory<Program> ile gerçek Host'u in-memory ayağa kaldırmak için
+         (Mcp.IntegrationTests + Ordering.IntegrationTests'in gerçek HTTP checkout testi). -->
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.9" />
   </ItemGroup>
 </Project>

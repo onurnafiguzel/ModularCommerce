@@ -26,6 +26,36 @@ dotnet run --project src/Bootstrapper/ModularCommerce.Host
 # http://localhost:5000/api/catalog/health
 ```
 
+## İşletim notları
+
+### Postgres bağlantı havuzu boyutlandırma
+
+Her modülün kendi `AddModuleDbContext` çağrısı ayrı bir `UseNpgsql(connectionString)` yapar —
+EF Core'un Npgsql sağlayıcısı her çağrı için AYRI bir connection pool kurar, aynı connection
+string metni bile olsa modüller arasında PAYLAŞILMAZ. Varsayılan Npgsql Max Pool Size (100) ile
+çalışıldığında, tek bir checkout isteği bile (Cart+Catalog+Inventory+Payment+Ordering'in AYRI
+pool'larını eşzamanlı kullanır) yüksek paralellik altında Postgres'in kendi `max_connections`
+sınırını kolayca aşabilir ("sorry, too many clients already" — ölçüldü: 100-paralel tek bir
+place_order koşusunda `pg_stat_activity` 98/100'e çıktı).
+
+Bu yüzden `Npgsql:MaxPoolSizePerModule` (appsettings, varsayılan **10**) ile her modülün pool'u
+sabitlenir. Doğru boyutlandırma formülü:
+
+```
+modül_sayısı × MaxPoolSizePerModule × replika_sayısı ≤ Postgres max_connections − headroom
+```
+
+- **modül_sayısı**: Postgres kullanan modül sayısı (bugün 8 — Shipping'in henüz DB'si yok).
+- **headroom**: health check'ler, migration job'u, `superuser_reserved_connections`, doğrudan
+  `NpgsqlConnection` kullanan kod (ör. `PostgresHealthCheck`) için pay.
+- Varsayılan (`MaxPoolSizePerModule=10`) tek replika (dev/test) için güvenli:
+  `8 × 10 × 1 = 80 ≤ 100` (20 bağlantı headroom). Ölçüldü: aynı 100-paralel test, bu değerle
+  `pg_stat_activity` 13/100'e düştü.
+- **ÜRETİMDE** (`k8s/deployment.yaml`: `replicas: 3`) varsayılanla `8 × 10 × 3 = 240` —
+  Postgres'in varsayılan `max_connections`'ını (100) AŞAR. Gerçek bir çoklu-replika deploy'dan
+  önce ya `Npgsql:MaxPoolSizePerModule`'ü düşürün (ör. 3-4) ya da Postgres'in `max_connections`'ını
+  bu formüle göre yükseltin — hangisi tercih edilirse edilsin, formül yeniden hesaplanmalı.
+
 ## Kanıt yükümlülükleri
 
 Bu projede her iddia ölçümle kanıtlanır (bkz. requirements §10):
@@ -279,3 +309,126 @@ checkout policy **burst-absorbing** (permit+queue ≥ 100, validate ile zorlanı
 - Elasticsearch yok: arama Postgres full-text ile başlar; ölçek gerektirdiğinde CDC + ES yolu açık.
 - Virtual waiting room yok: kampanya yükü önce rate limiting + rezervasyon TTL ile yönetilir.
 - Identity şeması, compliance gereksinimi doğduğunda sıfır kod değişikliğiyle ayrı DB'ye taşınabilir.
+
+## MCP Server
+
+`ModularCommerce.Mcp` exposes the store to AI agents (Claude Desktop, Claude Code, or any MCP
+client) over Streamable HTTP, talking to the Host exclusively through its existing public API —
+never a module's internal layers, same as any other client. It ships six tools covering search,
+stock, cart, and checkout, with a mandatory idempotency key on `place_order` so retries from an
+agent never double-create an order. Security, observability, and rate limiting are layered in
+front of the same resilient HTTP client the rest of the platform already trusts.
+
+*(Demo GIF goes here.)*
+
+### Tools
+
+| Tool | Kind | Description |
+|---|---|---|
+| `search_products` | read | Full-text + price-range product search, paginated. |
+| `check_stock` | read | Current available stock for a product. |
+| `get_cart` | read | Current cart contents (products + quantities). |
+| `set_cart_item` | write, idempotent | Sets a cart line's quantity to an exact value ("set to X", not "add X"); `quantity=0` removes the line. Repeating the same call never corrupts the cart. |
+| `get_order_status` | read | Current status of an order by id. |
+| `place_order` | write, idempotent | Checks out the current cart. Requires `idempotency_key`: reuse the same value to retry the same intent; use a new value for a different order. |
+
+### Connecting from Claude Desktop / Claude Code
+
+Add an entry to `claude_desktop_config.json` (Desktop) or your project's `.mcp.json` (Code):
+
+```json
+{
+  "mcpServers": {
+    "modularcommerce": {
+      "url": "http://localhost:8080/mcp",
+      "headers": {
+        "X-Api-Key": "dev-mcp-api-key-2026"
+      }
+    }
+  }
+}
+```
+
+The API key is never stored in plaintext server-side — only its SHA-256 hash (see
+`Mcp:ApiKeys` in `appsettings.json`), mapped to a fixed `CustomerId`. The key above is the
+local-dev default; a real deployment provisions its own key/hash pair and injects the real
+JWT signing key via `k8s/mcp-secret.yaml` + CI (see commit history — the secret file itself
+only ever holds a placeholder).
+
+### Idempotency design
+
+The hard part isn't the happy path — it's what happens when an agent (correctly) retries
+`place_order` with the same key while the previous attempt is still racing through the system.
+`Order.Id` is derived deterministically (RFC 9562 UUIDv5) from `(CustomerId, IdempotencyKey)`,
+so every concurrent attempt for the same key computes the *identical* order id before either of
+Payment's or Ordering's own unique-index races ever resolves who "wins":
+
+```mermaid
+sequenceDiagram
+    participant A as Attempt A (same key)
+    participant B as Attempt B (same key)
+    participant Pay as Payment<br/>(unique: CustomerId+Key)
+    participant Ord as Ordering<br/>(PK = Order.Id, unique: CustomerId+Key)
+
+    Note over A,B: Both independently compute<br/>Order.Id = UUIDv5(CustomerId, IdempotencyKey) — IDENTICAL
+    A->>Pay: ChargeAsync(OrderId = X)
+    B->>Pay: ChargeAsync(OrderId = X)
+    Pay->>Pay: Insert wins for A;<br/>B's insert hits 23505 -> replays A's Completed row (same OrderId = X)
+    A->>Ord: AddAsync(Order X)
+    B->>Ord: AddAsync(Order X)
+    Ord->>Ord: Insert wins for A (PK_orders);<br/>B's insert hits 23505 -> fetches the winner, replays it
+    Ord-->>A: 201 Created, Order X
+    Ord-->>B: 200 OK, Order X (replay)
+```
+
+Because the id is the same regardless of which attempt wins either race, Payment's completed-payment
+row and Ordering's persisted order can never disagree about which order they belong to — a real,
+previously-shipped regression this fixed (see commit history for the full story and the 20x
+repeated-run proof).
+
+### Design decisions & lessons learned
+
+1. **Issuer↔key binding, not just a key list.** The Mcp server mints its own short-lived JWTs with
+   a separate signing key and issuer from the Host's main user-facing tokens. A naive
+   `ValidIssuers` + `IssuerSigningKeys` list would validate a signature against *any* listed key
+   without binding a specific issuer to a specific key — so a token signed with the Mcp key but
+   claiming the Host's issuer would still pass. Fixed with an `IssuerSigningKeyResolver` that
+   looks up the key by the token's own issuer claim, and pinned down by a mandatory negative test
+   (a forged cross-issuer token must get 401) — which initially passed for the *wrong* reason
+   until a `JwtSecurityToken` cast bug (the real runtime type is `JsonWebToken`) was found and fixed.
+2. **The parallel-checkout race and the deterministic `Order.Id`.** Load-testing `place_order`
+   under genuine 100-way concurrency on one idempotency key exposed a real regression: each
+   losing attempt minted its own random `Order.Id` before Ordering's own unique index ever
+   resolved a winner, so Payment's and Ordering's independently-resolved "winners" could disagree.
+   The fix (RFC 9562 UUIDv5, see above) makes every concurrent attempt compute the same id up
+   front, closing the gap for good — verified with 20 consecutive clean runs before it shipped.
+3. **Same key, different payload is a 422, not a silent replay.** Reusing an idempotency key with
+   a different cart (or, in Payment, a different amount/currency) is rejected with
+   `422 IdempotencyKeyReused` rather than quietly replaying the old result — the tool description
+   tells the calling agent explicitly to mint a *new* key for a different order, never reuse one.
+4. **Tool-level rate limiting, not route-level.** `MapMcp()` multiplexes every tool call through a
+   single JSON-RPC HTTP route, so the framework's route-based `AddRateLimiter` can't tell
+   `search_products` apart from `place_order`. A small programmatic
+   `PartitionedRateLimiter<string>` wrapper (`ToolExecutionWrapper`) applies separate, looser
+   read/stricter write policies per tool name instead, in front of a coarse IP-based HTTP-layer
+   limiter that runs before authentication.
+5. **The modules × pool × replica connection math.** Each module's `AddModuleDbContext` call
+   builds its own independent Npgsql connection pool, even against the identical connection
+   string — pools are never shared across modules. Under real 100-parallel load this measured
+   98/100 of Postgres's own `max_connections` from a *single* checkout request alone (it fans out
+   across five modules' pools at once); capping each module's pool size (`Npgsql:MaxPoolSizePerModule`)
+   dropped that to 13/100. The full sizing formula is documented above in "İşletim notları".
+
+### Known limitations
+
+- **Redis-unreachable latency tax.** `AbortOnConnectFail=false` keeps the app from crashing when
+  Redis is down, but it does *not* fail fast — every cache operation still pays
+  StackExchange.Redis's own multi-second `ConnectTimeout`/`SyncTimeout` before falling through to
+  Postgres. The real fix (lowering those timeouts and wrapping the cache in its own circuit
+  breaker) is separate, not-yet-done future work.
+- **In-memory, per-replica rate limiting.** `McpRateLimiter`'s tool-level limits are process-local
+  (no shared store like Redis) — with `k8s/mcp-deployment.yaml` running multiple replicas, the
+  *effective* limit per customer scales up with however many pods they happen to hit.
+- See [FOLLOWUPS.md](FOLLOWUPS.md) for an open finding (checkout cancellation can leak a stock
+  reservation, self-healing within ~5 minutes via the TTL sweeper) found while testing the above,
+  not yet fixed.

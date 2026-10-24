@@ -97,9 +97,16 @@ public sealed class DeclinedReplayTests(PostgresContainerFixture fixture)
         psp.Calls.Should().Be(1, "mismatch yolunda PSP aranmaz");
     }
 
-    [Fact(DisplayName = "Replay güvenliği: Completed ödemenin key'i AYNI tutar ama FARKLI OrderId ile gelirse IdempotencyKeyReused (422, FAZ 0)")]
+    [Fact(DisplayName = "Replay güvenliği: Completed ödemenin key'i AYNI tutar ama FARKLI OrderId ile gelirse IdempotencyKeyReused (422)")]
     public async Task CompletedReplay_WithDifferentOrderIdSameAmount_ReturnsIdempotencyKeyReused()
     {
+        // Bu test Order.Id'yi DOĞRUDAN (CheckoutHandler/DeterministicOrderId'yi atlayarak)
+        // elle üretiyor — gerçek sistemde (Ordering.Domain.Orders.DeterministicOrderId, RFC 9562
+        // UUIDv5) aynı (CustomerId, IdempotencyKey) için yarışan TÜM denemeler AYNI OrderId'yi
+        // hesaplar, bu yüzden bu senaryo meşru bir yarışta ASLA oluşmaz (bkz. deterministik Id
+        // eklenmeden önce kısa süre bu kontrol regresyona yol açmıştı, bkz. git geçmişi — artık
+        // güvenli). Burada simüle edilen, Payment'a anomalisi/hatalı bir çağrı gelmesi durumu;
+        // savunma derinliği olarak reddedilmesi doğru.
         var customerId = Guid.NewGuid();
         var key = $"siparis-{Guid.NewGuid():N}";
         var options = new PspOptions { LatencyMs = 0 };

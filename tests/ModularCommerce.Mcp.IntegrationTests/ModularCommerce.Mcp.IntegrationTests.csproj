@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.Redis" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bootstrapper\ModularCommerce.Host\ModularCommerce.Host.csproj" />
+    <!-- Host ve Mcp'nin top-level statement Program.cs'leri AYNI isimde (global Program) bir tip
+         üretiyor; ikisi de referanslı olunca CS0433 (ambiguous) oluşur. Mcp'yi "McpAssembly" takma
+         adıyla referans verip (extern alias) yalnız gerçekten onun tiplerine ihtiyaç duyan
+         McpHostFixture.cs'te nitelemek bunu çözüyor; WebApplicationFactory of Program HER ZAMAN
+         Host'un (aliassız) Program'ını hedefler. -->
+
+    <ProjectReference Include="..\..\src\Bootstrapper\ModularCommerce.Mcp\ModularCommerce.Mcp.csproj">
+      <Aliases>McpAssembly</Aliases>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
