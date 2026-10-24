@@ -24,6 +24,11 @@ public sealed class PlaceOrderConcurrencyTests(McpHostFixture fixture, ITestOutp
     private int _transportRetryCount;
 
 
+    // "Stress": PR CI'ı bu kategoriyi hariç tutar (ci.yml) — 100-paralel gerçek Testcontainers
+    // koşusu hem yavaş hem bilinen bir TTL-ile-kendiliğinden-düzelen sızıntıya karşı (bkz.
+    // FOLLOWUPS.md) gürültülü. Haftalık + workflow_dispatch ile ayrı bir workflow'da çalışır
+    // (stress-tests.yml).
+    [Trait("Category", "Stress")]
     [Fact(DisplayName = "100 PARALEL place_order, AYNI idempotency key → DB'de tam 1 sipariş, stok tam 1 kez düşer (§10.2)")]
     public async Task HundredParallelPlaceOrders_ProduceSingleOrderAndSingleStockDecrement()
     {

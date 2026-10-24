@@ -50,6 +50,12 @@ adımların (`ReserveAsync`/`ChargeAsync`/`AddAsync`) kendi içindeki DB çağr�
 arasında seçim gerektiriyor — (a) daha az invazif, (b) "iptal edilen istek hemen 499 dönsün"
 davranışını değiştirebilir. **Hangi yönün tercih edileceği henüz tartışılmadı.**
 
+**Kabul kriteri (düzeltme uygulandığında):** `PlaceOrderConcurrencyTests.HundredParallelPlaceOrders_ProduceSingleOrderAndSingleStockDecrement`
+([Category=Stress](tests/ModularCommerce.Mcp.IntegrationTests/PlaceOrderConcurrencyTests.cs),
+`stress-tests.yml` ile haftalık/elle çalışır) **20 ardışık koşuda 20/20 yeşil olmalı** — şu an
+bilinen bu sızıntı yüzünden ara sıra (gözlemlenen: ~1/20) `Available` farkı 1 yerine 2-3 çıkıp
+düşebiliyor. Düzeltme bu testi her koşuda deterministik kılmalı, yalnız "genelde geçer" değil.
+
 **İlgili olmayan ama aynı ara.ştırmada ölçülen, zaten düzeltilen konu:** Aynı test koşusunda ayrıca
 Postgres "too many clients already" hatası bulundu ve düzeltildi (bkz. commit geçmişi,
 `Npgsql:MaxPoolSizePerModule` — her modülün AYRI Npgsql pool'u kurduğu, varsayılan Max Pool
