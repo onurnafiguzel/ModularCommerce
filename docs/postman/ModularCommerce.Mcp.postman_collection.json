@@ -1,0 +1,131 @@
+{
+  "info": {
+    "name": "ModularCommerce MCP",
+    "description": "MCP sunucusu (Streamable HTTP, stateless) için JSON-RPC 2.0 istekleri. Tüm istekler POST {{mcpUrl}} adresine gider; X-Api-Key collection seviyesinde tanımlıdır. Tool adları SDK tarafından snake_case'e çevrilir — emin değilseniz önce 'tools/list' çağırın.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "variable": [
+    { "key": "mcpUrl", "value": "http://localhost:5080/mcp" },
+    { "key": "apiKey", "value": "dev-mcp-api-key-2026" },
+    { "key": "productId", "value": "00000000-0000-0000-0000-000000000000" },
+    { "key": "orderId", "value": "00000000-0000-0000-0000-000000000000" },
+    { "key": "idempotencyKey", "value": "mcp-order-001" }
+  ],
+  "item": [
+    {
+      "name": "tools/list",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Api-Key", "value": "{{apiKey}}" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json, text/event-stream" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\"\n}"
+        },
+        "url": "{{mcpUrl}}"
+      }
+    },
+    {
+      "name": "search_products",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Api-Key", "value": "{{apiKey}}" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json, text/event-stream" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"search_products\",\n    \"arguments\": {\n      \"query\": \"laptop\",\n      \"page\": 1,\n      \"pageSize\": 5,\n      \"minPrice\": 100,\n      \"maxPrice\": 5000\n    }\n  }\n}"
+        },
+        "url": "{{mcpUrl}}"
+      }
+    },
+    {
+      "name": "check_stock",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Api-Key", "value": "{{apiKey}}" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json, text/event-stream" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 3,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_stock\",\n    \"arguments\": {\n      \"productId\": \"{{productId}}\"\n    }\n  }\n}"
+        },
+        "url": "{{mcpUrl}}"
+      }
+    },
+    {
+      "name": "get_cart",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Api-Key", "value": "{{apiKey}}" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json, text/event-stream" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 4,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_cart\",\n    \"arguments\": {}\n  }\n}"
+        },
+        "url": "{{mcpUrl}}"
+      }
+    },
+    {
+      "name": "set_cart_item",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Api-Key", "value": "{{apiKey}}" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json, text/event-stream" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"set_cart_item\",\n    \"arguments\": {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  }\n}"
+        },
+        "url": "{{mcpUrl}}"
+      }
+    },
+    {
+      "name": "get_order_status",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Api-Key", "value": "{{apiKey}}" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json, text/event-stream" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 6,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_order_status\",\n    \"arguments\": {\n      \"orderId\": \"{{orderId}}\"\n    }\n  }\n}"
+        },
+        "url": "{{mcpUrl}}"
+      }
+    },
+    {
+      "name": "place_order",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Api-Key", "value": "{{apiKey}}" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json, text/event-stream" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 7,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"place_order\",\n    \"arguments\": {\n      \"idempotencyKey\": \"{{idempotencyKey}}\"\n    }\n  }\n}"
+        },
+        "url": "{{mcpUrl}}"
+      }
+    }
+  ]
+}

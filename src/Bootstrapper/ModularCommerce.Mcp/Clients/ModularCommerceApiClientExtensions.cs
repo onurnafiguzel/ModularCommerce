@@ -16,9 +16,6 @@ public static class ModularCommerceApiClientExtensions
     public static IHttpClientBuilder AddModularCommerceApiClient(
         this IServiceCollection services, string baseUrl)
     {
-        // 4xx (400/404/422 dahil) ASLA retry edilmez — çağıranın girdisi/niyeti kalıcı olarak
-        // reddedildi, tekrar denemek sonucu değiştirmez. Yalnız 5xx/408/429 ve transport
-        // seviyesi geçici hatalar (timeout, bağlantı hatası) retry edilir.
         services.AddResiliencePipeline<string, HttpResponseMessage>(
             ModularCommerceApiClient.PipelineName, pipeline =>
             {
